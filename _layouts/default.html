@@ -2,10 +2,14 @@
 <html>
   <head>
 		<title>{{ page.title }}</title>
-    <link href="/stylesheets/iamvery.css" media="all" rel="stylesheet" type="text/css" />
+    {% css_asset_tag iamvery %}
+    - /_assets/stylesheets/iamvery.scss
+    {% endcss_asset_tag %}
 	</head>
 	<body>
 		{{ content }}
-    <script type="text/javascript" src="/javascripts/iamvery.js"></script>
+    {% javascript_asset_tag iamvery %}
+    - /_assets/javascripts/iamvery.coffee
+    {% endjavascript_asset_tag %}
 	</body>
 </html>

@@ -1,25 +1,15 @@
-# https://gist.github.com/959938
-module Jekyll
-  require 'coffee-script'
-  class CoffeeScriptConverter < Converter
-    safe true
-    priority :normal
+require 'jekyll_asset_pipeline'
 
-    def matches(ext)
-      ext =~ /coffee/i
+module JekyllAssetPipeline
+  class CoffeeScriptConverter < JekyllAssetPipeline::Converter
+    require 'coffee-script'
+
+    def self.filetype
+      '.coffee'
     end
 
-    def output_ext(ext)
-      '.js'
-    end
-
-    def convert(content)
-      begin
-        CoffeeScript.compile content
-      rescue StandardError => e
-        puts "CoffeeScript Error: #{e.message}"
-      end
+    def convert
+      return CoffeeScript.compile(@content)
     end
   end
 end
-
