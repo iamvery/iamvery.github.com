@@ -1,3 +1,4 @@
+# https://gist.github.com/959938
 module Jekyll
   require 'coffee-script'
   class CoffeeScriptConverter < Converter

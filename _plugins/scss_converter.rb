@@ -1,3 +1,4 @@
+# https://gist.github.com/960150
 module Jekyll
   require 'sass'
   class SassConverter < Converter
