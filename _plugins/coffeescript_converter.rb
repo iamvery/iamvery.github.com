@@ -9,7 +9,7 @@ module JekyllAssetPipeline
     end
 
     def convert
-      return CoffeeScript.compile(@content)
+      CoffeeScript.compile @content
     end
   end
 end

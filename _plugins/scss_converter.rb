@@ -9,7 +9,7 @@ module JekyllAssetPipeline
     end
 
     def convert
-      return Sass::Engine.new(@content, syntax: :scss).render
+      Sass::Engine.new(@content, syntax: :scss).render
     end
   end
 end

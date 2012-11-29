@@ -1,1 +1,1 @@
-exclude: ["Gemfile", "Gemfile.lock", "build.sh"]
+exclude: ["Gemfile", "Gemfile.lock", "build.sh", 'Rakefile']
