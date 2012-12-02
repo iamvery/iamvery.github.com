@@ -40,6 +40,7 @@ I performed various computer/technology related tasks on campus.
 * Git, Subversion
 * TextMate
 * Vim, bash, zsh
+* HTTP
 * GitHub, GitLab
 * Eclipse
 * Adobe Flash
@@ -51,7 +52,10 @@ I performed various computer/technology related tasks on campus.
 ### Programming Skillset
 
 * HTML5, CSS3
-* JavaScript, JQuery, Backbone.js, etc.
+* JavaScript, CoffeeScript
+* JQuery, Backbone.js, etc.
+* SASS, LESS
+* Twitter Bootstrap
 * Ruby, Rails
 * Bash
 * ActionScript 2.0 / 3.0
