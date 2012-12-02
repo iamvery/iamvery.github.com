@@ -9,7 +9,11 @@ module JekyllAssetPipeline
     end
 
     def convert
-      Sass::Engine.new(@content, syntax: :scss).render
+      begin
+        Sass::Engine.new(@content, syntax: :scss).render
+      rescue StandardError => e
+        puts "Sass Error: #{e.message}"
+      end
     end
   end
 end

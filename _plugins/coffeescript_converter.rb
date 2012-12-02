@@ -9,7 +9,11 @@ module JekyllAssetPipeline
     end
 
     def convert
-      CoffeeScript.compile @content
+      begin
+        CoffeeScript.compile @content
+      rescue StandardError => e
+        puts "Coffeescript Error: #{e}"
+      end
     end
   end
 end
