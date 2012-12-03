@@ -1,1 +1,2 @@
 exclude: ["Gemfile", "Gemfile.lock", "build.sh", 'Rakefile']
+pygments: true
