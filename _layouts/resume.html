@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ page.title }}</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    {% css_asset_tag iamvery %}
+    - /_assets/stylesheets/reset.css
+    - /_assets/stylesheets/iamvery.scss
+    {% endcss_asset_tag %}
+  </head>
+  <body>
+    {{ content }}
+  </body>
+</html>

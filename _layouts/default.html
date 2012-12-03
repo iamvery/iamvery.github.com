@@ -15,7 +15,28 @@
     {% endcss_asset_tag %}
   </head>
   <body>
-    {{ content }}
+    <header>
+      <a href="/" title="Iamvery home.">
+        <img src="/images/iamvery-header.png" alt="Iamvery Logo" />
+      </a>
+    </header>
+
+    <div class="container">
+      <!--
+      <nav>
+        <ul>
+          <li>about</li>
+          <li>archive</li>
+          <li>resume</li>
+      </nav>
+      -->
+
+      {{ content }}
+    </div>
+
+    <footer>
+      <img src="/images/iamvery-footer.png" />
+    </footer>
 
     {% javascript_asset_tag iamvery %}
     - /_assets/javascripts/jquery.js
