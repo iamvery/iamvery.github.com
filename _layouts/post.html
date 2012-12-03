@@ -1,0 +1,22 @@
+---
+layout: default
+---
+
+<section>
+  <header>
+    <h1>{{ page.title }}</h1>
+  </header>
+
+  {{ content }}
+
+  <footer>
+    &mdash;
+    {{ page.date | date: "%b %d, %Y" }}
+  </footer>
+  
+  <p class="center">
+    <a href="{{ page.previous.url }}">&laquo; Previous</a>
+    |
+    <a href="{{ page.next.url }}">Next &raquo;</a>
+  </p>
+</section>

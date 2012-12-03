@@ -4,12 +4,11 @@ body {
 
   font-family: Helvetica, Arial, sans-serif;
   font-size: $base-font-size;
-  text-shadow: $text-shadow-color 0 1px 0;
 }
 
 header, .container, footer { position: relative; }
 
-header {
+header.primary {
   height: 254px;
   background-color: black;
   text-align: center;
@@ -19,7 +18,7 @@ header {
   @include box-shadow(0, 3px, 3px, rgba(0,0,0,0.4));
 }
 
-footer {
+footer.primary {
   background-color: black;
   text-align: center;
   z-index: 3;

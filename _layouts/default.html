@@ -16,27 +16,30 @@
     {% endcss_asset_tag %}
   </head>
   <body>
-    <header>
+    <header class="primary">
       <a href="/" title="Iamvery home.">
-        <img src="/images/iamvery-header.png" alt="Iamvery Logo" />
+        <img src="/images/iamvery-header.png" alt="Iamvery Header Logo" />
       </a>
     </header>
 
     <div class="container">
-      <!--
       <nav>
         <ul>
-          <li>about</li>
-          <li>archive</li>
-          <li>resume</li>
+          <li><a href="/">about</a></li>
+          <li><a href="/resume.html">resume</a></li>
+          <li><a href="{{ site.posts.first.url }}">blog</a></li>
+          <li><a href="/archive.html">archive</a></li>
+        </ul>
       </nav>
-      -->
 
       {{ content }}
+
+      <hr/>
+      {% include contact.html %}
     </div>
 
-    <footer>
-      <img src="/images/iamvery-footer.png" />
+    <footer class="primary">
+      <img src="/images/iamvery-footer.png" alt="Iamvery Footer Logo" />
     </footer>
 
     {% javascript_asset_tag iamvery %}
