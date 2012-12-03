@@ -3,11 +3,11 @@
 Who I am
 ========
 
-My name is ***Jay Hayes***. I am a husband and programmer. I am a #{Time.now.year - 1986} year
-old CS graduate from the University of Alabama in Huntsville. My wife and I live in Florence,
-Alabama and own a dance studio (<http://soledancestudio.com>). Over the past few years, I have
-developed a deep passion for doing web development *right*. I don't claim to know it all, but
-I am always working to improve my craft.
+My name is ***Jay Hayes***. I am a husband and programmer. I am a 26 year old CS graduate
+from the University of Alabama in Huntsville. My wife and I live in Florence, Alabama and
+own a dance studio (<http://soledancestudio.com>). Over the past few years, I have
+developed a deep passion for doing web development *right*. I don't claim to know it all,
+but I am always working to improve my craft.
 
 What I've done
 ==============
