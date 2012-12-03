@@ -1,6 +1,4 @@
 jQuery ($) ->
-  $('.container').hide().delay(200).slideDown 1000, 'easeInOutQuint'
-
   toggle_on = ->
     $this = $(this)
     $this.siblings('.toggle-target').slideDown 1000, 'easeInQuint'
