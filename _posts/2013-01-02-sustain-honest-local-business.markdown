@@ -28,8 +28,8 @@ the boss about the situation.
 
 I thought about the occurrence and what it meant to me. Initially I asked myself "Why was it such a no-brainer for me to
 square up with them honestly about my purchase? Is it because I expect to be blessed myself some day for my honesty?"
-Perhaps, yes, in part, but then I realized why. From the beginning at [Sole](http://soledancestudio.com), we have
-encountered one business after another that mindless chips away at you for random expenses because "that's business".
+Perhaps yes, in part, but then I realized why. From the beginning at [Sole](http://soledancestudio.com), we have
+encountered one business after another that mindlessly chips away at you for random expenses because "that's business".
 They give no thought to the quality of service and/or product that they offer. When I find a business that puts forth
 a genuine effort to service the customer and trusts they'll be taken care of, I want to support them. I want them to
 stay around. I want there to be more of them.
