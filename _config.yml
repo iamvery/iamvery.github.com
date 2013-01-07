@@ -1,2 +1,2 @@
-exclude: ["Gemfile", "Gemfile.lock", "build.sh", 'Rakefile']
+exclude: ["Gemfile", "Gemfile.lock", 'Rakefile']
 pygments: true
