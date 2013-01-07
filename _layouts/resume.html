@@ -4,10 +4,8 @@
     <title>{{ page.title }}</title>
     <link href='/favicon.ico' rel='shortcut icon' />
 
-    {% css_asset_tag iamvery %}
-    - /_assets/stylesheets/reset.css
-    - /_assets/stylesheets/iamvery.scss
-    {% endcss_asset_tag %}
+    <link href='/stylesheets/reset.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
   </head>
   <body>
     {{ content }}
