@@ -1,2 +1,5 @@
+title: "iamvery.com"
+description: "The work, thoughts, and ideas of Jay Hayes, a web developer."
+url: http://iamvery.com
 exclude: ["Gemfile", "Gemfile.lock", 'Rakefile']
 pygments: true
