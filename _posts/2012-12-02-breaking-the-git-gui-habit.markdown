@@ -3,6 +3,9 @@ layout: post
 title: Breaking the git gui habit
 ---
 
+**Updated**: See [Gary Bernhardt's](https://github.com/garybernhardt) [alternate
+method](https://github.com/garybernhardt) for pretty `git log` output.
+
 I have been long-time dependent on Git's `gitk` application for my work. I suppose I'm just
 visually minded, because it is quite difficult for me to work 100% command line with Git. A
 couple days ago I was inspired again to look for command line alternatives to satisfy my
