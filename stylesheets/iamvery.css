@@ -107,9 +107,14 @@ em {
   font-style: italic; }
 
 ul {
-  list-style-type: disc;
-  margin: 0 0 13px 15px; }
-  ul li {
+  list-style-type: disc; }
+
+ol {
+  list-style-type: decimal; }
+
+ul, ol {
+  margin: 0 0 13px 20px; }
+  ul li, ol li {
     margin-bottom: 3px; }
 
 a {

@@ -18,7 +18,14 @@ em {
 
 ul {
   list-style-type: disc;
-  margin: 0 0 $base-font-size 15px;
+}
+
+ol {
+  list-style-type: decimal;
+}
+
+ul, ol {
+  margin: 0 0 $base-font-size 20px;
   li { margin-bottom: $base-font-size - 10; }
 }
 
