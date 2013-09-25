@@ -1,0 +1,15 @@
+---
+layout: post
+title: Big, nerdy blogs
+---
+
+Recently I've been blogging for my employer, [Big Nerd Ranch](http://bignerdranch.com).
+Check out the posts below:
+
+* [Coding Rails with Data Integrity, Part 1 - nulls and defaults](http://blog.bignerdranch.com/3340-coding-rails-with-data-integrity)
+* [Coding Rails with Data Integrity, Part 2 - uniqueness](http://blog.bignerdranch.com/3421-coding-rails-with-data-integrity-part-2)
+* [Coding Rails with Data Integrity, Part 3 - referential](http://blog.bignerdranch.com/3620-coding-rails-with-data-integrity-part-3)
+* [Small, Distinct Commits Say You Care](http://blog.bignerdranch.com/3867-small-distinct-commits-say-you-care)
+
+Feel free to leave us a comment on the BNR blog. Also, if you ever want to chat or `#pairwithme`,
+drop me a line!
