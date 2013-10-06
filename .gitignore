@@ -1,4 +1,5 @@
 # jekyll generated site
 /_site
+/serve
 
 /.sass-cache
