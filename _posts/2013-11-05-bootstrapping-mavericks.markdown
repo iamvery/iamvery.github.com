@@ -39,3 +39,23 @@ the ["webkit_server binary crash(ing)"](https://github.com/thoughtbot/capybara-w
 Hopefully all you fine folks out there have been met with _much_ better success
 than myself upgrading to Apple's shiny new OS! Let me know if you have any questions.
 Maybe I can help you avoid some stress ;)
+
+\***UPDATE**\* 9 Nov 2013
+
+I finally got around to updating the iMac to Mavericks. Armed with the experience
+of updating my laptop, the pain _greatly_ decreased.
+
+The update went smoothly. As for my development envrionment, `capybara-webkit`
+was broken, crashing with `Errno::EPIPE` exceptions after 100ish specs run (as
+expected).
+
+I was able to fix this using these decidedly less drastic steps:
+
+1. Updated brew (always be updatin' brew, why not?)
+2. `brew uninstall qt`. Homebrew's QT hasn't worked with 10.9. I don't trust it.
+3. Installed QT manually from the [.pkg installer](http://download.qt-project.org/official_releases/qt/4.8/4.8.5/qt-mac-opensource-4.8.5.dmg)
+4. `gem uninstall capybara-webkit`. I believe the installation of this gem binds,
+   links, or some such to QT. This was for good measure. Maybe not needed?
+5. `bundle`. Installed my dependencies again, installing `capybara-webkit`
+
+After this I ran the spec suite and we're all green! Sweet ;)
