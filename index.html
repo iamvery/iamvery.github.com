@@ -3,34 +3,12 @@ layout: default
 title: Jay Hayes
 ---
 
-<section id="about">
+{% for post in site.posts limit:3 %}
+  <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
+  {{ post.excerpt }}
+  <hr/>
+{% endfor %}
 
-  <img title="Les and I" src="/images/jay-and-les.jpg" />
-
-  <h1>Who I am</h1>
-  <p>
-    My name is <em><strong>Jay Hayes</strong></em>. I am a husband and programmer. I am a 27 year old CS graduate
-    from the University of Alabama in Huntsville. My wife and I live in Florence, Alabama and own a dance studio
-    (<a href="http://soledancestudio.com">http://soledancestudio.com</a>). Over the past few years, I have developed
-    a deep passion for doing web development *right*. I don't claim to know it all, but I am always working to improve
-    my craft.
-  </p>
-
-  <h1>What I do</h1>
-
-  <ul>
-    <li>Design, develop and maintain large web applications</li>
-    <li>Always testing</li>
-    <li>Create, configure and manage application servers</li>
-  </ul>
-
-  <h1>Where I'm going</h1>
-
-  <p>
-    My recent work has driven me to learn and use a lot of amazing open source projects. I
-    strive to become more involved in the open source community. I want to surround myself with
-    people who are a lot smarter than me so that I can continually grow as a professional
-    programmer. I never want to stop learning!
-  </p>
-
-</section>
+<p>
+  <a class="btn" href="/archive.html">More posts&hellip;</a>
+</p>

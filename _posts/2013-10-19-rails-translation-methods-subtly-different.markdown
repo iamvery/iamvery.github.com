@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Rails' `translate` methods are subtly different
+title: Rails translate methods are subtly different
 ---
 
 **TL;DR** - `I18n.translate` and the `translate` view helper are not created equal.
