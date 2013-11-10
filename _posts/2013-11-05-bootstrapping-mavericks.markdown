@@ -1,6 +1,8 @@
 ---
 layout: post
 title: Bootstrapping OS X 1.9 (Mavericks) for Development
+excerpt: <p>Mavericks ended up being a little resistant to my development
+         environment. Read about my experience.</p>
 ---
 
 **Warning**: The value of this post may be questionable at best. It is being
