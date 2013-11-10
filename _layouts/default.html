@@ -14,30 +14,38 @@
     <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
   </head>
   <body>
-    <header class="primary">
-      <a href="/" title="Iamvery home.">
-        <img src="/images/iamvery-header.png" alt="Iamvery Header Logo" />
-      </a>
-    </header>
-
     <div class="container">
-      <nav>
-        <ul>
-          <li><a href="/">about</a></li>
-          <li><a href="{{ site.posts.first.url }}">blog</a></li>
-          <li><a href="/archive.html">archive</a></li>
-        </ul>
-      </nav>
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>Some thoughts &amp; feelings from a nerd</h3>
+        </header>
 
-      {{ content }}
+        <hr class="unit span-grid" />
 
-      <hr/>
-      {% include contact.html %}
+        <div class="unit three-of-four">
+          {{ content }}
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="btn red" href="{{ site.posts.first.url }}">latest blog</a></li>
+              <li><a class="btn red" href="/archive.html">blog list</a></li>
+              <li><a class="btn red" href="/about.html">about</a></li>
+              <li><a class="btn red" href="https://www.bignerdranch.com/about_us/nerds/jay_hayes" target="_blank">nerd</a></li>
+            </ul>
+          </nav>
+          <footer><small>© 2013 Jay Hayes</small></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          {% include contact.html %}
+        </div>
+      </div>
     </div>
-
-    <footer class="primary">
-      <img src="/images/iamvery-footer.png" alt="Iamvery Footer Logo" />
-    </footer>
 
     <script src='/javascripts/analytics.js' type='text/javascript'></script>
   </body>
