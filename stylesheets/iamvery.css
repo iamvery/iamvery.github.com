@@ -13,6 +13,11 @@ header h3 {
   font-weight: normal;
 }
 
+blockquote {
+  padding-left: 15px;
+  border-left: 5px solid rgb(200, 200, 200);
+}
+
 footer { text-align: center; }
 
 footer small {
