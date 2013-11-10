@@ -70,7 +70,7 @@ a:hover { text-decoration: none; }
   padding: .375rem;
   text-align: center;
   color: white;
-  background-color: rgb(215, 100, 100);
+  background-color: rgba(0,0,0,.15);
   border-radius: .24rem;
   text-shadow: 0 1px 1px rgba(0,0,0,.1);
   text-decoration: none;
@@ -79,6 +79,9 @@ a:hover { text-decoration: none; }
 }
 
 .button:hover {
-  background-color: rgb(190, 80, 80);
+  background-color: rgba(0,0,0,.2);
   transition: 0.1s linear;
 }
+
+.button.red { background-color: rgb(215, 100, 100); }
+.button.red:hover { background-color: rgb(190, 80, 80); }
