@@ -1,13 +1,11 @@
 ---
 layout: default
-title: Blog Archive
+title: Blog List
 ---
 
-<section>
-  <h2> Blog Archive</h2>
-  <ul>
-    {% for post in site.posts %}
-      <li>{{ post.date | date: "%b %d, %Y"  }} &mdash; <a href="{{ post.url }}">{{ post.title }}</a></li>
-    {% endfor %}
-  </ul>
-</section>
+<h1>Blog List</h1>
+<ul>
+  {% for post in site.posts %}
+    <li>{{ post.date | date: "%b %d, %Y"  }} &mdash; <a href="{{ post.url }}">{{ post.title }}</a></li>
+  {% endfor %}
+</ul>
