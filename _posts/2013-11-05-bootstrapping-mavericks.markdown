@@ -5,9 +5,9 @@ excerpt: <p>Mavericks ended up being a little resistant to my development
          environment. Read about my experience.</p>
 ---
 
-**Warning**: The value of this post may be questionable at best. It is being
-birthed out of a place of deep frustration after hours of trying to get my
-development environment back up and running for my work post-upgrade.
+> **Warning**: The value of this post may be questionable at best. It is being
+> birthed out of a place of deep frustration after hours of trying to get my
+> development environment back up and running for my work post-upgrade.
 
 Upgrading my system to Mavericks went off largely without a hitch. I did share
 in the [Gmail issues](http://www.tuaw.com/2013/10/23/how-mavericks-ruined-apple-mail-for-gmail-users/),
@@ -23,7 +23,7 @@ to manage such dependencies. Unfortunately, its [broken](https://github.com/mxcl
 
 Honestly, I'm not completely sure what all the issues have been, but here's what
 I did to get my environment back up to snuff. In all likelihood some of this is
-unecessary, but I thought it worth documenting:
+unecessary, but I thought it worth capturing:
 
 * Completely uninstalled Homebrew and all its installed libs
 * Completely removed all rubies and gems
@@ -42,22 +42,24 @@ Hopefully all you fine folks out there have been met with _much_ better success
 than myself upgrading to Apple's shiny new OS! Let me know if you have any questions.
 Maybe I can help you avoid some stress ;)
 
-\***UPDATE**\* 9 Nov 2013
+---
+
+\*\* **UPDATE** \*\* &mdash; November 9, 2013
 
 I finally got around to updating the iMac to Mavericks. Armed with the experience
-of updating my laptop, the pain _greatly_ decreased.
+of updating my laptop, the pain was _greatly_ decreased.
 
 The update went smoothly. As for my development envrionment, `capybara-webkit`
-was broken, crashing with `Errno::EPIPE` exceptions after 100ish specs run (as
-expected).
+was broken (as expected), crashing with `Errno::EPIPE` exceptions after 100ish
+specs run.
 
 I was able to fix this using these decidedly less drastic steps:
 
-1. Updated brew (always be updatin' brew, why not?)
+1. `brew update` (always be updatin' brew, why not?)
 2. `brew uninstall qt`. Homebrew's QT hasn't worked with 10.9. I don't trust it.
 3. Installed QT manually from the [.pkg installer](http://download.qt-project.org/official_releases/qt/4.8/4.8.5/qt-mac-opensource-4.8.5.dmg)
 4. `gem uninstall capybara-webkit`. I believe the installation of this gem binds,
-   links, or some such to QT. This was for good measure. Maybe not needed?
+   links, or some such magic to QT. This was for good measure. Maybe not needed?
 5. `bundle`. Installed my dependencies again, installing `capybara-webkit`
 
-After this I ran the spec suite and we're all green! Sweet ;)
+After this my spec suite runs all green! Sweet spec-passing justice ;)
