@@ -23,7 +23,8 @@
 
 * {
 	margin: 0;
-	padding: 0;
+	/* https://github.com/daneden/Toast/issues/17
+	padding: 0; */
 	position: relative;
 	-webkit-box-sizing: border-box;
 	   -moz-box-sizing: border-box;
