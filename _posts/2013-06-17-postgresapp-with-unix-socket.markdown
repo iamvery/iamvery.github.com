@@ -46,8 +46,9 @@ Now you can connect to the server by unix socket!
 
     your_username=#
 
+---
 
-\* **IMPORTANT Update 4 Nov 2013** \*
+\*\* **IMPORTANT Update** \*\* &mdash; November 4, 2013
 
 Postgres.app 9.3 introduces [app sandboxing](https://developer.apple.com/library/mac/documentation/security/conceptual/AppSandboxDesignGuide/AppSandboxInDepth/AppSandboxInDepth.html)
 which changes the location for the configuration data to `~/Library/Containers/com.heroku.postgres/Data/Library/Application Support/Postgres/var`.
@@ -56,4 +57,5 @@ site and in the docs. See [this Github issue](https://github.com/PostgresApp/Pos
 for more information.
 
 It's also worth noting that from PostgreSQL 9.2 to 9.3 the unix socket configuration
-[changed from `unix_socket_directory` to `unix_socket_directories`](http://www.postgresql.org/docs/9.3/static/runtime-config-connection.html).
+[changed from `unix_socket_directory` to `unix_socket_directories`](http://www.postgresql.org/docs/9.3/static/runtime-config-connection.html),
+so make sure your `postgresql.conf` file uses the correct variable name!
