@@ -55,14 +55,23 @@ ul.nav {
 a { color: rgb(215, 100, 100); }
 a:hover { text-decoration: none; }
 
-.logo { margin: 0; }
+.logo {
+  margin: 0;
+  margin-bottom: 5px;
+  margin-bottom: .2rem;
+}
 
 .logo a {
   color: black;
   text-decoration: none;
-  font-size: 60px;
-  font-size: 3rem;
+  font-family: 'Crete Round', serif;
+  font-weight: normal;
+  font-size: 70px;
+  font-size: 3.5rem;
+  transition: 0.1s linear;
 }
+
+.logo a:hover { color: rgb(215, 100, 100); }
 
 .button {
   display: block;
