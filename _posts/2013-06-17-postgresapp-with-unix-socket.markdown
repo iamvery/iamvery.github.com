@@ -59,3 +59,17 @@ for more information.
 It's also worth noting that from PostgreSQL 9.2 to 9.3 the unix socket configuration
 [changed from `unix_socket_directory` to `unix_socket_directories`](http://www.postgresql.org/docs/9.3/static/runtime-config-connection.html),
 so make sure your `postgresql.conf` file uses the correct variable name!
+
+---
+
+\*\* **Another Update** \*\* &mdash; November 13, 2013
+
+Aaaaaaand they've taken sandboxing out in 9.3.1. To add to the fun, they've also
+renamed the app to `Postgres93.app` and adjusted the Application Support directory
+accordingly. Now you can find the config file at:
+
+```
+~/Library/Application Support/Postgres93/var/postgresql.conf
+```
+
+Remember that you'll probably want to [update your `PATH`](https://github.com/iamvery/dotfiles/commit/94ca807c79f09a7034a689daed0421ab98230ef9#diff-ec20fb240e117fea7b0049c21edf1ef3).
