@@ -18,25 +18,26 @@ sharing a session from _**anywhere**_ (securely).
 
 There are [loads of tools and suggestions](http://www.pairprogramwith.me), but
 so far I haven't found a great solution that let's you share a connection to
-your computer without having to deal in the questionable world of exposed ports
-or the setup and maintenance of a box in the cloud.
+your computer without having to deal in the dangerous world of exposed ports
+or the setup and maintenance of your own box in the cloud.
 
-I'd like to share my setup for remote pair programming with you. It's going to
-be a bit involved, so hang on tight. Here's what we're going to accomplish:
+I'd like to share my setup for remote tmux pair programming with you. It's
+going to be a bit involved, so hang on tight. Here's what we're going to
+accomplish:
 
-1. [Confingure a tmux user & group](#step_one_configure_a_tmux_user__group)
-2. [Create a directory for tmux session sockets](#step_two_create_the_tmux_session_directory)
+1. [Confingure a local tmux user & group](#step_one_configure_a_tmux_user__group)
+2. [Create a directory for tmux session socket files](#step_two_create_the_tmux_session_directory)
 3. [Allow remote connections without a password](#step_three_authentication_without_a_password)
-4. [Connect from _anywhere_](#step_four_connect_from_anywhere)
+4. [Connect from _anywhere_ (easier than ever)](#step_four_connect_from_anywhere)
 5. [Bonus Round: More about my scripts](#bonus_round_my_trickery)
 
 ## Step one: Configure a tmux user & group
 
 > Warning: These instructions are for Mac OS X! You Linux users got this ;)
 
-Mac OS X provides a nice GUIs for creating users and groups (warning: using a
-GUI during the process of setting up a text-only development environment may
-include irony). You can find more information about [the process here](http://www.macworld.com/article/2029539/configuring-mountain-lions-users-and-groups.html).
+Mac OS X provides a nice GUI for creating users and groups (warning: using a
+GUI during the setup of a text-only development environment may include irony).
+You can find more information about [the process here](http://www.macworld.com/article/2029539/configuring-mountain-lions-users-and-groups.html).
 I would recommand you create `tmux` as a (non-admin) user. Additionally, you'll
 want to make sure your personal user is a part of the `tmux` group.  See this
 screenshot, it's pretty simple:
