@@ -37,7 +37,7 @@ groups are allowed to login remotely (i.e. ssh). It's trivial to allow the
 
 ### Automatically attach to session
 
-When someone logs into the tmux user, they really have any need to do anything
+When someone logs into the tmux user, they really have no need to do anything
 in the account other than attach to the tmux session, so let's update they're
 profile to automatically connect:
 
@@ -84,7 +84,7 @@ utility to add our pairs keys to the `tmux` user's `authorized_keys`. Answer: `s
 Basically this executes the `gh-auth` command on behalf of the `tmux` user. The
 `GEM_HOME` part is important here because we want it to have access to the
 `gh-auth` command in your environment. You can substitude the `add` part of the
-command with `remote` to remove a user's keys.
+command with `remove` to remove a user's keys.
 
 ## Connect from _anywhere_
 
