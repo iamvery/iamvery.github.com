@@ -208,3 +208,10 @@ quick and easy to hop on when the mood strikes.
 
 What do you think of the method? Is it horribly insecure? Do you love it? Hate
 it? Let me know! :)
+
+<!--
+  Some concerns:
+  * Can we limit the tmux user to only a single ssh connection?
+  * Can we limit the tmux user to only allow the tmux command to be executed
+    via ssh?
+-->
