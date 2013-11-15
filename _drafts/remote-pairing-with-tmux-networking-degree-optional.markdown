@@ -3,9 +3,8 @@ layout: post
 title: "Tmux Pairing Anywhere: Networking Degree Optional"
 ---
 
-**TL;DR** Armed with my [`pair`](https://github.com/iamvery/dotfiles/blob/master/bin/pair)
-and [`ng`](https://github.com/iamvery/dotfiles/blob/master/bin/ng) scripts in
-one hand and [ngrok](https://ngrok.com) in the other, I have finally found a
+**TL;DR** Armed with my [`pair`](#pair_script) and [`ng`](#ng_script) scripts
+in one hand and [ngrok](https://ngrok.com) in the other, I have finally found a
 quick, effective and secure way to pair program with anyone, anywhere using
 tmux on my local box.
 
