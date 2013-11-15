@@ -65,7 +65,7 @@ Create the directory for your tmux sockets and set its permissions:
     # you may need to sudo these!
     $ mkdir /var/tmux
     $ chown tmux:tmux /var/tmux  # The tmux user & group own it.
-    $ chown 2770 /var/tmux       # User & group full access + setgid bit
+    $ chmod 2770 /var/tmux       # User & group full access + setgid bit
 
 The [setgid](http://en.wikipedia.org/wiki/Setuid#setgid_on_directories) bit
 makes sure that files and directories created in this directory inherit the
