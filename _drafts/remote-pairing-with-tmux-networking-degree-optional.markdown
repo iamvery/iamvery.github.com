@@ -8,7 +8,7 @@ in one hand and [ngrok](https://ngrok.com) in the other, I have finally found a
 quick, effective and secure way to pair program with anyone, anywhere using
 tmux on my local box.
 
-If you need more information about the setup, read on.
+If you want more information about the setup, read on.
 
 ---
 
