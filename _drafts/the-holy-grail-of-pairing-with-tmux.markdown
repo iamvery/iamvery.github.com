@@ -5,7 +5,7 @@ title: The Holy Grail of Pairing with Tmux
 
 [Tmux](http://tmux.sourceforge.net) is a fantastic productivity tool for
 developers that prefer to stick with the command line. The hardest part is
-sharing a session from _**anywhere**_ (with security in mind).
+sharing a session from _**anywhere**_ (securely).
 
 There are [loads of tools and suggestions](http://www.pairprogramwith.me), but
 so far I haven't found a great solution that let's you share a connection to
@@ -17,21 +17,21 @@ on.
 
 > Warning: These instructions are for Mac OS X!
 
-The Mac OS gives us nice GUIs for creating users and groups (Warning: using a
+Mac OS X gives us nice GUIs for creating users and groups (Warning: using a
 GUI during this process may include irony). You can find more information about
 [the process here](http://www.macworld.com/article/2029539/configuring-mountain-lions-users-and-groups.html).
-I would recommand you make `tmux` a (non-admin) user. Additionally, you'll want
-to make sure your user is a part of the `tmux` group.  See this screenshot,
-it's pretty simple:
+I would recommand you create `tmux` as a (non-admin) user. Additionally, you'll
+want to make sure your user is a part of the `tmux` group.  See this
+screenshot, it's pretty simple:
 
 ![Mac OS X Account Preferences](/images/mac-os-x-accounts-preferences.jpg)
 
 ### Enable Remote Login (SSH)
 
-This configuration bit me when upgrading to Mavericks recently, so I thought it
-bore mentioning. Mac OS X requires your specific which users and groups are
-allowed to login remotely (i.e. ssh). It's trivial to allow the `tmux` group to
-login remotely. Here's my setup:
+This configuration confused me when upgrading to Mavericks recently, so I
+thought it worth mentioning. Mac OS X requires you to specify which users and
+groups are allowed to login remotely (i.e. ssh). It's trivial to allow the
+`tmux` group to login remotely. Here's my setup:
 
 ![Mac OS X Remote Login Preferences](/images/mac-os-x-remote-login-preferences.jpg)
 
@@ -155,5 +155,5 @@ Pair programming with tmux is a fantastic in a ton of ways, but doing it remotel
 has always been a little tricky. Finally putting the pieces together feels
 awesome!
 
-What do you think of the method? Is it horribly insecure? Do you love it? Let me
-know! :)
+What do you think of the method? Is it horribly insecure? Do you love it? Hate
+it? Let me know! :)
