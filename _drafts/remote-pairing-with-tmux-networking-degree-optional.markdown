@@ -62,10 +62,9 @@ as long as they have permission to access the socket.
 
 Create the directory for your tmux sockets and set its permissions:
 
-    # you may need to sudo these!
-    $ mkdir /var/tmux
-    $ chown tmux:tmux /var/tmux  # The tmux user & group own it.
-    $ chmod 2770 /var/tmux       # User & group full access + setgid bit
+    $ sudo mkdir /var/tmux
+    $ sudo chown tmux:tmux /var/tmux  # The tmux user & group own it.
+    $ sudo chmod 2770 /var/tmux       # Give user and group full access + setgid bit
 
 The [setgid](http://en.wikipedia.org/wiki/Setuid#setgid_on_directories) bit
 makes sure that files and directories created in this directory inherit the
@@ -93,10 +92,12 @@ utility to add our pairs keys to the `tmux` user's `authorized_keys`. Answer: `s
     $ tmux_command="$(which tmux) -S /var/tmux/pairing attach"
     $ sudo su tmux -c "GEM_HOME=$GEM_HOME gh-auth add --users iamvery --command=\"$tmux_command\""
 
-Basically this executes the `gh-auth` command on behalf of the `tmux` user. The
-`GEM_HOME` part is important here because we want it to have access to the
-`gh-auth` command in your environment. Finally, we specify that this user will
-automatically connect to the shared tmux session.
+Basically this executes the `gh-auth` command on behalf of the `tmux` user,
+adding the public keys for the Github user "iamvery" (me!) to the `tmux` user's
+`~/.ssh/authorized_keys` file. The `GEM_HOME` part is important here because we
+want it to have access to the `gh-auth` command in your environment.  Finally,
+we specify that this user will automatically connect to the shared tmux
+session.
 
 You can remove added users by the similar `gh-auth remove` command. Luckily
 all of this is wrapped up for simplicity by my [`pair script`](#pair_script).
@@ -121,8 +122,9 @@ inclusion of TCP in the list of supported protocols, they hit it out of the
 park. The implication is that we can establish a reverse _TCP_ connection back
 to our computer through their service. Yes.
 
-[Download](https://ngrok.com/download) and install `ngrok` (I like to keep it in
-my `~/bin` directory). Then spin up a TCP tunnel for SSH:
+[Signup](https://ngrok.com/signup), [download](https://ngrok.com/download) and
+install `ngrok` (I like to keep it in my `~/bin` directory). Then spin up a TCP
+tunnel for SSH:
 
     $ ngrok --proto=tcp 22  # tunneling to SSH
     ngrok                                              (Ctrl+C to quit)
@@ -153,12 +155,13 @@ your day.
 
 I keep a lot of my environment [on Github](https://github.com/iamvery/dotfiles).
 I have been working on a couple scripts to make this process a little easier.
-They're not perfect, but hopefully they're helpful.
+They're not perfect, but hopefully they're helpful. I plan to continue to
+improve them over time.
 
-<h3 id="pair_script"><code>pair</code></h3>
+<h3 id="pair_script"><code>~/bin/pair</code></h3>
 
 My [`pair` script](https://github.com/iamvery/dotfiles/blob/master/bin/pair).
-makes the processes of adding and removing tmux users a little easier. Also it
+makes the processes of adding and removing tmux users a little easier. It also
 automates the process of spinning up your pairing environment.
 
 If the stars are aligned, it's as easy as this:
@@ -169,7 +172,9 @@ This will open a new tmux session at `/var/tmux/pairing` and start he ngrok
 reverse tunnel in the top pane. The bottom pane will echo the ssh command your
 pair will need to jump on with you.
 
-<h3 id="ng_script"><code>ng</code></h3>
+Try `pair --help` for the full command signature.
+
+<h3 id="ng_script"><code>~/bin/ng</code></h3>
 
 My [`ng` script](https://github.com/iamvery/dotfiles/blob/master/bin/ng) is a
 small wrapper of the ngrok command. It also figures out the ssh command needed
@@ -203,4 +208,6 @@ it? Let me know! :)
     Yes, see: https://gist.github.com/iamvery/7487901
   * Can we limit the tmux user to only allow the tmux command to be executed
     via ssh?
+
+  Wallace's comments: https://gist.github.com/wallace/4f4b424c91b8cf183561
 -->
