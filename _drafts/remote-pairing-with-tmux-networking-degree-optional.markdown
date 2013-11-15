@@ -54,21 +54,6 @@ setup:
 
 ![Mac OS X Remote Login Preferences](/images/mac-os-x-remote-login-preferences.jpg)
 
-### Automatically attach to session
-
-When someone logs into the `tmux` user, they really have no need to do anything
-in that account other than attach to the tmux session, so let's update their
-profile to automatically connect:
-
-    # This should append the command "tmux -S /var/tmux/pairing attach" to the
-    # tmux user's .bash_profile file.
-
-    $ ssh tmux@localhost 'echo "tmux -S /var/tmux/pairing attach" >> .bash_profile'
-
-Now they'll automatically attempt to connect to a shared tmux connection at the
-socket file `/var/tmux/pairing`. Read on to make sure we have the `/var/tmux`
-directory setup as needed.
-
 ## Step two: Create the tmux session directory
 
 Tmux sessions may be shared via [Unix sockets](http://en.wikipedia.org/wiki/Unix_domain_socket).
@@ -105,13 +90,16 @@ Install github-auth:
 Now, since our pair will be connecting to the `tmux` user, we need to use this
 utility to add our pairs keys to the `tmux` user's `authorized_keys`. Answer: `sudo`.
 
-    $ sudo su tmux -c "GEM_HOME=$GEM_HOME gh-auth add --users iamvery"
+    $ tmux_command="$(which tmux) -S /var/tmux/pairing attach"
+    $ sudo su tmux -c "GEM_HOME=$GEM_HOME gh-auth add --users iamvery --command=\"$tmux_command\""
 
 Basically this executes the `gh-auth` command on behalf of the `tmux` user. The
 `GEM_HOME` part is important here because we want it to have access to the
-`gh-auth` command in your environment. You can substitude the `add` part of the
-command with `remove` to remove a user's keys. Luckily I've wrapped up this
-process for simplicity in my [`pair script`](#pair_script).
+`gh-auth` command in your environment. Finally, we specify that this user will
+automatically connect to the shared tmux session.
+
+You can remove added users by the similar `gh-auth remove` command. Luckily
+all of this is wrapped up for simplicity by my [`pair script`](#pair_script).
 
 ## Step four: Connect from _anywhere_
 
@@ -212,6 +200,7 @@ it? Let me know! :)
 <!--
   Some concerns:
   * Can we limit the tmux user to only a single ssh connection?
+    Yes, see: https://gist.github.com/iamvery/7487901
   * Can we limit the tmux user to only allow the tmux command to be executed
     via ssh?
 -->
