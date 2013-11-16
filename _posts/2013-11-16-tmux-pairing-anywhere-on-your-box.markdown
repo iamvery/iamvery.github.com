@@ -3,11 +3,10 @@ layout: post
 title: "Tmux Pairing Anywhere: On Your Box"
 ---
 
-**TL;DR** Armed with my [`pair`](https://github.com/iamvery/dotfiles/blob/master/bin/pair)
-and [`ng`](https://github.com/iamvery/dotfiles/blob/master/bin/ng) scripts in
-one hand and [ngrok](https://ngrok.com) in the other, I have finally found a
-quick, effective and secure way to pair program with anyone, anywhere using
-tmux on my local box.
+**TL;DR** Armed with my [`pair`](http://goo.gl/BrqApT) and
+[`ng`](http://goo.gl/vlgsrz) scripts in one hand and [ngrok](https://ngrok.com)
+in the other, I have finally found a quick, effective and secure way to pair
+program with anyone, anywhere using tmux on my local box.
 
 If you want more information about the setup, read on.
 
@@ -173,9 +172,9 @@ them over time.
 
 <h3 id="pair_script"><code>~/bin/pair</code></h3>
 
-My [`pair` script](https://github.com/iamvery/dotfiles/blob/master/bin/pair).
-makes the processes of adding and removing tmux users a little easier. It also
-automates the process of spinning up your pairing environment.
+My [`pair` script](http://goo.gl/BrqApT).  makes the processes of adding and
+removing tmux users a little easier. It also automates the process of spinning
+up your pairing environment.
 
 When all the dependencies are met, it's as easy as this:
 
@@ -193,11 +192,11 @@ Try `pair --help` for the full command signature.
 
 <h3 id="ng_script"><code>~/bin/ng</code></h3>
 
-My [`ng` script](https://github.com/iamvery/dotfiles/blob/master/bin/ng) is a
-small wrapper of the ngrok command. It also figures out the SSH command needed
-to connect to your tunnel. Since ngrok doesn't provide a simple means for
-determining the port it selected for your connection we have to do a little
-scraping of the local ngrok web server to gather all the pieces.
+My [`ng` script](http://goo.gl/vlgsrz) is a small wrapper of the ngrok command.
+It also figures out the SSH command needed to connect to your tunnel. Since
+ngrok doesn't provide a simple means for determining the port it selected for
+your connection we have to do a little scraping of the local ngrok web server
+to gather all the pieces.
 
 The end result is a couple of helpful commands:
 
