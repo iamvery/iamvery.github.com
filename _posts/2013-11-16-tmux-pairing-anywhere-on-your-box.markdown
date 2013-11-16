@@ -217,3 +217,13 @@ quick and easy to spin up when the mood strikes.
 
 What do you think of the method? Is it horribly insecure? Do you love it? Hate
 it? Let me know!
+
+---
+
+\***Update**\* &mdash; November 16, 2013
+
+I was just made aware of http://tmate.io, an interesting take on this problem.
+Although _much_ simpler than this solution, it isn't without its drawbacks.
+Specifically the [lack of multiple session support](https://github.com/nviennot/tmate/issues/21).
+Additionally, with socket path randomization it's a little tricky to reattach
+to your tmate session. Regardless, it's a great option that may interest you!
