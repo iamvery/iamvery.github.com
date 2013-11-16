@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Remote Pairing with Tmux: Networking Degree Optional"
+title: "Tmux Pairing Anywhere: On Your Box"
 ---
 
 **TL;DR** Armed with my [`pair`](https://github.com/iamvery/dotfiles/blob/master/bin/pair)
