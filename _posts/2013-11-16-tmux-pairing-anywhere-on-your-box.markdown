@@ -96,7 +96,7 @@ connect to our machine through ngrok and make sure the setup is working:
 
     $ ssh -p 12345 tmux@ngrok.com
     Password:  # unless you're use key-based auth... You are using key-based auth, right?
-    tmux$          # :boom:
+    $          # :boom:
 
 Any connection error when running this SSH command indicates a problem with
 your ngrok setup or perhaps a typo in the SSH command.
