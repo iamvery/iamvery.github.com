@@ -168,6 +168,14 @@ users from establishing [tunnels](http://en.wikipedia.org/wiki/Tunneling_protoco
 through their connection to your machine. For now I use a local build of the
 gem that includes these additional options.
 
+### Username alias
+
+For some reason it creeps me out a little bit to hand out my local username to
+pairs. That may be silly, but it prompted me to [learn about a neat little
+feature of Mac OS X, user aliases](http://iamvery.com/2013/11/18/mac_os_x_username_aliases.html).
+I'm not sure this really provides any _security_, but I do like the feel of
+having the pair SSH with the "tmux" username.
+
 ## Closing
 
 Wow, this was a _long winded_ post, but hopefully full of great information.
