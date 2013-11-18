@@ -24,6 +24,7 @@ what we're going to accomplish:
 1. [Allow remote, key based auth to your machine](#step_one_authentication_without_a_password)
 2. [Connect from _anywhere_](#step_two_connect_from_anywhere)
 3. [Bonus Round: More about my scripts](#bonus_round_my_trickery)
+4. [Thoughts on security](#thoughts_on_security)
 
 ## Step one: Authentication without a password
 
@@ -155,6 +156,17 @@ The end result is a couple of helpful commands:
 
 This script is used by the `pair` script to put all the pieces together for a
 quick remote pairing session.
+
+## Thoughts on security
+
+### Disable forwarding
+
+One thing that is [currently excluded](https://github.com/chrishunt/github-auth/pull/25)
+from github-auth is the ability to [disable forwarding](http://oreilly.com/catalog/sshtdg/chapter/ch08.html)
+(see the section named "Disabling Forwarding"). This would prevent connecting
+users from establishing [tunnels](http://en.wikipedia.org/wiki/Tunneling_protocol)
+through their connection to your machine. For now I use a local build of the
+gem that includes these additional options.
 
 ## Closing
 
