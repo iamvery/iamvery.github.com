@@ -1,4 +1,4 @@
-# [http://iamvery.com](http://iamvery.com)
+# [iamvery.com](http://iamvery.com)
 
 This is the repository for my personal website and blog. It's powered by [jekyll](http://jekyllrb.com/)
 (what isn't these days ;). It's easy to get started:
