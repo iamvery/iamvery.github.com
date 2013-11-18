@@ -12,80 +12,26 @@ If you want more information about the setup, read on.
 
 ---
 
+\*\***Updated**\*\* November 17, 2013
+
 [Tmux](http://tmux.sourceforge.net) is a fantastic productivity tool for
 developers that prefer to stick with the command line. The hardest part is
 sharing a session from _**anywhere**_ (securely).
 
-I'd like to share my setup for remote tmux pair programming with you. It's
-going to be a bit involved, so hang on tight. Here's what we're going to
-accomplish:
+I'd like to share my setup for remote tmux pair programming with you.  Here's
+what we're going to accomplish:
 
-1. [Confingure a local tmux user & group](#step_one_configure_a_tmux_user__group)
-2. [Create a directory for tmux session socket files](#step_two_create_the_tmux_session_directory)
-3. [Allow remote connections without a password](#step_three_authentication_without_a_password)
-4. [Connect from _anywhere_ (hint: ngrok)](#step_four_connect_from_anywhere)
-5. [Bonus Round: More about my scripts](#bonus_round_my_trickery)
+1. [Allow remote, key based auth to your machine](#step_one_authentication_without_a_password)
+2. [Connect from _anywhere_](#step_two_connect_from_anywhere)
+3. [Bonus Round: More about my scripts](#bonus_round_my_trickery)
 
-## Step one: Configure a tmux user & group
-
-> Warning: These instructions are for Mac OS X! You Linux users got this ;)
-
-Mac OS X provides a nice GUI for creating users and groups (warning: using a
-GUI during the setup of a text-only development environment may include irony).
-You can find more information about [the process here](http://www.macworld.com/article/2029539/configuring-mountain-lions-users-and-groups.html).
-I would recommend you create `tmux` as a "non-admin" user. Additionally, you'll
-need to make sure your personal user is a part of the `tmux` group.  See this
-screenshot, it's pretty simple:
-
-![Mac OS X Account Preferences](/images/mac-os-x-accounts-preferences.jpg)
-
-### Enable Remote Login (SSH)
-
-This configuration confused me when upgrading to Mavericks recently, so I
-thought it worth mentioning. Mac OS X requires you to specify which users and
-groups are allowed to login remotely (i.e. ssh). It's a simple change in
-`System Preferences > Sharing` to enable this for the `tmux` group. Here's my
-setup:
-
-![Mac OS X Remote Login Preferences](/images/mac-os-x-remote-login-preferences.jpg)
-
-## Step two: Create the tmux session directory
-
-Tmux sessions may be shared via [Unix sockets](http://en.wikipedia.org/wiki/Unix_domain_socket)
-by using the `tmux -S` option. This will allow distinct users of a system to attach
-to the same tmux session as long as they have permission to access the socket.
-
-Create the directory for your tmux sockets and set its permissions:
-
-    $ sudo mkdir /var/tmux
-    $ sudo chown tmux:tmux /var/tmux  # The tmux user and group own it
-    $ sudo chmod 2770 /var/tmux       # Give user and group full access + setgid bit
-
-The [setgid](http://en.wikipedia.org/wiki/Setuid#setgid_on_directories) bit
-makes sure that files and directories created in this directory inherit the
-group ID of this directory. So any sockets created are inherently owned by
-`tmux`.
-
-## Step three: Authentication without a password
+## Step one: Authentication without a password
 
 Seriously, you don't want to hand out passwords. [PKI](http://en.wikipedia.org/wiki/Public-key_infrastructure)
 is a great way to allow connections by handshake with users. True story: if
 you're a Github user, your public keys are [publically available](https://api.github.com/users/iamvery/keys).
 Don't worry, they're supposed to be public, and this allows us to do very cool
 things.
-
-### Create the `~/.ssh/authorized_keys` file for `tmux`
-
-This directory and file must exist to allow PKI authentication. The creation is
-straightforward. We'll do it on the `tmux` user's behalf from our account:
-
-    $ sudo su tmux -c "mkdir -m 0700 ~/.ssh"
-    $ sudo su tmux -c "touch ~/.ssh/authorized_keys"
-    $ sudo su tmux -c "chmod 0644 ~/.ssh/authorized_keys"
-
-The permissions of this directory and file [are important](http://stackoverflow.com/a/6377073).
-
-### github-auth
 
 [Chris Hunt's](http://chrishunt.co/) [github-auth](https://github.com/chrishunt/github-auth)
 gem allows you to manage Github users' public keys in your
@@ -96,34 +42,29 @@ Install github-auth:
 
     $ gem install github-auth
 
-Now, since our pair will be connecting to the `tmux` user, we need to use this
-utility to add our pair's keys to the `tmux` user's `authorized_keys`. To do
-this from our own account, we use `sudo`:
+We use the gem's binary `gh-auth` to authorize Github users to remote into our
+machine. It's pretty straightforward:
 
-    $ tmux_command="$(which tmux) -S /var/tmux/pairing attach"
-    $ sudo su tmux -c "GEM_HOME=$GEM_HOME gh-auth add --users iamvery --command=\"$tmux_command\""
+    $ gh-auth add --users iamvery --command="$(which tmux) attach -s pairing"
 
-Basically this executes the `gh-auth` command on behalf of the `tmux` user,
-adding the public keys for the specified Github user "iamvery" (me!) to the
-`tmux` user's `~/.ssh/authorized_keys` file. The `GEM_HOME` part is important
-because we need the command to know where to find the `gh-auth` gem binary
-which is installed in our environment. Finally, we specify that this user will
-automatically connect to the shared tmux session by using the `--command`
-option.
+This adds the public keys for the specified Github user "iamvery" (me!) to the
+your `~/.ssh/authorized_keys` file. The `--command` option allows us to specify
+a [forced command](http://oreilly.com/catalog/sshtdg/chapter/ch08.html)
+(you'll have to browse down for section on "Forced Commands") which
+automatically connects them to the tmux session.
 
 You can remove added users by the similar `gh-auth remove` command. Luckily
 all of this is wrapped up for simplicity by my [`pair script`](#pair_script).
 
-## Step four: Connect from _anywhere_
+## Step two: Connect from _anywhere_
 
-This is the _**holy grail**_ of a solid tmux pairing setup. Sure it's great that
-any "tmux" user on your system can attach to a shared session, but how often
-will you be pairing with someone _on your network_?  In most cases your pair is
-far removed from you,and networking is hard. You might be at a coffee shop or
-tethering to your 3G smartphone on the way to Disney World.  This makes it
-tough to provide an SSH connection back to your machine without access to a
-firewall's port forwarding settings (if even you would want to do such a
-thing).
+This is the _**holy grail**_ of a solid tmux pairing setup. It's not very
+practical to pair with someone logged into your account locally. In most cases
+your pair is far removed from you, and networking is hard. You might be at a
+coffee shop or tethering to your 3G smartphone on the way to Disney World. In
+these situations it's tricky to provide an SSH connection back to your machine
+without access to a firewall's port forwarding settings (if even you would want
+to do such a thing).
 
 ### Enter ngrok
 
@@ -163,12 +104,20 @@ your ngrok setup or perhaps a typo in the SSH command.
 I encourge you to [support this service](https://ngrok.com/pay). They probably
 just made your day.
 
+### tmate.io
+
+I was just turned on to this service. [http://tmate.io](http://tmate.io) is an
+interesting take on terminal pairing.  It's a fork of tmux proper that does the
+heavy lifting of setting up and securing the connection between you and your
+pair. Check it out, it may be just what you need, but do take the time to
+[understand the tradeoffs](https://github.com/nviennot/tmate/issues/21).
+
 ## Bonus Round: My trickery
 
 I keep a lot of my environment [on Github](https://github.com/iamvery/dotfiles).
-I have been working on a couple scripts to make this process a little easier.
-They're not perfect, but hopefully they're helpful. I'll to continue to improve
-them over time.
+I have been working on a couple scripts to make this process easier.  They're
+not perfect, but hopefully they're helpful. I'll to continue to improve them
+over time.
 
 <h3 id="pair_script"><code>~/bin/pair</code></h3>
 
@@ -182,11 +131,10 @@ When all the dependencies are met, it's as easy as this:
 
 This will:
 
-1. Make sure iamvery's Github public keys are installed for the `tmux` user
-2. Open a new tmux session at `/var/tmux/pairing`
-3. Start the ngrok reverse tunnel in the top tmux pane
-4. Echo the SSH command your pair will need to connect with in the bottom pane
-5. Copy this command to your clipboard (using [`reattach-to-user-namespace`](https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard))
+1. Open a new tmux session named "pairing"
+2. Start the ngrok reverse tunnel in the top tmux pane
+3. Echo the SSH command your pair will need to connect with in the bottom pane
+4. Copy this command to your clipboard (using [`reattach-to-user-namespace`](https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard))
 
 Try `pair --help` for the full command signature.
 
@@ -203,7 +151,7 @@ The end result is a couple of helpful commands:
     $ ng connect
     #  connects and runs the ngrok tunnel
     $ ng ssh
-    ssh -p 12345 tmux@ngrok.com
+    ssh -p 12345 your_username@ngrok.com
 
 This script is used by the `pair` script to put all the pieces together for a
 quick remote pairing session.
@@ -217,13 +165,3 @@ quick and easy to spin up when the mood strikes.
 
 What do you think of the method? Is it horribly insecure? Do you love it? Hate
 it? Let me know!
-
----
-
-\***Update**\* &mdash; November 16, 2013
-
-I was just made aware of http://tmate.io, an interesting take on this problem.
-Although _much_ simpler than this solution, it isn't without its drawbacks.
-Specifically the [lack of multiple session support](https://github.com/nviennot/tmate/issues/21).
-Additionally, with socket path randomization it's a little tricky to reattach
-to your tmate session. Regardless, it's a great option that may interest you!
