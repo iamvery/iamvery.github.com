@@ -172,7 +172,7 @@ gem that includes these additional options.
 
 For some reason it creeps me out a little bit to hand out my local username to
 pairs. That may be silly, but it prompted me to [learn about a neat little
-feature of Mac OS X, user aliases](http://iamvery.com/2013/11/18/mac_os_x_username_aliases.html).
+feature of Mac OS X, user aliases](http://iamvery.com/2013/11/18/mac-os-x-username-aliases.html).
 I'm not sure this really provides any _security_, but I do like the feel of
 having the pair SSH with the "tmux" username.
 
