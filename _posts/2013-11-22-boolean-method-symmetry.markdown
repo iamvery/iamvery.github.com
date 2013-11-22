@@ -100,7 +100,7 @@ Person = Struct.new(:awake, :moving) do
 end
 {% endhighlight %}
 
-Alright, so what have we accompleshed? We have implemented a simple boolean method
+Alright, so what have we accomplished? We have implemented a simple boolean method
 along with its complement, and we done this with tests providing adequate coverage
 for both methods. The complementary method could be argued YAGNI ("You ain't
 gonna need it"), but in most cases you'll end up negating your method. Having a
