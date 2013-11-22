@@ -3,7 +3,7 @@ layout: post
 title: Boolean Method Symmetry
 ---
 
-Symmetry is beauty. This applies to lot's of things, programming included.
+Symmetry is beauty. This applies to lots of things, programming included.
 
 Boolean methods answer a question with "yes" or "no". To adequately test such a
 method, you must assert on the positive and negative cases. Chances are you'll
@@ -104,7 +104,7 @@ Alright, so what have we accomplished? We have implemented a simple boolean meth
 along with its complement, and we done this with tests providing adequate coverage
 for both methods. The complementary method could be argued YAGNI ("You ain't
 gonna need it"), but in most cases you'll end up negating your method. Having a
-complementary method feels is symmetric... and beautiful. Further our specs
+complementary method feels symmetric... and beautiful. Further our specs
 cover the implementation well without duplication.
 
 ## Wrapping up
