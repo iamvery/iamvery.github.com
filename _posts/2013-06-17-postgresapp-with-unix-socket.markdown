@@ -73,3 +73,10 @@ accordingly. Now you can find the config file at:
 ```
 
 Remember that you'll probably want to [update your `PATH`](https://github.com/iamvery/dotfiles/commit/94ca807c79f09a7034a689daed0421ab98230ef9#diff-ec20fb240e117fea7b0049c21edf1ef3).
+
+## Configuring `psql` socket path
+
+If your `psql` command is configured to use the "/tmp" directory, you may override this default
+with the `PGHOST` environment variable. I include this line in my shell rc file:
+
+   export PGHOST=/var/pgsql_socket
