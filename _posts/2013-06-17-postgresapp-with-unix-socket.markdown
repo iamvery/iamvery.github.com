@@ -3,27 +3,31 @@ layout: post
 title: Postgres.app with unix socket
 ---
 
-Once of the best ways to get [PostgreSQL](http://www.postgresql.org) running
-quickly on your computer is [Postgres.app](http://postgresapp.com). One problem
-I've run into with this project is connecting to the local server via unix
-socket.
+One of the best ways to get [PostgreSQL](http://www.postgresql.org) running
+quickly on your computer is [Postgres.app](http://postgresapp.com). Unfortunately
+Postgres.app doesn't enable connections via unix socket by default. I like to use
+sockets because they're faster more secure.
 
 The server is configured, by default, to allow connections by your username from
-`localhost` on postgres' default port `5432`. If you fail to supply the port to
-`psql` it will attempt to connect via unix socket and fail with an error like:
+`localhost` on postgres' default port `5432`. If you don't to specify the host
+`psql` will attempt to connect via unix socket and fail with an error like:
 
     $ psql
     psql: could not connect to server: No such file or directory
             Is the server running locally and accepting
             connections on Unix domain socket "/var/pgsql_socket/.s.PGSQL.5432"?
 
-You are forced to explicitly supply the host when connecting such as `psql -h localhost`.
-This can be particularly frustrating with a Ruby on Rails project whose `database.yml`
-does not specify a host.
+> **Note**: The default socket location for the `psql` command is "/tmp". The
+> `psql` command I used during the writing of this article was configured to
+> use "/var/pgsql_socket".
+
+## Configure Postgres.app to use unix sockets
 
 The following steps will configure Postgres.app to allow connections via unix
 socket for a more flexible experience. _Note_: These instructions are tested
 against Mac OS X 10.8.
+
+### Postgres.app v9.2
 
 1. Download and run [Postgres.app](http://postgresapp.com) so that the default
    configuration is initialized in `~/Library/Application Support/Postgres`.
@@ -46,9 +50,7 @@ Now you can connect to the server by unix socket!
 
     your_username=#
 
----
-
-\*\* **IMPORTANT Update** \*\* &mdash; November 4, 2013
+### v9.3
 
 Postgres.app 9.3 introduces [app sandboxing](https://developer.apple.com/library/mac/documentation/security/conceptual/AppSandboxDesignGuide/AppSandboxInDepth/AppSandboxInDepth.html)
 which changes the location for the configuration data to `~/Library/Containers/com.heroku.postgres/Data/Library/Application Support/Postgres/var`.
@@ -60,9 +62,7 @@ It's also worth noting that from PostgreSQL 9.2 to 9.3 the unix socket configura
 [changed from `unix_socket_directory` to `unix_socket_directories`](http://www.postgresql.org/docs/9.3/static/runtime-config-connection.html),
 so make sure your `postgresql.conf` file uses the correct variable name!
 
----
-
-\*\* **Another Update** \*\* &mdash; November 13, 2013
+### v9.3.1
 
 Aaaaaaand they've taken sandboxing out in 9.3.1. To add to the fun, they've also
 renamed the app to `Postgres93.app` and adjusted the Application Support directory
