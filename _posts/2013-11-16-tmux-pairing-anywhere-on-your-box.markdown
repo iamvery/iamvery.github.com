@@ -46,7 +46,7 @@ Install github-auth:
 We use the gem's binary `gh-auth` to authorize Github users to remote into our
 machine. It's pretty straightforward:
 
-    $ gh-auth add --users iamvery --command="$(which tmux) attach -s pairing"
+    $ gh-auth add --users="iamvery" --command="$(which tmux) attach -s pairing"
 
 This adds the public keys for the specified Github user "iamvery" (me!) to the
 your `~/.ssh/authorized_keys` file. The `--command` option allows us to specify
