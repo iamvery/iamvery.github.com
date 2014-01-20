@@ -12,7 +12,7 @@ I quickly tried to troubleshoot the issue so that I could offer a pull request.
 
 I was able to narrow the problem down to RSpec which prevented the `*.feature`
 files from loading. Being unfamiliar as I am with the RSpec codebase, I wasn't
-able to come up with a solution on my own. I did however write up a
+able to come up with a solution on my own, but I did write up a
 [detailed bug report](https://github.com/rspec/rspec-core/issues/993) for the
 minds behind RSpec to take a crack at.
 

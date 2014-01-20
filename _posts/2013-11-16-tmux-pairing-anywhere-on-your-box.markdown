@@ -107,10 +107,10 @@ just made your day.
 
 ### tmate.io
 
-I was just turned on to this service. [http://tmate.io](http://tmate.io) is an
+I was recently turned on to this service. [http://tmate.io](http://tmate.io) is an
 interesting take on terminal pairing.  It's a fork of tmux proper that does the
 heavy lifting of setting up and securing the connection between you and your
-pair. Check it out, it may be just what you need, but do take the time to
+pair. Check it out, it may be exactly what you need, but do take the time to
 [understand the tradeoffs](https://github.com/nviennot/tmate/issues/21).
 
 ## Bonus Round: My trickery
@@ -126,7 +126,7 @@ My [`pair` script](http://goo.gl/BrqApT).  makes the processes of adding and
 removing tmux users a little easier. It also automates the process of spinning
 up your pairing environment.
 
-When all the dependencies are met, it's as easy as this:
+When all the dependencies are met, type the command:
 
     $ pair up iamvery  # where "iamvery" is the github username of your pair
 
