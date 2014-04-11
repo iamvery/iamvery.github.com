@@ -3,3 +3,4 @@ description: "The work, thoughts, and ideas of Jay Hayes, a web developer."
 url: http://iamvery.com
 exclude: ["Gemfile", "Gemfile.lock", "README.md"]
 pygments: true
+markdown: kramdown
