@@ -7,9 +7,12 @@ draft: true
 When you create an [application programming interface](http://en.wikipedia.org/wiki/Application_programming_interface),
 you're establishing a contract with everyone who uses it. This too is true for
 [web service](http://en.wikipedia.org/wiki/Web_service) APIs. As soon as
-someone begins using an API cost is incurred to change it. In order to allow
-breaking changes to an interface we can version it so clients may specify
-exactly what representation they expect for their requests.
+someone begins using an API, changes require coordination between all clients
+to prevent breakage. This costs precious time and money. In order to allow
+breaking changes to an interface, we can version it so clients may specify
+exactly what representation they expect for their requests. Then they are able
+to decide for themselves when it is timely and cost-effective to upgrade their
+dependency.
 
 ## An Example API
 
@@ -22,14 +25,17 @@ As a baseline for this post, we'll consider a very simple, contrived API. This
 API has only one resource `/articles`. You can grab a copy of the example by
 cloning it from Github and setting up as follows:
 
-    # Clone the repo
+Clone the repo:
+
     $ git clone git@github.com:iamvery/rails-api-example.git
     $ cd rails-api-example
 
-    # Checkout the repo in it's "initial" state, before versions are implemented
+Checkout the repo in it's "initial" state, before versions are implemented:
+
     $ git checkout -b starting-point initial-api-implementation
 
-    # Install dependencies, watch specs pass
+Install dependencies, watch specs pass:
+
     $ bundle install
     $ bin/rspec
     ... 0 failures
@@ -38,8 +44,12 @@ Once you've got the project setup, let's run the local server and see what
 the [article](https://github.com/iamvery/rails-api-example/blob/7b664c797e1e896f84abcc377e5c507a161f4d31/app/controllers/articles_controller.rb)
 response looks like:
 
-    # Run the rails server in a separate terminal window
+Run the local rails server:
+
+    # Do this in a separate window so you can keep it around
     $ bin/rails server
+
+Make a request for the articles' JSON representation:
 
     $ curl http://localhost:3000/articles.json
     [{"id":123,"name":"The Things"}]
@@ -52,8 +62,8 @@ parameter.
 
 ### Namespaces (commit [`b21a0a91`](https://github.com/iamvery/rails-api-example/commit/b21a0a918c65892376ccbebaf96057051795afc0))
 
-To keep things organized, we'll wrap up our existing controller in a `V1`
-namespace.
+Namespacing it a great way to keep code organized. We'll wrap our existing
+controller in a `V1` module to establish our "version 1".
 
 Move `app/controllers/articles_controller.rb` to
 `app/controllers/v1/articles_controller.rb` and wrap the class in a module.
@@ -67,7 +77,9 @@ the `:module` scope to namespace the controller and not the URI.
 
 ### Route Constraint (commits [`5d304f19`](https://github.com/iamvery/rails-api-example/commit/5d304f1983107c4cb609d83a5b6b209ba4064287) and [`0ec91c6c`](https://github.com/iamvery/rails-api-example/commit/0ec91c6c6cce5113b7f9e1d9484a3f2d94936ad5))
 
-Next we'll implement a [route constraint](http://guides.rubyonrails.org/routing.html#advanced-constraints).
+Next we need to tell Rails how to route requests for different versioned
+representations. We can do this effectively by using a [route constraint](http://guides.rubyonrails.org/routing.html#advanced-constraints)
+that checks for a version specified in the request's `accept` header.
 
 {% gist 10329040 %}
 
@@ -86,10 +98,10 @@ running at this point, it will probably need to be restarted.
 ### Version 2 (commit [`5bd29d0b`](https://github.com/iamvery/rails-api-example/commit/5bd29d0bb92c10c3884b1f5aa8fac0886e1f0205))
 
 Now that we have namespaces for our versioned controllers and constraints for
-routing, we can introduce a version 2 articles resource. Version 2 will wrap
-the response in a root node. This is not backwards compatable with the version
-1 representation, but this is irrelevant to existing clients as they are still
-requesting version 1 articles.
+routing, we can introduce a version 2 articles representation. Version 2 will
+wrap the response in a root node. This representation is not backwards
+compatable with the version 1 representation, thus requiring a new versioned
+representation.
 
 {% gist 10329142 %}
 
@@ -127,8 +139,7 @@ to represent our app's responses.
 
 ### The Type (commit [`dbbf6ea7`](https://github.com/iamvery/rails-api-example/commit/dbbf6ea77c433937da41e466b6bf2266a0d8cfd1))
 
-This part is straightforward. We registier a new type with Rails and give it a
-name.
+First we registier a new type with Rails and give it a name.
 
 {% gist 10435700 %}
 
