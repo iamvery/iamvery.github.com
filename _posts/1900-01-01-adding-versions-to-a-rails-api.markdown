@@ -40,7 +40,7 @@ Install dependencies, watch specs pass:
     $ bin/rspec
     ... 0 failures
 
-Once you've got the project setup, let's run the local server and see what
+Once you've got the project setup, run the local server and see what
 the [article](https://github.com/iamvery/rails-api-example/blob/7b664c797e1e896f84abcc377e5c507a161f4d31/app/controllers/articles_controller.rb)
 response looks like:
 
