@@ -100,7 +100,7 @@ running at this point, it will probably need to be restarted.
 Now that we have namespaces for our versioned controllers and constraints for
 routing, we can introduce a version 2 articles representation. Version 2 will
 wrap the response in a root node. This representation is not backwards
-compatable with the version 1 representation, thus requiring a new versioned
+compatible with the version 1 representation, thus requiring a new versioned
 representation.
 
 {% gist 10329142 %}
@@ -139,7 +139,7 @@ to represent our app's responses.
 
 ### The Type (commit [`dbbf6ea7`](https://github.com/iamvery/rails-api-example/commit/dbbf6ea77c433937da41e466b6bf2266a0d8cfd1))
 
-First we registier a new type with Rails and give it a name.
+First we register a new type with Rails and give it a name.
 
 {% gist 10435700 %}
 
@@ -183,7 +183,7 @@ information in my [commit notes](https://github.com/iamvery/rails-api-example/co
 ## Conclusion
 
 Versioning code is a Good Thing™. It allows us to continue to extend our APIs
-without breaking compatablility for existing users. Introducing API versions
+without breaking compatiblility for existing users. Introducing API versions
 after a release may be a little painful, but it's doable.
 
 * What do you think of this solution?
