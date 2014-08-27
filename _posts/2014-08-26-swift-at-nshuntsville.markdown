@@ -12,5 +12,5 @@ language). Check it out!
 
 <p><a href="http://vimeo.com/104509423">NSHuntsville - Swift Introduction</a> from <a href="http://vimeo.com/user2616461">Jay Hayes</a>.</p>
 
-[Slides](https://speakerdeck.com/iamvery/swift-introduction)
-[Code examples](https://github.com/iamvery/swift-examples)
+* [Slides](https://speakerdeck.com/iamvery/swift-introduction)
+* [Code examples](https://github.com/iamvery/swift-examples)
