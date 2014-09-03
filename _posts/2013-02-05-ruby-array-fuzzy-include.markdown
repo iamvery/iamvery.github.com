@@ -3,7 +3,7 @@ layout: post
 title: Ruby Array#fuzzy_include?
 ---
 
-**Update**: After writing this, I discovered a [better method](http://localhost:4000/2013/02/05/ruby-string-end-with.html)
+**Update**: After writing this, I discovered a [better method](/2013/02/05/ruby-string-end-with.html)
 for solving this problem. I thought it worth going ahead and publishing this
 post since I took the time to write it. Maybe there's some good buried in here
 somewhere. I think my favorite part of the below idea is its use of `inject`. It
