@@ -7,6 +7,7 @@ categories:
 - iOS
 - Ruby
 - Swift
+canonical: http://www.bignerdranch.com/blog/discover-swift-with-this-one-weird-rubyist
 ---
 
 Originally posted on the [Big Nerd Ranch Blog](http://www.bignerdranch.com/blog/discover-swift-with-this-one-weird-rubyist).
