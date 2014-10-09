@@ -16,6 +16,7 @@ title: Adding Versions to a Rails API
 wordpress_id: 4733
 categories:
 - Ruby on Rails
+canonical: http://www.bignerdranch.com/blog/adding-versions-rails-api
 ---
 
 Originally posted on the [Big Nerd Ranch Blog](http://www.bignerdranch.com/blog/adding-versions-rails-api).

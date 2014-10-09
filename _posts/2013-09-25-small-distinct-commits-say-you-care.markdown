@@ -6,6 +6,7 @@ title: Small, Distinct Commits Say You Care
 wordpress_id: 3867
 categories:
 - Craftsmanship
+canonical: http://www.bignerdranch.com/blog/small-distinct-commits-say-you-care
 ---
 
 Originally posted on the [Big Nerd Ranch Blog](http://www.bignerdranch.com/blog/small-distinct-commits-say-you-care).

@@ -6,6 +6,7 @@ title: Coding Rails with Data Integrity, Part 3
 wordpress_id: 3620
 categories:
 - Ruby on Rails
+canonical: http://www.bignerdranch.com/blog/coding-rails-with-data-integrity-part-3
 ---
 
 Originally posted on the [Big Nerd Ranch Blog](http://www.bignerdranch.com/blog/coding-rails-with-data-integrity-part-3).

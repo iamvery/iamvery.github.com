@@ -7,6 +7,7 @@ wordpress_id: 2447
 categories:
 - Conferences
 - Ruby on Rails
+canonical: http://www.bignerdranch.com/blog/ancient-city-ruby
 ---
 
 Originally posted on the [Big Nerd Ranch Blog](http://www.bignerdranch.com/blog/ancient-city-ruby).

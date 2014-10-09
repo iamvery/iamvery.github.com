@@ -7,6 +7,7 @@ wordpress_id: 4504
 categories:
 - Craftsmanship
 - Culture
+canonical: http://www.bignerdranch.com/blog/code-review-four-steps
 ---
 
 Originally posted on the [Big Nerd Ranch Blog](http://www.bignerdranch.com/blog/code-review-four-steps).
