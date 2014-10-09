@@ -14,6 +14,7 @@
     <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
     <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
     <link href='http://fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="{% if page.canonical %}{{ page.canonical }}{% else %}{{ site.url }}{{ page.url | replace: 'index.html', '' }}{% endif %}" rel="canonical">
   </head>
   <body>
     <div class="container">
