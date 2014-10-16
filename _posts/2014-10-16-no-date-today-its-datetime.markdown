@@ -127,7 +127,7 @@ query? Yuck...
 
 ### The Solution
 
-Thanksfully the solution is relatively simple. Always deal in date and time
+Thankfully the solution is relatively simple. Always deal in date and time
 objects. This allows Rails to do the heavy lifting of making sure queries
 get zoned in a way that is compatible with the database. Check it out.
 
