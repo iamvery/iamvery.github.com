@@ -48,7 +48,7 @@ assume that the parameters will be parsable time strings.
 
 We create a range using the user input values and query the database.
 
-```
+~~~
 > Plan.all
 => [#<Plan id: 1, going_out_at: "2014-09-25 09:39:30">]
 > from = '2014-09-25 09:00'
@@ -56,7 +56,7 @@ We create a range using the user input values and query the database.
 > Plan.where(going_out_at: from..to)
   SELECT "plans".* FROM "plans" WHERE ("plans"."going_out_at" BETWEEN '2014-09-25 09:00' AND '2014-09-25 10:00')
 => [#<Plan id: 1, going_out_at: "2014-09-25 09:39:30">]
-```
+~~~
 
 By default, Rails apps are configured to use the UTC time zone. This also
 happens to be the time zone (or lack there of) the database stores things in.
@@ -70,57 +70,57 @@ database doesn't expect to be given zoned times in this query...
 This is where we attempt to localize our app to our time zone. We whip out
 `application.rb` and set the app's time zone.
 
-```
+~~~
 config.time_zone = 'Eastern Time (US & Canada)'
-```
+~~~
 
 With this configuration set, times in the app will be automatically localized
 to the application's timezone.
 
-```
+~~~
 > Plan.first.going_out_at
 => Thu, 25 Sep 2014 05:39:30 EDT -04:00
-```
+~~~
 
 Now, let's have a look at the same scenario as above in Eastern US time.
 
 You can see the date stored in the database is UTC:
 
-```
+~~~
 > Plan.all
 => [#<Plan id: 1, going_out_at: "2014-09-25 09:39:30">]
-```
+~~~
 
 The user inputs the following times which present 09:00-10:00 in UTC.
 
-```
+~~~
 > from = '2014-09-25 05:00 -04:00'
 > to = '2014-09-25 06:00 -04:00'
 > Plan.where(going_out_at: from..to)
 SELECT "plans".* FROM "plans" WHERE ("plans"."going_out_at" BETWEEN '2014-09-25 05:00 -04:00' AND '2014-09-25 06:00 -04:00')
 => []
-```
+~~~
 
 As you can see, the query returns an empty set because the database doesn't
 know to interpret these values as zoned times. Let's jump into the database to
 prove our theory.
 
-```
+~~~
 sqlite> SELECT "plans".* FROM "plans"
    ...> WHERE "plans"."going_out_at"
    ...> BETWEEN '2014-09-25 05:00 -04:00' AND '2014-09-25 06:00 -04:00';
 # nothing here...
-```
+~~~
 
 In order to query using zoned times, we must explicitly cast the times as the
 `datetime` type.
 
-```
+~~~
 sqlite> SELECT "plans".* FROM "plans"
    ...> WHERE "plans"."going_out_at"
    ...> BETWEEN datetime('2014-09-25 05:00 -04:00') AND datetime('2014-09-25 06:00 -04:00'));
 1|2014-09-25 09:39:30.961636
-```
+~~~
 
 So how do we fix this issue in our app? Do we need to cast these columns in our
 query? Yuck...
@@ -131,7 +131,7 @@ Thanksfully the solution is relatively simple. Always deal in date and time
 objects. This allows Rails to do the heavy lifting of making sure queries
 get zoned in a way that is compatible with the database. Check it out.
 
-```
+~~~
 > from_time = Time.zone.parse(from)
 => Thu, 25 Sep 2014 05:00:00 EDT -04:00
 > to_time = Time.zone.parse(to)
@@ -139,7 +139,7 @@ get zoned in a way that is compatible with the database. Check it out.
 > Plan.where(going_out_at: from_time..to_time)
 SELECT "plans".* FROM "plans" WHERE ("plans"."going_out_at" BETWEEN '2014-09-25 09:00:00.000000' AND '2014-09-25 10:00:00.000000')
 => [#<Plan id: 1, going_out_at: "2014-09-25 09:39:30">]
-```
+~~~
 
 You can see that when the range's values are zoned time, Rails takes care of
 converting them to UTC for the database queries. Just make sure you
