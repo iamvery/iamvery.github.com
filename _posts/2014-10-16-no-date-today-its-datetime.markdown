@@ -2,8 +2,6 @@
 layout: post
 author: Jay Hayes
 title: No Date.today? It's DateTime!
-categories:
-- Ruby on Rails
 ---
 
 In my [last post][swift-blog-post], I got all fluffy talking about love and
