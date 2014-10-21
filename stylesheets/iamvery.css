@@ -42,7 +42,8 @@ pre {
 .pull-right { float: right; }
 
 img {
-  margin: .24rem;
+  display: block;
+  margin: .24rem auto;
   border-radius: .24rem;
   box-shadow: 0 1px 2px rgba(0,0,0,.3);
 }
