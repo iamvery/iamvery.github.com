@@ -11,7 +11,7 @@ to illustrate my findings.
 
 ---
 
-I tend to lean heavily on TDD to realize the design of my objects. I recently
+I tend to lean heavily on TDD to realize the design of objects. I recently
 had to jump into some JavaScript and wanted the same advantage while writing
 it. I found it tricky to come about a unit testing setup, so this is the
 result of my afternoon experimenting. I'm fairly pleased with the result, but
