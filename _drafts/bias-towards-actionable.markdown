@@ -14,7 +14,7 @@ request).
 
 ## Actionable Communication
 
-In your quest to become and action hero, you will begin to develop the habit
+In your quest to become an action hero, you will begin to develop the habit
 of converting input into actionable language. It can be really hard to keep
 momentum when incoming communication is not already actionable. You receive an
 email that says:
