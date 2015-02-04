@@ -36,12 +36,12 @@ request?" I don't know, but don't be that person.
 You can't change the way others communicate, but **you _can_ change how you
 communicate**. I charge you to always be mindful of your communication. If you
 don't know what you're trying to say, stop and think about it. If you need to
-open a discussion, be open about that and schedule time to talk (ACTION!).
+open a discussion, be clear about that and schedule time to talk (ACTION!).
 
 Read emails before you send them. Too long? Rip out the cruft. Does it meander
 around the point without stating it? Reword and restructure until the action
 jumps out of the page. A great way to identify inactionable communication is
-when you struggle with _what to do_ (ACTION?). You can't delete the email,
+when you struggle with _what to do_ (ACTION?). You can't delete the email...
 _something_ should be said or done... When you form communication, think about
 what you want to see done as a result and say that thing.
 
