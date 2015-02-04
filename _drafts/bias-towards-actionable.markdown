@@ -5,7 +5,8 @@ title: Bias Towards Actionable
 
 Developing a [bias towards action](http://www.dtelepathy.com/blog/productivity/key-to-productivity-developing-a-bias-towards-action)
 will free you to get things done. Day to day this means having a tendency to
-stop talking about doing something and **DO IT**.
+stop talking about doing something and **DO IT**. Apply this to how you
+communicate.
 
 For example, you may have noticed a small typo on an Intranet article. Rather
 than contacting your Web Master™ and requesting an internal review of
