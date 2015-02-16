@@ -4,8 +4,8 @@ title: Shortcut, Long Pain
 ---
 
 Programmers are often tempted to take the shortest route possible to deliver a
-feature. While there is a lot to be said about pragmatism, you should be
-considerate of consequences to make the best decision possible.
+feature. While there is a lot to be said about pragmatism, every decision has
+consequence. Make the best possible decisions.
 
 ![Convenience of code hinders clarity](/img/blog/2015/02/convenience-hinders-clarity.jpg)
 
