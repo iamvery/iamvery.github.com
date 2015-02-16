@@ -11,8 +11,7 @@ consequence. Make the best possible decisions.
 
 ## Shortcut
 
-You are hard at work on a web application, and you're given a feature to create
-a view for pet management.
+You receive a feature request. You are to implement a view for pet management.
 
 > A pet has 4 attributes:
 >
@@ -25,7 +24,7 @@ a view for pet management.
 > displayed in the order: name, species, color, and size. The order is
 > required to support [BEAUTIFUL INTERFACE].
 
-To reduce duplication you decide to iterate over collections of fields.
+To reduce duplication, you decide to iterate over the collections of fields.
 
 ~~~
 required_fields = ["name", "species"]
@@ -65,9 +64,9 @@ The best we can do is break out of the "other fields" iteration.
 <%= f.text_field "owner" %>
 ~~~
 
-You have had to give up the convenience of looping over fields to display
-the last set. Further, it seems a little odd that "size", a required field, is
-not included in the `required_fields` collection.
+You had to give up the convenience of looping over the fields to display the
+last set. Further, it seems a little odd that "size", a required field, is not
+included in the `required_fields` collection.
 
 As it turns out, the programmer convenience of iterating over these fields to
 save some keystrokes should not have been captured in the code. This is an
