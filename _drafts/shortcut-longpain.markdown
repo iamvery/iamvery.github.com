@@ -71,12 +71,17 @@ not included in the `required_fields` collection.
 
 As it turns out, the programmer convenience of iterating over these fields to
 save some keystrokes should not have been captured in the code. This is an
-example of [coincidental duplication](http://www.rubytapas.com/episodes/89-Coincidental-Duplication).
-If you want to save typing, try setting up [macros](http://mattn.github.io/emmet-vim)
-in your [text](http://vim.wikia.com/wiki/Macros) [editor](http://sublimetext.info/docs/en/extensibility/macros.html).
-Convenience of tool helps you. Convenience of code hinders clarity.
+example of [coincidental duplication](coincidental-duplication). If you want
+to save typing, try setting up [macros](emmet) in your [text](vim-macros)
+[editor](sublime-macros). Convenience of tool helps you. Convenience of code
+hinders clarity.
 
 <blockquote class="twitter-tweet" lang="en"><p>Writing code is like writing a book, your efforts are for _other_ readers.</p>&mdash; Sandi Metz (@sandimetz) <a href="https://twitter.com/sandimetz/status/566273151315623938">February 13, 2015</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 What other examples of painful shortcuts have you seen in code?
+
+[coincidental-duplication]: http://www.rubytapas.com/episodes/89-Coincidental-Duplication
+[emmet]: http://mattn.github.io/emmet-vim
+[vim-macros]: http://vim.wikia.com/wiki/Macros
+[sublime-macros]: http://sublimetext.info/docs/en/extensibility/macros.html
