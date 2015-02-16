@@ -7,6 +7,8 @@ Programmers are often tempted to take the shortest route possible to deliver a
 feature. While there is a lot to be said about pragmatism, you should be
 considerate of consequences to make the best decision possible.
 
+![Convenience of code hinders clarity](/img/blog/2015/02/convenience-hinders-clarity.jpg)
+
 ## Shortcut
 
 You are hard at work on a web application, and you're given a feature to create
