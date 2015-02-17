@@ -21,6 +21,7 @@ My config...
 * skips `.keep` files
 * skips [spring](https://github.com/rails/spring)
 * skips Test::Unit (I prefer RSpec)
+* skips [turbolinks](turbolinks)
 * users PostgreSQL instead of SQlite
 
 Here it is:
@@ -37,7 +38,6 @@ built in hooks for `bundler` and `git`. My config...
 
 * installs preferred gems
 * configures test runner
-* removes turbolinks
 * cleans up Gemfile
 * installs bin/bootstrap script
 * adds a reasonable README
@@ -64,6 +64,7 @@ as I had imagined it to be. I am always working to improve these things, so
 keep an eye on [my dotfiles](dotfiles) if you're interested.
 
 [wikipedia-config-files]: http://en.wikipedia.org/wiki/Configuration_file
+[turbolinks]: https://github.com/rails/turbolinks
 [rails-app-templates]: http://guides.rubyonrails.org/rails_application_templates.html
 [config-gist]: https://gist.github.com/iamvery/6c87c9e191d32603aa78
 [dotfiles]: https://github.com/iamvery/dotfiles
