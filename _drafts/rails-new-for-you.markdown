@@ -25,7 +25,7 @@ My config...
 
 Here it is:
 
-<script src="http://gist-it.appspot.com/https://github.com/iamvery/dotfiles/blob/c9e10af36a17d4b21b3dcb4dedfcd08acc7af280/.railsrc"></script>
+<script src="http://gist-it.appspot.com/https://github.com/iamvery/dotfiles/blob/8f250b069228fda67d99f8195a49f41c3bf79d1b/.railsrc"></script>
 
 ## Rails App Template
 
@@ -45,7 +45,7 @@ built in hooks for `bundler` and `git`. My config...
 
 Here is the full template:
 
-<script src="http://gist-it.appspot.com/https://github.com/iamvery/dotfiles/blob/c9e10af36a17d4b21b3dcb4dedfcd08acc7af280/.rails_template.rb"></script>
+<script src="http://gist-it.appspot.com/https://github.com/iamvery/dotfiles/blob/8f250b069228fda67d99f8195a49f41c3bf79d1b/.rails_template.rb"></script>
 
 I keep all my configuration files in [a Gist](config-gist) so they can be
 downloaded as needed.
@@ -53,7 +53,7 @@ downloaded as needed.
 To make sure the template is always used for new apps, I added an alias to
 my environment.
 
-<script src="http://gist-it.appspot.com/https://github.com/iamvery/dotfiles/blob/c9e10af36a17d4b21b3dcb4dedfcd08acc7af280/.bash_profile?slice=47"></script>
+<script src="http://gist-it.appspot.com/https://github.com/iamvery/dotfiles/blob/8f250b069228fda67d99f8195a49f41c3bf79d1b/.bash_profile?slice=47"></script>
 
 Creating a new app is as simple as `railsup next_big_thing`.
 
