@@ -6,7 +6,7 @@ title: A "rails new" For You
 Recently, I went on a personal endeavor to determine the best way to create
 a new Rails app pre-configured to my liking. I was sick and tired of wasting
 time replacing and configuring test runners, adding development gems I prefer,
-and re-inventing the README. Why did it take so long for me to do this?
+and reinventing the README. Why did it take so long for me to do this?
 
 ## .railsrc
 
@@ -27,7 +27,7 @@ Here it is:
 
 <script src="http://gist-it.appspot.com/https://github.com/iamvery/dotfiles/blob/c9e10af36a17d4b21b3dcb4dedfcd08acc7af280/.railsrc"></script>
 
-## Rails Template
+## Rails App Template
 
 The command line options can only get me so far. To complete my desired
 pre-configuration, it's time to automate the things with [Rails application templates](rails-app-templates).
