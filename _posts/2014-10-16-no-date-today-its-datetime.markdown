@@ -4,9 +4,9 @@ author: Jay Hayes
 title: No Date.today? It's DateTime!
 ---
 
-In my [last post][swift-blog-post], I got all fluffy talking about love and
-coffee and all that crap. Programming isn't all butterflies and rainbows, folks.
-Eventually it will happen. You will have to deal with [time zones][tz-wikipedia].
+[Awhile back][swift-blog-post], I got all fluffy talking about love and coffee
+and all that crap (a joke). Programming isn't all butterflies and rainbows,
+folks.  Eventually it will happen. You will have to deal with [time zones][tz-wikipedia].
 
 ![NOOOO]({{ site.baseurl }}/img/blog/2014/09/starwars-no.gif)
 
@@ -18,8 +18,8 @@ _Always_ parse user input time.
 
 ## Background
 
-Not long ago, I was happily working away on client project when a feature came
-along.
+Not long ago, I was happily [working away on client project][we-develop] when a
+feature came along.
 
 > time should also go Eastern US instead of UTC
 
@@ -147,10 +147,11 @@ converting them to UTC for the database queries. Just make sure you
 
 Let's face it, [time is hard][time-zones-youtube]. Be vigilant and watch out
 for these crazy time zone related quirks! I would love to hear about your
-experience with localizing applications.
+experience localizing applications.
 
 [swift-blog-post]: http://www.bignerdranch.com/blog/discover-swift-with-this-one-weird-rubyist
 [tz-wikipedia]: http://en.wikipedia.org/wiki/Time_zone
 [data-model-wikipedia]: http://en.wikipedia.org/wiki/Data_model
 [time-zones-youtube]: https://www.youtube.com/watch?v=-5wpm-gesOY
 [working-with-time]: http://www.elabs.se/blog/36-working-with-time-zones-in-ruby-on-rails
+[we-develop]: http://www.bignerdranch.com/we-develop/
