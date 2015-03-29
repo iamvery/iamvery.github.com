@@ -4,9 +4,11 @@ author: Jay Hayes
 title: No Date.today? It's DateTime!
 ---
 
-[Awhile back][swift-blog-post], I got all fluffy talking about love and coffee
-and all that crap (a joke). Programming isn't all butterflies and rainbows,
-folks.  Eventually it will happen. You will have to deal with [time zones][tz-wikipedia].
+[A while back][swift-blog-post], I got all fluffy talking about love and coffee
+and all that other stuff. Programming isn't all butterflies and rainbows,
+folks.
+
+Eventually it will happen. You're going to have to deal with [time zones][tz-wikipedia].
 
 ![NOOOO]({{ site.baseurl }}/img/blog/2014/09/starwars-no.gif)
 
@@ -18,17 +20,18 @@ _Always_ parse user input time.
 
 ## Background
 
-Not long ago, I was happily [working away on client project][we-develop] when a
-feature came along.
+Not long ago, I was happily working away on a [client project][we-develop] when
+a feature came along.
 
 > time should also go Eastern US instead of UTC
 
 They said.
 
-"No problem," I thought. We'll configure the application's time zone to use
-Eastern time and go on our merry way. Generally this is true, but there's a
-big catch when you're taking user input time and throwing it against the
-database.
+"No problem," I thought. "We'll configure the application's time zone to use
+Eastern time and go on our merry way."
+
+Generally, this is true, but there's a big catch when you're taking user input
+time and throwing it against the database.
 
 ## An Example
 
@@ -38,7 +41,7 @@ which has a single `datetime` attribute `going_out_at`.
 
 ### Our Goal
 
-The goal is simple, we want users to be able to find plans to go out between
+The goal is simple. We want users to be able to find plans to go out between
 two points in time. How they enter this information is irrelevant, but we can
 assume that the parameters will be parsable time strings.
 
@@ -57,11 +60,12 @@ We create a range using the user input values and query the database.
 ~~~
 
 By default, Rails apps are configured to use the UTC time zone. This also
-happens to be the time zone (or lack there of) the database stores things in.
+happens to be the time zone (or lack thereof) that the database stores things in.
+
 Due to this coincidence, using the input times as strings works fine when sent
 directly to the database. That is, they match the database's format and return
 the expected results without having to cast the values. Unfortunately, the
-database doesn't expect to be given zoned times in this query...
+database doesn't expect to be given zoned times in this query.
 
 ### Our Grand Disappointment
 
@@ -80,7 +84,7 @@ to the application's timezone.
 => Thu, 25 Sep 2014 05:39:30 EDT -04:00
 ~~~
 
-Now, let's have a look at the same scenario as above in Eastern US time.
+Now, let's have a look at the same scenario as above in Eastern U.S. time.
 
 You can see the date stored in the database is UTC:
 
@@ -89,7 +93,7 @@ You can see the date stored in the database is UTC:
 => [#<Plan id: 1, going_out_at: "2014-09-25 09:39:30">]
 ~~~
 
-The user inputs the following times which present 09:00-10:00 in UTC.
+The user inputs the following times which present as 09:00-10:00 in UTC.
 
 ~~~
 > from = '2014-09-25 05:00 -04:00'
@@ -125,7 +129,7 @@ query? Yuck...
 
 ### The Solution
 
-Thankfully the solution is relatively simple. Always deal in date and time
+Thankfully, the solution is relatively simple. Always deal in date and time
 objects. This allows Rails to do the heavy lifting of making sure queries
 get zoned in a way that is compatible with the database. Check it out.
 
@@ -143,11 +147,13 @@ You can see that when the range's values are zoned time, Rails takes care of
 converting them to UTC for the database queries. Just make sure you
 [parse using `Time.zone`][working-with-time]!
 
-## Conclusion
+## Time is Hard
 
-Let's face it, [time is hard][time-zones-youtube]. Be vigilant and watch out
-for these crazy time zone related quirks! I would love to hear about your
-experience localizing applications.
+Let's face it, [time is hard][time-zones-youtube]. Being vigilant helps you watch out
+for these crazy time zone-related quirks!
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/-5wpm-gesOY" frameborder="0" allowfullscreen></iframe>
+
 
 [swift-blog-post]: http://www.bignerdranch.com/blog/discover-swift-with-this-one-weird-rubyist
 [tz-wikipedia]: http://en.wikipedia.org/wiki/Time_zone
