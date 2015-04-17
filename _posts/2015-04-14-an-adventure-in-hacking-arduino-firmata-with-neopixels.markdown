@@ -38,16 +38,16 @@ If you need more help with setting up the Arduino, check out [their guides][ardu
 Next, install our gem. This extends Artoo with support for NeoPixel LED strips
 and matrices.
 
-```
+{% highlight bash %}
 $ gem install artoo-neopixel
-```
+{% endhighlight %}
 
 ### Blinky Lights
 
 Now you just need to write something magical. Here's an example script for a
 [NeoPixel 40 RGB LED Matrix][neopixel-matrix] that will light up your room:
 
-```ruby
+{% highlight ruby %}
 # example.rb
 require "artoo"
 require "artoo-neopixel"
@@ -86,13 +86,13 @@ work do
     sleep 0.01
   end
 end
-```
+{% endhighlight %}
 
 Run it and enjoy!
 
-```
+{% highlight bash %}
 $ ruby example.rb
-```
+{% endhighlight %}
 
 If you've played with Artoo at all, this will be completely familiar to you.
 Either way, there isn't too much going on here, but the resulting strobe of
