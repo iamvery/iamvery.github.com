@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Edit My Stuff, Make Me Better
+description: I added a button to my blog so you can suggest edits!
 ---
 
 Today I added a public edit button to my site. While I honestly give it my very

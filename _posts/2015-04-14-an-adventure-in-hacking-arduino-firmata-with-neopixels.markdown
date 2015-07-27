@@ -1,6 +1,7 @@
 ---
 layout: post
 title: An Adventure in Hacking Arduino Firmata with NeoPixels
+description: If you are using NeoPixels with Artoo, you might try https://github.com/iamvery/artoo-neopixel.
 canonical: https://www.bignerdranch.com/blog/an-adventure-in-hacking-arduino-firmata-with-neopixels/
 ---
 

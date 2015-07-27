@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Routing Rails Resources
+description: All about routing resources in Rails.
 ---
 
 Recently I had a conversation with a coworker about the routes in their app. It

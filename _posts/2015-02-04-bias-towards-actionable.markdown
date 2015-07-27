@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Bias Towards Actionable
+description: Speak actionably. It gets things done.
 ---
 
 Developing a [bias towards action](http://www.dtelepathy.com/blog/productivity/key-to-productivity-developing-a-bias-towards-action)

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: A "rails new" For You
+description: Create new Rails applications with your personalized settings everytime.
 ---
 
 Recently, I went on a personal endeavor to determine the best way to create

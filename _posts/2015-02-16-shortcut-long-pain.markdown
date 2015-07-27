@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Shortcut, Long Pain
+description: Be wary of shortcuts, they don't always make things easier.
 ---
 
 Programmers are often tempted to take the shortest route possible to deliver a
