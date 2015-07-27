@@ -15,6 +15,7 @@ GEM
       mercenary (~> 0.3.3)
       rouge (~> 1.7)
       safe_yaml (~> 1.0)
+    jekyll-gist (1.2.1)
     jekyll-sass-converter (1.3.0)
       sass (~> 3.2)
     jekyll-watch (1.2.1)
@@ -45,6 +46,7 @@ PLATFORMS
 
 DEPENDENCIES
   jekyll (~> 3.0.0.beta)
+  jekyll-gist
   kramdown
   pygments.rb
 
