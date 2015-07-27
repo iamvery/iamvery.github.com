@@ -3,12 +3,18 @@
   <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
     <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
-    <meta content="{{ site.description }}" name="description" />
+    <meta content="{{ page.description | default: site.description }}" name="description" />
     <meta content="Jay Hayes" name="author" />
     <meta name="viewport" content="initial-scale=1">
 
     <title>{{ page.title }} / {{ site.title }}</title>
     <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:title" content="{{ page.title }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://{{ site.host }}{{ page.url }}" />
+    <meta property="og:image" content="http://{{ site.host }}/images/jay.jpg" />
+    <meta property="og:description" content="{{ page.description | default: site.description }}" />
 
     <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
     <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
