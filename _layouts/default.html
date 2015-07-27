@@ -10,6 +10,12 @@
     <title>{{ page.title }} / {{ site.title }}</title>
     <link href='/favicon.ico' rel='shortcut icon' />
 
+    <meta property="og:title" content="{{ page.title }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://{{ site.host }}{{ page.url }}" />
+    <meta property="og:image" content="http://{{ site.host }}/images/jay.jpg" />
+    <meta property="og:description" content="{{ page.description | default: site.description }}" />
+
     <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
     <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
     <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
