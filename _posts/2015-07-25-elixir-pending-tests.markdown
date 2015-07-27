@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Elixir Pending Tests
+description: A quick post illustrating how easy it is to temporarily skip tests in Elixir.
 ---
 
 Recently I've been playing with [Elixir][elixir] in my spare time.
