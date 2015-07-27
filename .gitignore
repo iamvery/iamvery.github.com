@@ -5,3 +5,4 @@
 /.bundle
 /.sass-cache
 .ruby-version
+.jekyll-metadata
