@@ -14,7 +14,7 @@ Let's do that in Elixir.
 ## Hound
 
 On such tool in the Elixir ecosystem, is [Hound][hound].
-Must like Capybara, Hound is a test framework which provides an interface for using a webdriver to test the behavior of pages.
+Much like Capybara, Hound is a test framework which provides an interface for using a webdriver to test the behavior of pages.
 Also like Capybara, it does not make any assumption about the driver you wish to use.
 Instead you must configure it to use the driver of your choice, such as [Selenium][selenium], [ChromeDriver][chromedriver], or [PhantomJS][phantomjs].
 Since we're familiar with PhantomJS (and love the headless nature of it), we'll go with that!
@@ -23,7 +23,7 @@ Since we're familiar with PhantomJS (and love the headless nature of it), we'll 
 
 The truth is [Akash Manohar][akash] has already written an excellent [blog post about configuring Hound][configuring-hound] to work with [Phoenix][phoenix], so I won't rehash that here.
 **Go read this blog!**
-Instead, I will mention hit the highlights and emphasize the particulars that tripped me up.
+Instead, I will hit the highlights and emphasize the particulars that tripped me up.
 
 ### Webdriver
 
