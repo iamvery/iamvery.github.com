@@ -54,7 +54,7 @@ We must specify a `hostname: "localhost"` option for our database configuration.
 This tells Ecto to connect at "localhost" rather than trying to follow `$PGHOST`.
 I suspect this has something to do with [my environment][my-pghost].
 I connect to Postgres.app via Unix sockets stored at this location.
-Here's [a post] with a little more information about that config.
+Here's [a post][pg-unix-sockets] with a little more information about that config.
 
 Finally, here's an [example commit][commit] in an app I made fixing the problem.
 
