@@ -118,8 +118,62 @@ You should definitely read through it closely in training for _The Great Sheddin
 ## Semantics
 
 Semantics are a very important part of JSON API.
+Without them, all you have is a JSON format.
+That isn't very interesting!
+The various semantics of JSON API are too many to mention here, but here are some good ones that'll keep you out of the shed.
+
+### Filter
+
+The specification is intentionally vague on this, but it reserves the `filter` query parameter for [filtering requested resources][filtering].
+Your service's implementation might allow you to specify a filter to locate people by their age.
+A GET request to `/people?filter[age]=20` would return all 20 year olds, but what does age have to do with anything?
+
+### Include
+
+To keep the number of requests being made to the API at a minimum, you might opt to eager-load resources in a single request.
+Let's go back to our articles example.
+If you wanted to request articles and their corresponding authors, you would set a GET request to `/articles?include=author`.
+The response would look something like this.
+
+```json
+{% highlight json %}
+{
+  "data": [
+    {
+      "type": "articles",
+      "id": "1",
+      ...,
+      "relationships": {
+        "author": {
+          ...,
+          "data": { "type": "people", "id": "2" }
+        }
+      }
+    }
+  ],
+  "included": [
+    {
+      "type": "people",
+      "id": "2",
+      "attributes": {
+        "name": "Jay Hayes"
+      }
+    }
+  ]
+}
+{% endhighlight %}
+```
+
+### Sort
+
+Maybe you detect a pattern here. This is straightforward!
+GET `/articles?sort=title` responds with a collection of articles sorted by their title.
 
 ## But wait, there's more!
+
+So much more... You really should take time to get familiar with [the format][format].
+There is a ton of good there, and maybe even room for you to improve it!
+So what are you waiting for?
 
 
 [json-api]: http://jsonapi.org/
@@ -128,3 +182,5 @@ Semantics are a very important part of JSON API.
 [resource-obj]: http://jsonapi.org/format/#document-resource-objects
 [attributes-obj]: http://jsonapi.org/format/#document-resource-object-attributes
 [relationships-obj]: http://jsonapi.org/format/#document-resource-object-relationships
+[filtering]: http://jsonapi.org/format/#fetching-filtering
+[format]: http://jsonapi.org/format/
