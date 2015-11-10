@@ -40,8 +40,8 @@ Here's a basic JSON API response you might receive from a GET request to a theor
 {
   "data": [
     {
-      "id": 1,
       "type": "articles",
+      "id": "1",
       "attributes": {
         "title": "Ohai, JSON API!"
       },
@@ -51,7 +51,7 @@ Here's a basic JSON API response you might receive from a GET request to a theor
             "self": "/articles/1/relationships/author",
             "related": "/articles/1/author"
           },
-          "data": { "type": "people", "id": 2 }
+          "data": { "type": "people", "id": "2" }
         }
       }
     }
@@ -76,8 +76,8 @@ This makes good sense given that the request was to a collection resource, namel
 ```
 {% highlight json %}
   {
-    "id": 1,
     "type": "articles",
+    "id": "1",
     ...
   }
 {% endhighlight %}
