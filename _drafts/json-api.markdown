@@ -6,7 +6,7 @@ description: JSON API is a specification for building APIs on the web.
 ---
 
 [JSON API][json-api] is a specification for building APIs on the web.
-When designing an API that communicates via JSON, developers often get tangled in the minutia of how responses with be formed.
+When designing an API that communicates via JSON, developers often get tangled in the minutia of how requests and responses with be formed.
 Significant time and resources may be spend belaboring precisely how the JSON will be formed and even then minor discrepancies may crop up between contributions from different people.
 JSON API addresses these issues by establishing a specification that everyone can agree on.
 The JSON API team likes to call it an "anti-bikeshedding weapon".
@@ -169,6 +169,12 @@ The response would look something like this.
 Maybe you detect a pattern here. This is straightforward!
 GET `/articles?sort=title` responds with a collection of articles sorted by their title.
 
+### Extensions
+
+You should know, the standard is meant to be extended.
+It's written as a baseline for JSON APIs, but at a certain point your API may need additional semantics.
+Check out some of the existing [extensions][extensions].
+
 ## But wait, there's more!
 
 So much more... You really should take time to get familiar with [the format][format].
@@ -184,3 +190,4 @@ So what are you waiting for?
 [relationships-obj]: http://jsonapi.org/format/#document-resource-object-relationships
 [filtering]: http://jsonapi.org/format/#fetching-filtering
 [format]: http://jsonapi.org/format/
+[extentions]: http://jsonapi.org/extensions/
