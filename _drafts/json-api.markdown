@@ -188,6 +188,12 @@ It's written as a baseline, but at a certain point your API may need additional 
 You might create your own media type based on JSON API for your needs.
 Check out some of the existing [extensions][extensions].
 
+### Caching
+
+Caching is a complex subject, but you should know that JSON API was designed with cachability in mind.
+For example, links are modeled as resource types and ids.
+As such one may cache responses containing links to other resources even when those reference resources attributes themselves change (the id would never change).
+
 ## But wait, there's more!
 
 So much more... You really should take time to get familiar with [the format][format].
