@@ -7,7 +7,7 @@ description: JSON API is a specification for building APIs on the web.
 
 [JSON API][json-api] is a specification for building APIs on the web.
 When designing an API that communicates via JSON, developers often get tangled in the minutia of how requests and responses with be formed.
-Significant time and resources may be spend belaboring precisely how the JSON will be formed and even then minor discrepancies may crop up between contributions from different people.
+Significant time may be spend belaboring precisely how the JSON will be formed and even then minor discrepancies may crop up between contributions from different people.
 JSON API addresses these issues by establishing a specification that everyone can agree on.
 The JSON API team likes to call it an "anti-bikeshedding weapon".
 
@@ -23,7 +23,7 @@ It goes beyond that to define additional semantics about your APIs, such as:
 * Eager-Loading Relationships
 * MOAR?
 
-By ensuring these additional semantics users of a JSON API can quickly navigate the API and discover behavior.
+By ensuring these additional semantics, consumers of JSON API can quickly navigate and discover behavior.
 Actually, for GET requests it's quite a breeze to navigate in your browser by simply following relationship links!
 
 ## Format
@@ -33,7 +33,9 @@ JSON API defines a [document structure][doc-structure] to be used in all request
 The top-level **MUST** be a JSON object. i.e. `{...}`. No arrays!
 Generally speaking, arrays limit the extensibility of the response.
 This means if you were to respond with an array now, you would break any existing clients later if you needed to include additional information.
-Here's a basic JSON API response you might receive from a GET request to a theoretical resource `/articles`\*:
+Here's a basic JSON API response you might receive from a GET request to a theoretical resource `/articles`.
+The specification requires that you make all requests with the JSON API media type [`application/vnd.api+json`][json-api-type].
+
 
 ```json
 {% highlight json %}
@@ -62,6 +64,8 @@ Here's a basic JSON API response you might receive from a GET request to a theor
 
 Let's break this down.
 
+#### Collection
+
 ```
 {% highlight json %}
 {
@@ -72,6 +76,8 @@ Let's break this down.
 
 The request returns a collection of articles.
 This makes good sense given that the request was to a collection resource, namely `/articles`.
+
+#### Resource Object
 
 ```
 {% highlight json %}
@@ -85,6 +91,8 @@ This makes good sense given that the request was to a collection resource, namel
 
 As it turns out, this section is called a ["resource object"][resource-obj], and `id` and `type` are the two **required** members.
 
+#### Attributes Object
+
 ```
 {% highlight json %}
     "attributes": {
@@ -97,6 +105,8 @@ This is an ["attributes object"][attributes-obj].
 Simply put, this is the data for a resource (excluding relationships).
 Our articles have a single `title` field.
 
+#### Relationship Object
+
 ```
 {% highlight json %}
     "relationships": {
@@ -105,7 +115,7 @@ Our articles have a single `title` field.
 {% endhighlight %}
 ```
 
-Finally, this is a ["relationships object"][relationships-obj].
+Finally, this is a ["relationship object"][relationship-obj].
 Generally speaking, these are associations between resources.
 They many be one-to-one or one-to-many.
 Our `author` relationship is one-to-one as an article may only have one author.
@@ -113,13 +123,10 @@ Our `author` relationship is one-to-one as an article may only have one author.
 There are many other types of objects specified in the [document structure][doc-structure].
 You should definitely read through it closely in training for _The Great Shedding War at Bikes Place_.
 
-\***Note**: The specification requires that you make all requests with the JSON API media type [`application/vnd.api+json`][json-api-type].
-
 ## Semantics
 
 Semantics are a very important part of JSON API.
 Without them, all you have is a JSON format.
-That isn't very interesting!
 The various semantics of JSON API are too many to mention here, but here are some good ones that'll keep you out of the shed.
 
 ### Filter
@@ -164,15 +171,21 @@ The response would look something like this.
 {% endhighlight %}
 ```
 
+You may notice that all eager-loaded resources are stowed away in the `included` member.
+This is done to minimize duplication in the relationship objects.
+If a record is loaded more than once, its reference (id and type) might appear several times, but it would only be included one time.
+
 ### Sort
 
-Maybe you detect a pattern here. This is straightforward!
+Maybe you detect a pattern here.
 GET `/articles?sort=title` responds with a collection of articles sorted by their title.
+Boom.
 
 ### Extensions
 
 You should know, the standard is meant to be extended.
-It's written as a baseline for JSON APIs, but at a certain point your API may need additional semantics.
+It's written as a baseline, but at a certain point your API may need additional semantics.
+You might create your own media type based on JSON API for your needs.
 Check out some of the existing [extensions][extensions].
 
 ## But wait, there's more!
@@ -187,7 +200,7 @@ So what are you waiting for?
 [json-api-type]: http://www.iana.org/assignments/media-types/application/vnd.api+json
 [resource-obj]: http://jsonapi.org/format/#document-resource-objects
 [attributes-obj]: http://jsonapi.org/format/#document-resource-object-attributes
-[relationships-obj]: http://jsonapi.org/format/#document-resource-object-relationships
+[relationship-obj]: http://jsonapi.org/format/#document-resource-object-relationships
 [filtering]: http://jsonapi.org/format/#fetching-filtering
 [format]: http://jsonapi.org/format/
-[extentions]: http://jsonapi.org/extensions/
+[extensions]: http://jsonapi.org/extensions/
