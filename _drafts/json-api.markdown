@@ -8,8 +8,7 @@ description: JSON API is a specification for building APIs on the web.
 [JSON API][json-api] is a specification for building APIs on the web.
 When designing an API that communicates via JSON, developers often get tangled in the minutia of how requests and responses with be formed.
 Significant time may be spend belaboring precisely how the JSON will be formed and even then minor discrepancies may crop up between contributions from different people.
-JSON API addresses these issues by establishing a specification that everyone can agree on.
-The JSON API team likes to call it an "anti-bikeshedding weapon".
+JSON API addresses these issues by establishing a format and semantic specification that everyone can agree on.
 
 ## Beyond Serialization
 
@@ -188,15 +187,25 @@ It's written as a baseline, but at a certain point your API may need additional 
 You might create your own media type based on JSON API for your needs.
 Check out some of the existing [extensions][extensions].
 
+## Other things...
+
 ### Caching
 
 Caching is a complex subject, but you should know that JSON API was designed with cachability in mind.
 For example, links are modeled as resource types and ids.
 As such one may cache responses containing links to other resources even when those reference resources attributes themselves change (the id would never change).
 
+### Documentation
+
+Documenting APIs can be pretty tough.
+The tooling isn't always great, and it's a quite laborious in general.
+The great thing about adopting a standard such as JSON API is that you only need to document _your semantics_.
+For a simple API that might mean noting attributes and relationships.
+Everything else is just a simple link to [the specification][format].
+
 ## But wait, there's more!
 
-So much more... You really should take time to get familiar with [the format][format].
+This is a brief overview of a very large subject.
 There is a ton of good there, and maybe even room for you to improve it!
 So what are you waiting for?
 
