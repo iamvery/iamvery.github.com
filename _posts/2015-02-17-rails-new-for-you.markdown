@@ -12,7 +12,7 @@ and reinventing the README. Why did it take so long for me to do this?
 ## .railsrc
 
 For some reason it took me a long time to discover this handy script. Following
-the convention of other ["run configuration" files](wikipedia-config-files),
+the convention of other ["run configuration" files][wikipedia-config-files],
 you can add options here that you wish to be included every time you `rails
 new`.
 
@@ -22,7 +22,7 @@ My config...
 * skips `.keep` files
 * skips [spring](https://github.com/rails/spring)
 * skips Test::Unit (I prefer RSpec)
-* skips [turbolinks](turbolinks)
+* skips [turbolinks][turbolinks]
 * users PostgreSQL instead of SQlite
 
 Here it is:
@@ -32,7 +32,7 @@ Here it is:
 ## Rails App Template
 
 The command line options can only get me so far. To complete my desired
-pre-configuration, it's time to automate the things with [Rails application templates](rails-app-templates).
+pre-configuration, it's time to automate the things with [Rails application templates][rails-app-templates].
 
 App templates allow you to define a procedure used to config an app. It has
 built in hooks for `bundler` and `git`. My config...
@@ -48,7 +48,7 @@ Here is the full template:
 
 <script src="http://gist-it.appspot.com/https://github.com/iamvery/dotfiles/blob/8f250b069228fda67d99f8195a49f41c3bf79d1b/.rails_template.rb"></script>
 
-I keep all my configuration files in [a Gist](config-gist) so they can be
+I keep all my configuration files in [a Gist][config-gist] so they can be
 downloaded as needed.
 
 To make sure the template is always used for new apps, I added an alias to
@@ -62,7 +62,7 @@ Creating a new app is as simple as `railsup next_big_thing`.
 
 This turned out to be a great learning experience. The task wasn't as daunting
 as I had imagined it to be. I am always working to improve these things, so
-keep an eye on [my dotfiles](dotfiles) if you're interested.
+keep an eye on [my dotfiles][dotfiles] if you're interested.
 
 [wikipedia-config-files]: http://en.wikipedia.org/wiki/Configuration_file
 [turbolinks]: https://github.com/rails/turbolinks
