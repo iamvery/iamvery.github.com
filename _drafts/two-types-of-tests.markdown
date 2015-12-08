@@ -42,6 +42,7 @@ Instead closely consider each actor in the test and how it affects execution.
 Also realize that coupling is often a side effect of implementation.
 Go watch some [Sandi Metz talks][sandi-talks] and understand that an alternate design might pave way for easier isolation.
 This is why the Single Responsibility Principal is so important.
+If you would like an example of design encouraging isolation, check out [this post][isolated-tests].
 
 ## Integration Tests
 
@@ -82,3 +83,4 @@ Avoid surprises for future readers** (including yourself).
 
 [martin-unit-tests]: http://martinfowler.com/bliki/UnitTest.html
 [sandi-talks]: http://www.sandimetz.com/speaking/
+[isolated-tests]: {% post_url 2015-12-08-isolated-tests %}
