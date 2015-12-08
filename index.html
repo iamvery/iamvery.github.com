@@ -4,11 +4,9 @@ title: Jay Hayes
 ---
 
 {% for post in site.posts limit:3 %}
-  {% unless post.draft %}
-    <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
-    {{ post.excerpt }}
-    <hr/>
-  {% endunless %}
+  <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
+  {{ post.excerpt }}
+  <hr/>
 {% endfor %}
 
 <p>
