@@ -75,6 +75,7 @@ This frees you to change what it means to utter a quack without affecting the th
 
 Of course these tests do _not_ ensure that a duck actually quacks.
 Such would be done with an integration test that gives you confidence in the collaboration between objects in your system.
+(Hint: This is the [only other type of test][test-types])
 
 **Isolated tests free you to refactor and encourage flexible software design.**
 
@@ -87,3 +88,4 @@ Duck.new(voice: Quack.new(io: quackings))
 {% endhighlight %}
 
 [fowler-unit-tests]: http://martinfowler.com/bliki/UnitTest.html
+[test-types]: {% post_url 2015-12-08-two-types-of-tests %}
