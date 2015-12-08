@@ -7,38 +7,37 @@ Testing is difficult.
 Testing is important.
 
 Having worked on many projects and written many tests, I have concluded that there are only two types of tests.
-Unit tests and integration tests.
+Isolation tests and integration tests.
 You may know them by many names, but they fall cleanly into these two categories.
 Let me explain...
 
-## Unit Tests
+## Isolation Tests
 
-> unit: an individual thing
->
+> isolate: remain alone or apart from others
 > — Dictionary.app
 
-A unit test attempts to drive the scope of what's being tested down to a tiny, distinct thing.
+An isolation test drives the scope of what's being tested down to a tiny, distinct thing.
 A unit.
+You may know these as unit tests, but it seems [folks don't agree][martin-unit-tests] on whether unit tests should be isolated.
+
 Humans are bad at thinking about lot's of information at once.
-Unit tests play to this.
+Isolation tests play to this.
 You are only thinking about a single, interesting piece of functionality.
+By doing this, you can avoid concern about how collaborating objects behave and affect your test.
 Seeing behavior in isolation allows you to iterate on it until the implementation is right.
 If a particular unit test feels useless, it probably is.
 
-If you hear nothing else, **unit tests are a powerful tool in driving the design of a system.
+If you hear nothing else, **isolation tests are a powerful tool in driving the design of a system.
 They discourage coupling.**
 
-### Isolation
-
-Personally, this is big goal during unit testing.
-By isolating the object under test, you can omit concern about how collaborating objects behave and affect your test.
-This allows focus on the unit you're working with.
+> coupling: the pairing of two items
+> — Dictionary.app
 
 In practice, you may find it difficult to pull off.
 Don't beat yourself up.
 Instead closely consider each actor in the test and how it affects execution.
-Also realize that coupling is a side effect of implementation.
-It may very well be true that an alternate design would pave way for easier isolation.
+Also realize that coupling is often a side effect of implementation.
+Go watch some [Sandi Metz talks][sandi-talks] and understand that an alternate design might pave way for easier isolation.
 This is why the Single Responsibility Principal is so important.
 
 ## Integration Tests
@@ -46,13 +45,12 @@ This is why the Single Responsibility Principal is so important.
 > Everything else.
 
 Literally this.
-Every test that is not a unit (read: isolated) test is an integration test.
+Every test that is not isolated is an integration test.
 
 > integration - combine one thing with another so they become a whole
->
 > — Dictionary.app
 
-While unit tests validate the behavior of a small piece _in_ your system, **integration tests validate your system works together.**
+While isolation tests validate the behavior of a single piece _in_ your system, **integration tests validate your system works together.**
 Integration tests go by many names: features, acceptance tests, request tests, UI tests, and no doubt many more.
 All of these are integration tests.
 That is they test how some set of collaborators work together.
@@ -60,7 +58,6 @@ That is they test how some set of collaborators work together.
 ## Why is this so hard?
 
 > There are only two hard things in Computer Science: cache invalidation and naming things.
->
 > — Phil Karlton
 
 It's been quoted many times.
@@ -80,3 +77,7 @@ One that often confuses readers about the purpose a test serves.
 Use organization to your advantage.
 **Organize your test suite to communicate the purpose of tests.
 Avoid surprises for future readers** (including yourself).
+
+
+[martin-unit-tests]: http://martinfowler.com/bliki/UnitTest.html
+[sandi-talks]: http://www.sandimetz.com/speaking/
