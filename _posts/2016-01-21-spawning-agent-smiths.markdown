@@ -73,17 +73,17 @@ It exits as soon as `loop` returns.
 
 In order to interact with this process, it must receive messages.
 
-{% highlight elixir %}
-```
+{% highlight diff %}
+```diff
 defmodule AgentSmith do
   def start_link(func) do
     # ...
   end
 
   def loop(value) do
-    receive do
++   receive do
       # ???
-    end
++   end
   end
 end
 ```
@@ -94,8 +94,8 @@ It's time to implement the `get` message.
 
 ### Get Message
 
-{% highlight elixir %}
-```
+{% highlight diff %}
+```diff
 defmodule AgentSmith do
   def start_link(func) do
     # ...
@@ -103,14 +103,14 @@ defmodule AgentSmith do
 
   def loop(value) do
     receive do
-      {:get, func} ->
++     {:get, func} ->
         # ???
     end
   end
 
-  def get(agent, func) do
-    send(agent, {:get, func})
-  end
++ def get(agent, func) do
++   send(agent, {:get, func})
++ end
 end
 ```
 {% endhighlight %}
@@ -121,8 +121,8 @@ Unfortunately that in another process, so the only way to get that value back to
 (Hmm, sending messages. That sounds familiar to some OO programmers... conceptually, yes, but this is friggin' parallelism!)
 In order to send a message _back_, you have to know who called...
 
-{% highlight elixir %}
-```
+{% highlight diff %}
+```diff
 defmodule AgentSmith do
   def start_link(func) do
     # ...
@@ -130,13 +130,15 @@ defmodule AgentSmith do
 
   def loop(value) do
     receive do
-      {:get, caller, func} ->
+-     {:get, func} ->
++     {:get, caller, func} ->
         # ???
     end
   end
 
   def get(agent, func) do
-    send(agent, {:get, self, func})
+-   send(agent, {:get, func})
++   send(agent, {:get, self, func})
   end
 end
 ```
@@ -144,8 +146,8 @@ end
 
 Perfect! Now to send back the value...
 
-{% highlight elixir %}
-```
+{% highlight diff %}
+```diff
 defmodule AgentSmith do
   def start_link(func) do
     # ...
@@ -154,15 +156,15 @@ defmodule AgentSmith do
   def loop(value) do
     receive do
       {:get, caller, func} ->
-        send(caller, {func.(value)})
++       send(caller, {func.(value)})
     end
   end
 
   def get(agent, func) do
     send(agent, {:get, self, func})
-    receive do
-      {value} -> value
-    end
++   receive do
++     {value} -> value
++   end
   end
 end
 ```
@@ -178,8 +180,8 @@ After a "get" message is received, the agent process exits.
 This is because there is no implicit looping in a `receive` block.
 Keeping the agent going is as simple as recursing on the loop with the agent's value.
 
-{% highlight elixir %}
-```
+{% highlight diff %}
+```diff
 defmodule AgentSmith do
   def start_link(func) do
     # ...
@@ -189,7 +191,7 @@ defmodule AgentSmith do
     receive do
       {:get, caller, func} ->
         send(caller, {func.(value)})
-        loop(value)
++       loop(value)
     end
   end
 
@@ -206,8 +208,8 @@ end
 Getting the value from an agent is fine and all, but state isn't being manipulated.
 Let's implement the "update" message.
 
-{% highlight elixir %}
-```
+{% highlight diff %}
+```diff
 defmodule AgentSmith do
   def start_link(func) do
     # ...
@@ -216,8 +218,8 @@ defmodule AgentSmith do
   def loop(value) do
     receive do
       # ...
-      {:update, func} ->
-        loop(func.(value))
++     {:update, func} ->
++       loop(func.(value))
     end
   end
 
