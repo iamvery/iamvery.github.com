@@ -241,6 +241,22 @@ Now the next "get" request will be processed by a call to `AgentSmith.loop/1` wi
 
 That's it?
 YES! The state is represented as a series of translations applied to the original value passed to the agent.
+Let's try it out.
+
+{% highlight elixir %}
+```
+iex> agent = AgentSmith.start_link(fn -> [] end)
+#PID<0.42.0>
+iex> AgentSmith.get(agent, fn list -> list end)
+[]
+iex> AgentSmith.update(agent, fn list -> ["lol"|list] end)
+{:update, ...}
+iex> AgentSmith.get(agent, fn list -> list end)
+["lol"]
+```
+{% endhighlight %}
+
+The interface isn't exactly like Elixir's `Agent`, but it gets the point across.
 For good measure, here's the full implementation.
 
 {% highlight elixir %}
