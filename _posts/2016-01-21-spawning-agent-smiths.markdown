@@ -4,7 +4,7 @@ title: Spawning Agent Smiths
 ---
 
 If you've come to functional programming from an object oriented background, you may have found it hard to grok state in a functional system.
-You're accustomed to creating and manipulating objects, but in functional languages everyone is immutable.
+You're accustomed to creating and manipulating objects, but in functional languages everything is **_immutable_**.
 Often the answer to this problem is to use processes to store state.
 Elixir has an [`Agent`][elixir-agent] which is a simple construct for storing state in processes.
 Let's see if we can roll our own `AgentSmith`.
@@ -33,10 +33,10 @@ iex> Agent.get(agent, fn list -> list end)
 ```
 {% endhighlight %}
 
-A link is started to a new agent, and the agent itself is just a process (note the agent is a `PID`).
+A link is started to an agent, and the agent itself is just a process (see, it's a `PID`).
 Then using `update` and `get` you may provide a function used to interact with the value stored in the agent.
 Keep in mind there is no constraint on the type of data that may be stored in an agent.
-You control the function used to interact with it.
+You control the how it's changed and retrieved.
 
 ## Agent Smith
 
@@ -47,7 +47,7 @@ It shall be known as `AgentSmith`, and it's not as scary as it sounds.
 
 The first thing you need is an `AgentSmith.start_link/1` function.
 You know that an agent is just a process, so `spawn` should come to mind.
-In particular `spawn_link` as you want errors to propagate to the parent process.
+In particular `spawn_link` as it's nice for errors to propagate to the parent process.
 
 {% highlight elixir %}
 ```
@@ -65,7 +65,7 @@ end
 {% endhighlight %}
 
 Focus on the `spawn_link` call for a moment.
-This creates a new process executing `Agent.loop/1` and passing in the argument list `[value]`.
+This creates a new process executing `AgentSmith.loop/1` and passing in the argument list `[value]`.
 While a process is created at this point, it doesn't do anything.
 It exits as soon as `loop` returns.
 
@@ -115,10 +115,10 @@ end
 ```
 {% endhighlight %}
 
-A process may now send a message to your agent to "get" a value with the given function.
+A process may now send a message to your agent to "get" something with the given function.
 As you can see the `value` is available as an argument to `Agent.loop/1`.
 Unfortunately that in another process, so the only way to get that value back to the caller is to send it back in another message.
-(Hmm, sending messages. That sounds familiar to some OO programmers...)
+(Hmm, sending messages. That sounds familiar to some OO programmers... conceptually, yes, but this is friggin' parallelism!)
 In order to send a message _back_, you have to know who called...
 
 {% highlight elixir %}
@@ -225,16 +225,16 @@ defmodule AgentSmith do
     # ...
   end
 
-  def update(agent, func) do
-    send(agent, {:update, func})
-  end
++ def update(agent, func) do
++   send(agent, {:update, func})
++ end
 end
 ```
 {% endhighlight %}
 
 The `AgentSmith.update/2` implementation is surprisingly simple.
 The magic is in the recursion.
-Since the `func` argument takes care of performing the update, it's messaged to the agent and used to update the value passed to the next recursion.
+Since the `func` argument takes care of performing the update, it's sent to the agent and used to update the value passed to the next recursion.
 Now the next "get" request will be processed by a call to `AgentSmith.loop/1` with the updated value.
 
 ![](http://img.pandawhale.com/post-28553-Steve-Jobs-mind-blown-gif-HD-T-pVbd.gif)
@@ -292,7 +292,7 @@ end
 {% endhighlight %}
 
 This is certainly overly simplified in comparison to Elixir's `Agent` (which uses `GenServer`), but fundamentally it's a great illustration of how to pull off state in a functional system using processes.
-Let me know what you think!
+What do you think??
 
 
 [elixir-agent]: https://github.com/dojo-toulouse/elixir-koans/blob/master/utils/Koans.ex#L33-L40
