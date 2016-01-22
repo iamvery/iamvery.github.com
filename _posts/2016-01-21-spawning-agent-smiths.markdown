@@ -17,7 +17,7 @@ Let's see if we can roll our own `AgentSmith`.
 When you are first introduced to agents, they appear somewhat magical.
 You'll think "If everything is immutable, how are agents mutated?"
 The key is: processes are mutable.
-This extends beyond the bounds of Elixir.
+This extends beyond Elixir.
 Processes consume memory, and this memory can grow as they allocate space for variables and such.
 By exploiting this quality of processes, they can be used to track changing state in an otherwise immutable sea of values.
 
@@ -37,7 +37,7 @@ iex> Agent.get(agent, fn list -> list end)
 A link is started to an agent, and the agent itself is just a process (see, it's a `PID`).
 Then using `update` and `get` you may provide a function used to interact with the value stored in the agent.
 Keep in mind there is no constraint on the type of data that may be stored in an agent.
-You control the how it's changed and retrieved.
+You control how it's changed and retrieved.
 
 ## Agent Smith
 
@@ -112,7 +112,7 @@ end
 
 A process may now send a message to your agent to "get" something with the given function.
 As you can see the `value` is available as an argument to `Agent.loop/1`.
-Unfortunately that in another process, so the only way to get that value back to the caller is to send it back in another message.
+However that value is in another process, so the only way to get that value back to the caller is to send it back in another message.
 (Hmm, sending messages. That sounds familiar to some OO programmers... conceptually, yes, but this is friggin' parallelism!)
 In order to send a message _back_, you have to know who called...
 
