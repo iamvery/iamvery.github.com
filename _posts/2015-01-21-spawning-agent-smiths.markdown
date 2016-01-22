@@ -41,6 +41,8 @@ You control the function used to interact with it.
 With this basic understanding of agents in Elixir, you're ready to implement it yourself.
 It shall be known as `AgentSmith`, and it's not as scary as it sounds.
 
+![](/img/blog/2016/01/agent-smith.jpg)
+
 The first thing you need is an `AgentSmith.start_link/1` function.
 You know that an agent is just a process, so `spawn` should come to mind.
 In particular `spawn_link` as you want errors to propagate to the parent process.
