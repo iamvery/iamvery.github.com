@@ -21,7 +21,6 @@ By exploiting this quality of processes, they can be used to track changing stat
 Let's remember how agents work in Elixir.
 
 {% highlight elixir %}
-```
 iex> {:ok, agent} = Agent.start_link(fn -> [] end)
 {:ok, #PID<0.42.0>}
 iex> Agent.get(agent, fn list -> list end)
@@ -30,7 +29,6 @@ iex> Agent.update(agent, fn list -> ["lol"|list] end)
 :ok
 iex> Agent.get(agent, fn list -> list end)
 ["lol"]
-```
 {% endhighlight %}
 
 A link is started to an agent, and the agent itself is just a process (see, it's a `PID`).
@@ -50,7 +48,6 @@ You know that an agent is just a process, so `spawn` should come to mind.
 In particular `spawn_link` as it's nice for errors to propagate to the parent process.
 
 {% highlight elixir %}
-```
 defmodule AgentSmith do
   def start_link(func) do
     value = func.()
@@ -61,7 +58,6 @@ defmodule AgentSmith do
     # ???
   end
 end
-```
 {% endhighlight %}
 
 Focus on the `spawn_link` call for a moment.
@@ -74,7 +70,6 @@ It exits as soon as `loop` returns.
 In order to interact with this process, it must receive messages.
 
 {% highlight diff %}
-```diff
 defmodule AgentSmith do
   def start_link(func) do
     # ...
@@ -86,7 +81,6 @@ defmodule AgentSmith do
 +   end
   end
 end
-```
 {% endhighlight %}
 
 Now the agent smith process will wait for a message to be sent to it.
@@ -95,7 +89,6 @@ It's time to implement the `get` message.
 ### Get Message
 
 {% highlight diff %}
-```diff
 defmodule AgentSmith do
   def start_link(func) do
     # ...
@@ -112,7 +105,6 @@ defmodule AgentSmith do
 +   send(agent, {:get, func})
 + end
 end
-```
 {% endhighlight %}
 
 A process may now send a message to your agent to "get" something with the given function.
@@ -122,7 +114,6 @@ Unfortunately that in another process, so the only way to get that value back to
 In order to send a message _back_, you have to know who called...
 
 {% highlight diff %}
-```diff
 defmodule AgentSmith do
   def start_link(func) do
     # ...
@@ -141,13 +132,11 @@ defmodule AgentSmith do
 +   send(agent, {:get, self, func})
   end
 end
-```
 {% endhighlight %}
 
 Perfect! Now to send back the value...
 
 {% highlight diff %}
-```diff
 defmodule AgentSmith do
   def start_link(func) do
     # ...
@@ -167,7 +156,6 @@ defmodule AgentSmith do
 +   end
   end
 end
-```
 {% endhighlight %}
 
 Now the "get" message responds by sending a message back with the value to the caller.
@@ -181,7 +169,6 @@ This is because there is no implicit looping in a `receive` block.
 Keeping the agent going is as simple as recursing on the loop with the agent's value.
 
 {% highlight diff %}
-```diff
 defmodule AgentSmith do
   def start_link(func) do
     # ...
@@ -199,7 +186,6 @@ defmodule AgentSmith do
     # ...
   end
 end
-```
 {% endhighlight %}
 
 
@@ -209,7 +195,6 @@ Getting the value from an agent is fine and all, but state isn't being manipulat
 Let's implement the "update" message.
 
 {% highlight diff %}
-```diff
 defmodule AgentSmith do
   def start_link(func) do
     # ...
@@ -231,7 +216,6 @@ defmodule AgentSmith do
 +   send(agent, {:update, func})
 + end
 end
-```
 {% endhighlight %}
 
 The `AgentSmith.update/2` implementation is surprisingly simple.
@@ -246,7 +230,6 @@ YES! The state is represented as a series of translations applied to the origina
 Let's try it out.
 
 {% highlight elixir %}
-```
 iex> agent = AgentSmith.start_link(fn -> [] end)
 #PID<0.42.0>
 iex> AgentSmith.get(agent, fn list -> list end)
@@ -255,14 +238,12 @@ iex> AgentSmith.update(agent, fn list -> ["lol"|list] end)
 {:update, ...}
 iex> AgentSmith.get(agent, fn list -> list end)
 ["lol"]
-```
 {% endhighlight %}
 
 The interface isn't exactly like Elixir's `Agent`, but it gets the point across.
 For good measure, here's the full implementation.
 
 {% highlight elixir %}
-```
 defmodule AgentSmith do
   def start_link(func) do
     value = func.()
@@ -290,7 +271,6 @@ defmodule AgentSmith do
     send(agent, {:update, func})
   end
 end
-```
 {% endhighlight %}
 
 This is certainly overly simplified in comparison to Elixir's `Agent` (which uses `GenServer`), but fundamentally it's a great illustration of how to pull off state in a functional system using processes.
