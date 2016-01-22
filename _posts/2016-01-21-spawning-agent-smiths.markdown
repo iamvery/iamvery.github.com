@@ -7,7 +7,7 @@ If you've come to functional programming from an object oriented background, you
 You're accustomed to creating and manipulating objects, but in functional languages everyone is immutable.
 Often the answer to this problem is to use processes to store state.
 Elixir has an [`Agent`][elixir-agent] which is a simple construct for storing state in processes.
-Let's see if you can roll our own `Agent`.
+Let's see if we can roll our own `AgentSmith`.
 
 ## Remember Agents
 
