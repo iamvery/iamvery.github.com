@@ -57,7 +57,7 @@ Making the `part` method an alias of `locate` states that it literally carries t
 These two methods actually have two distinct purposes.
 
 1. `part` - expose a public interface on `Foo` for getting its `part`.
-2. `locate` - do some to find the `part` for `Foo`.
+2. `locate` - do something to find the `part` for `Foo`.
 
 This becomes especially apparent when a new requirement comes in.
 
