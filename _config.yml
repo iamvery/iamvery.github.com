@@ -2,6 +2,6 @@ title: "iamvery.com"
 description: "The work, thoughts, and ideas of Jay Hayes, a web developer."
 url: http://iamvery.com
 exclude: ["bin", "Gemfile", "Gemfile.lock", "README.md"]
-highlighter: pygments
+highlighter: rouge
 markdown: kramdown
 gems: [jekyll-gist]
