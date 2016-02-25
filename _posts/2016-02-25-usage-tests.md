@@ -6,7 +6,7 @@ title: Usage Tests
 Tests suites have a number of purposes.
 Perhaps most commonly you think of the test suite as validating the behavior of your code.
 Absolutely.
-But they also serve as examples of using the lib.
+You might not realize they also serve as examples of using the lib.
 Let's make that more explicit.
 
 ## Usage
@@ -28,7 +28,7 @@ It became clear with that suggestion how difficult it is to discern what portion
 It's actually quite small.
 
 So how do you communicate this to the reader.
-Perhaps by organizing your test suite better.
+By organizing your test suite to explicitly communicate your intention!
 Rather than having to dig through a ton of test files in numerous directories, make it explicit.
 
 ## usage_test.(rb|exs|js|java|etc)
@@ -36,7 +36,7 @@ Rather than having to dig through a ton of test files in numerous directories, m
 Call it like it is.
 If you're testing the usage of you library, it's a usage test.
 You could call it whatever you want, examples, acceptance, etc.
-The point is to communicate the intend, and to be honest if a convention is established that's recognizable everyone wins.
+The point is to communicate the intent, and to be honest if a convention is established that's recognizable everyone wins.
 At a certain point, you're library is probably too big to test its usage in a single file (small files communicate intent).
 Then create a `test/usage/` directory and write descriptive test files there.
 All in the name of communicating intent.
