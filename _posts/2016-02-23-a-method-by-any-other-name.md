@@ -31,7 +31,7 @@ Let's check out an example.
 
 Here's a snippet of code that was recently discussed in code review.
 
-{% highlight ruby linenos %}
+```ruby
 class Foo
   def part
     locate
@@ -43,9 +43,9 @@ class Foo
     # some part locating logic
   end
 end
-{% endhighlight %}
+```
 
-The comment came on line #3.
+The comment came on the implementation of `part`.
 
 > Why not just `alias_method :part, :locate`?
 
@@ -65,12 +65,12 @@ This becomes especially apparent when a new requirement comes in.
 
 If you had aliased `locate`, you would now be ripping that out to implement an actual `part` method.
 
-{% highlight diff linenos %}
+```diff
  def part
 -  locate
 +  @part ||= locate
  end
-{% endhighlight %}
+```
 
 Beyond this practical advantage, there is also cognitive gain.
 You know at a glance of the class that "Foo has a part" rather than "Apparently Foo's locate is also known as a part" (???).
@@ -82,12 +82,12 @@ It's out in the wild and a number of other's depend on the fact that `Foo` has a
 However, you decide that `part` isn't the best name for this data member.
 You want to refer to it as `widge` henceforth.
 
-{% highlight diff linenos %}
+```diff
  def part
    @part ||= locate
  end
 +alias_method :widget, :part
-{% endhighlight %}
+```
 
 The reader of your code immediately recognizes that `widget` is just another name for `part`.
 But please do consider a [deprecation] message.
