@@ -80,7 +80,7 @@ You know at a glance of the class that "Foo has a part" rather than "Apparently 
 Assume that you have shipped `Foo`.
 It's out in the wild and a number of other's depend on the fact that `Foo` has a `part`.
 However, you decide that `part` isn't the best name for this data member.
-You want to refer to it as `widge` henceforth.
+You want to refer to it as `widget` henceforth.
 
 ```diff
  def part
