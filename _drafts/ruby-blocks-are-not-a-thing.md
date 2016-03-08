@@ -13,7 +13,7 @@ Allow me to explain...
 
 Anytime the subject of callables comes up in Ruby, you immediately think "ah yes, blocks, procs, and lambdas".
 This paints the mental picture of 3 separate but equal concepts.
-Not so.
+Not quite.
 It's all procs.
 Blocks are just Ruby syntax.
 
