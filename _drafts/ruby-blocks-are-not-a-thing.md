@@ -3,7 +3,7 @@ layout: post
 title: Ruby Blocks Are Not a Thing
 ---
 
-Last week [teaching Ruby at Big Nerd Ranch][bnr], I made a surprising (to me) discovery.
+The other week [teaching Ruby at Big Nerd Ranch][bnr], I made a surprising (to me) discovery.
 Turns out, Ruby blocks are not a thing.
 That is, they're not an object.
 They're syntax.
@@ -19,8 +19,8 @@ Blocks are just Ruby syntax.
 
 ### Procs and Lambdas
 
-Technically, there are only procs, i.e. instances of the `Proc` class.
-Lambdas are just a special type of proc.
+When referencing callables, there are only procs, i.e. instances of the `Proc` class.
+Lambdas are a special type of proc.
 Specifically lambdas are a slightly more restrictive type of proc.
 They exhibit two behaviors not found in regular procs.
 
@@ -32,6 +32,7 @@ Quick! Let's remind ourselves what this means.
 #### Arity
 
 Lambdas raise an `ArgumentError` if the wrong number is given.
+
 ```ruby
 l = lambda { |a, b| }
 # => #<Proc:0x007f94fc386038@(irb):9 (lambda)>
@@ -40,6 +41,7 @@ l.call
 ```
 
 Procs do not.
+
 ```ruby
 p = proc { |a, b| puts "proc!" }
 # => #<Proc:0x007f94fc237290@(irb):3>
@@ -51,6 +53,7 @@ p.call
 #### Execution Context
 
 Lambdas can explicitly return from their execution.
+
 ```ruby
 def call_lambda
   value = lambda { return :ah_hah }.call
@@ -64,6 +67,7 @@ call_lambda
 ```
 
 Procs return from the calling context.
+
 ```ruby
 def call_proc
   proc { return :this_one }.call
@@ -76,9 +80,8 @@ call_proc
 
 ### Blocks
 
-Turns out the stuff we refer to as blocks in Ruby are just the syntax for a special kind of argument that may be given to a method.
-The "block" is literally the sequence of Ruby statements that is the behavior.
-Every method in Ruby may have exactly one block argument provided.
+Turns out the stuff we refer to as blocks in Ruby are just the syntax for a special kind of argument that defines a sequence of statements.
+These blocks are then used to carry out that operation at a later point.
 Actually you've already used blocks several times in the above examples.
 The methods `proc` and `lambda` require a block argument used to define their behavior.
 
@@ -106,27 +109,7 @@ pry> b
 ```
 
 There it is, a proc.
-
-### I lied a little...
-
-This post seems to be saying that "a block is just a proc".
-Well, not exactly.
-When you invoke the block argument using the `yield` method, Ruby is able to optimize the block call pretty significantly.
-Check out these benchmarks. http://mudge.name/2011/01/26/passing-blocks-in-ruby-without-block.html
-
-Even so, as far as I can tell, a _block_ is not a "thing" in Ruby.
-That is there is no way to refer to it as an object in your code without explicitly converting it to a proc.
-
-## Conclusion
-
-So to answer the question "what is a Ruby block?".
-It's just the _syntax_ for the special type of argument that is used to define the behavior of a proc.
-The only way for you to interact "directly" with a block at all is with the `yield` method, but if you wish to pass them around you've got to convert it to a proc for reference.
-And this [may be slow][slow-proc].
-
-### Oh yeah, and...
-
-One last bit, as far as I can tell the explicit block argument syntax `&b` is just sugar for `b = Proc.new`.
+As far as I can tell the explicit block argument syntax `&b` is just sugar for `b = Proc.new`.
 We can illustrate that with this method.
 
 ```ruby
@@ -139,8 +122,18 @@ foo { "orly" }
 # => "orly"
 ```
 
-The Ruby docs state that ["`Proc::new` may be called without a block only within a method with an attached block, in which case that block is converted to the Proc object."][docs]
-Can anyone confirm the sugar?
+The Ruby docs state that ["`Proc::new` may be called without a block only within a method with an attached block, in which case that block is converted to the Proc object"][docs].
+
+
+Interestingly when you invoke the block argument using the `yield` method, Ruby is able to optimize the block call pretty significantly.
+Check out [these benchmarks][slow-proc].
+
+## Conclusion
+
+So to answer the question "what is a Ruby block?".
+It's just the _syntax_ for the special type of argument that is used to define some sequence of behavior.
+The only way for you to interact "directly" with a block at all is with the `yield` method, but if you wish to pass them around you've got to convert it to a proc for reference.
+And this [may be slow][slow-proc].
 
 
 [bnr]: https://training.bignerdranch.com/classes/ruby-on-the-server
