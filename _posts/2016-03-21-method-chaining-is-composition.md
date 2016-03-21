@@ -39,7 +39,7 @@ Here's an example of Elixir's pipe, `|>`.
 => ["FOO", "BAR"]
 ```
 
-It's harder to read the composition if there is more than one function being called.
+It's harder to read the composition when there is more than one function being called.
 
 ```elixir
 # composition.exs
