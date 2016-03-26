@@ -5,6 +5,9 @@ excerpt: I tend to lean heavily on TDD to realize the design of my objects. I re
   had to jump into some JavaScript and wanted the same advantage while writing
   it.
 description: This is how I unit tested some JavaScript code.
+tags:
+- javascript
+- testing
 ---
 
 **TL;DR** - I had to learn myself to unit test JavaScript recently. I made [a repository](https://github.com/iamvery/js-unit-testing-example)

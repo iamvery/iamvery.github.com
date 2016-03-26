@@ -4,6 +4,9 @@ title: Hacking Arduino Firmata with NeoPixels
 excerpt: As part of our Clash of the Coders, one team tackled hardware hacking with Arduino, NeoPixels and Artoo.
 description: At Clash of the Coders 2015, we hacked Ardunio to make a Mastermind clone.
 canonical: https://www.bignerdranch.com/blog/hacking-arduino-firmata-with-neopixels
+tags:
+- arduino
+- big nerd ranch
 ---
 
 We recently had our annual app-building competition, [Clash of the Coders][clash].

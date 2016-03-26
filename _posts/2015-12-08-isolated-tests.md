@@ -1,6 +1,9 @@
 ---
 layout: post
 title: Isolated Tests
+tags:
+- ruby
+- testing
 ---
 
 Testing interfaces in isolation leads to good software design.

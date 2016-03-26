@@ -1,6 +1,8 @@
 ---
 layout: post
 title: Ruby Blocks Are Not a Thing
+tags:
+- ruby
 ---
 
 The other week [teaching Ruby at Big Nerd Ranch][bnr], I made a surprising (to me) discovery.

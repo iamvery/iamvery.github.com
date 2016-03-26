@@ -3,6 +3,9 @@ layout: post
 title: An Adventure in Hacking Arduino Firmata with NeoPixels
 description: If you are using NeoPixels with Artoo, you might try https://github.com/iamvery/artoo-neopixel.
 canonical: https://www.bignerdranch.com/blog/an-adventure-in-hacking-arduino-firmata-with-neopixels/
+tags:
+- ruby
+- arduino
 ---
 
 Learn ALL the things! That's basically the motto at Big Nerd Ranch. And in my last post, I wrote about how my team, The Artists Formally Known As (╯°□°)╯︵ ɥsɐןɔ, [learned a lot](https://www.bignerdranch.com/blog/hacking-arduino-firmata-with-neopixels/) of new things when we tackled hardware hacking with [Arduino][arduino], [NeoPixels][neopixel] and [Artoo][artoo].

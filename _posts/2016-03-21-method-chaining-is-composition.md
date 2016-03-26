@@ -1,6 +1,9 @@
 ---
 layout: post
 title: Method Chaining is Composition
+tags:
+- ruby
+- elixir
 ---
 
 Have you ever chained several method invocations together in a single statement?
