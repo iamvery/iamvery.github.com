@@ -1,6 +1,8 @@
 ---
 layout: post
 title: A Method by Any Other Name
+tags:
+- ruby
 ---
 
 A quick post about when I choose to alias methods in Ruby, and when I don't.

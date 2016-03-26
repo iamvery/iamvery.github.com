@@ -3,6 +3,8 @@ layout: post
 author: Jay Hayes
 title: No Date.today? It's DateTime!
 description: Time is hard. Here are some suggestions to keep things sane in Rails.
+tags:
+- rails
 ---
 
 [A while back][swift-blog-post], I got all fluffy talking about love and coffee

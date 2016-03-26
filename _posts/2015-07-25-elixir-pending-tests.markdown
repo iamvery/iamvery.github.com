@@ -2,6 +2,9 @@
 layout: post
 title: Elixir Pending Tests
 description: A quick post illustrating how easy it is to temporarily skip tests in Elixir.
+tags:
+- elixir
+- testing
 ---
 
 **Update**: This is now [built into Elixir](https://github.com/elixir-lang/elixir/commit/65f81054aa53b31e16ffb439dd6dfbf67265708d).

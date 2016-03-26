@@ -2,6 +2,9 @@
 layout: post
 title: Browser-driven Elixir Tests
 description: Automated testing of features in Elixir with a headless browser
+tags:
+- elixir
+- testing
 ---
 
 An indispensable tool of web development is the ability to drive a browser for automated feature testing.

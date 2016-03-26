@@ -3,6 +3,8 @@ layout: post
 title: Dear Jay, Work Better
 excerpt: You probably work too much. Work on things, not time.
 description: You probably work too much. Work on things, not time.
+tags:
+- satire
 ---
 
 Dear Future Jay,

@@ -2,6 +2,8 @@
 layout: post
 title: Routing Rails Resources
 description: All about routing resources in Rails.
+tags:
+- rails
 ---
 
 Recently I had a conversation with a coworker about the routes in their app. It

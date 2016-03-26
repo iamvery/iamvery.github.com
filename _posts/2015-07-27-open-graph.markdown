@@ -2,6 +2,8 @@
 layout: post
 title: Open Graph Protocol
 description: Adopt the Open Graph protocol in you site's head for great good!
+tags:
+- web
 ---
 
 My annoyance at how links were being displayed in Slack finally reached a tipping point.

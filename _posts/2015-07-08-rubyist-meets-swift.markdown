@@ -2,6 +2,10 @@
 layout: post
 title: Rubyist Meets Swift
 description: An intro to Swift from a Rubyist's point of view.
+tags:
+- ruby
+- swift
+- speaking
 ---
 
 I had a lot of fun speaking at Ancient City Ruby this year.
