@@ -1,11 +1,15 @@
 ---
 layout: post
 title: Folding Elixir
+tags:
+- elixir
 ---
 
 In functional programming, "folding" is something of a building block of other operations you may be familiar with, such as `map` and `filter`.
 Folding can be done from the left and from the right.
 Choosing the best direction depends on the problem you're solving.
+
+## Folding Addition
 
 For simple operations, like addition, it doesn't really matter which direction you go.
 Addition is an associative operation, and folding on addition is reducing a collection down to a single value, so the direction we chose only affects the order the values are combined in.
@@ -46,6 +50,8 @@ That's enough talking in abstract.
 It's time to see some real code.
 Check out this Elixir implementation of `foldr` and `foldl`.
 
+## Elixir Folds
+
 ```elixir
 defmodule Folds do
   def foldr(_, v, []), do: v
@@ -64,6 +70,8 @@ Take a moment to study this.
 You should be able to see that it's very similar to the above pseudocode.
 Both functions define a base case when the list is empty that returns the initial value (`v`).
 The recursive case contains the difference.
+
+## Mapping with Fold
 
 So you may be asking yourself when it will matter which direction you fold.
 Take the mapping operation as an example.
