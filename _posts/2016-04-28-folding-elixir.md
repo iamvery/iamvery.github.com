@@ -116,7 +116,7 @@ The benchmark maps over a list of 10,000 elements.
 The results show that `mapr` was able to iterate 5000 times during the duration of the test, and each iteration took only a few hundred microseconds.
 In contract, the `mapl` function was only able to iterate 5 times, and each iteration took about 400x longer to execute!
 
-As you can see, implementing map/2 in terms of folding from the left, is a _significantly_ operation than the opposite, and this is to do with how lists work in Elixir.
+As you can see, implementing map/2 in terms of folding from the left, is a _significantly_ slower operation than the opposite, and this is to do with how lists work in Elixir.
 
 The keen reader may have recognized an opportunity to optimize `mapl`.
 The function could be implemented with cons, however the result of the fold would be in reverse order.
