@@ -54,6 +54,10 @@ img {
   border-radius: .24rem;
 }
 
+p img {
+  max-width: 100%;
+}
+
 .container { max-width: 1200px; }
 
 @media screen and (max-width: 650px) {
