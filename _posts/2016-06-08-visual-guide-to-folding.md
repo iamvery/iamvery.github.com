@@ -137,7 +137,7 @@ def foldl([head|tail], initial, operation) do
 end
 
 add = fn a, b -> a + b end
-foldl([1,2,3], 0, operation)
+foldl([1,2,3], 0, add)
 # => 6
 ```
 [Source][ex-fold]
