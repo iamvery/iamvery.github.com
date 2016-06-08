@@ -153,6 +153,7 @@ Enum.reduce([1,2,3], 0, fn a, b -> a + b end)
 Hopefully you have found the explanation as demystifying as I have.
 Despite the inherent complexity of recursion and higher-order functions, the fold operation does not have to be difficult to grok.
 Did you find this helpful? Let me know!
+Also check out my other post, [Folding Elixir]({% post_url 2016-04-28-folding-elixir  %}) for a little more in-depth explanation of the Elixir implementation.
 
 
 [wikipedia]: https://en.wikipedia.org/wiki/Fold_(higher-order_function)
