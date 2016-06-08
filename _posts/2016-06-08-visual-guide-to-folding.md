@@ -105,6 +105,7 @@ addition = ->(a,b){ a+b }
 naive_foldl(addition, 0, [1,2,3])
 # => 6
 ```
+[Source][rb-fold]
 
 If you're not used to recursion, this iteration-based implementation might be easier to grok.
 Starting with the second argument (`result`) as our initial value, the operation is iteratively applied to the result of each operation and the next element in the array.
@@ -139,6 +140,7 @@ add = fn a, b -> a + b end
 foldl([1,2,3], 0, operation)
 # => 6
 ```
+[Source][ex-fold]
 
 This implementation recursively calls `foldl` by applying the `operation` to each resulting value and the next element ("head") of the list.
 In fact, similar to Ruby's stdlib Elixir offers a very similar function by the name `reduce` in it's `Enum` module.
@@ -157,3 +159,5 @@ Also check out my other post, [Folding Elixir]({% post_url 2016-04-28-folding-el
 
 
 [wikipedia]: https://en.wikipedia.org/wiki/Fold_(higher-order_function)
+[rb-fold]: https://github.com/iamvery/iamvery.github.com/blob/master/examples/2016/06/fold.rb
+[ex-fold]: https://github.com/iamvery/iamvery.github.com/blob/master/examples/2016/06/fold.exs
