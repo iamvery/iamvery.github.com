@@ -72,7 +72,7 @@ With this new concept realized, it's easy to imagine giving the duck a voice.
 {% endhighlight %}
 
 Testing that a duck speaks is just a matter of making sure that it utters its voice.
-This frees you to change what it means to utter a quack without affecting the the means the duck uses to speak.
+This frees you to change what it means to utter a quack without affecting the means the duck uses to speak.
 
 ## Integration
 
