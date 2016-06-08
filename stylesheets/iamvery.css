@@ -49,6 +49,7 @@ pre {
 .pull-right { float: right; }
 
 img {
+  max-width: 100%;
   display: block;
   margin: .24rem auto;
   border-radius: .24rem;
