@@ -1,3 +1,7 @@
+# Run this:
+#
+#    rspec fold.rb
+#
 def naive_foldl(operation, result, list)
   list.each do |item|
     result = operation.(result, item)

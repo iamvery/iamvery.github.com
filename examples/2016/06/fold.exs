@@ -1,3 +1,7 @@
+# Run this:
+#
+#    elixir fold.exs
+#
 defmodule Folds do
   def foldl([], result, _operation), do: result
   def foldl([head|tail], initial, operation) do
