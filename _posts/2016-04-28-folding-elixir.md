@@ -5,9 +5,12 @@ tags:
 - elixir
 ---
 
-In functional programming, "folding" is something of a building block of other operations you may be familiar with, such as `map` and `filter`.
+In functional programming, "folding" is a building block of other operations.
+You may be familiar with some of them: `map`, `filter`, etc.
 Folding can be done from the left and from the right.
 Choosing the best direction depends on the problem you're solving.
+
+New to fold? Check out my [visual guide]({% post_url 2016-06-08-visual-guide-to-folding %}).
 
 ## Folding Addition
 
