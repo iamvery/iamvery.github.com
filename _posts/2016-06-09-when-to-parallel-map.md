@@ -1,6 +1,6 @@
 ---
 layout: post
-title: When to parallel map
+title: When to Parallel Map
 tags:
 - functional programming
 - elixir
