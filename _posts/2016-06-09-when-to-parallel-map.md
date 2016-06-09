@@ -65,6 +65,8 @@ slow pmap                     78.93
 slow map                      0.50            - 157.91x slower
 ```
 
+Slow operation, parallel map wins. Fast operation, regular map wins.
+
 
 [prog-ex]: https://pragprog.com/book/elixir/programming-elixir
 [nl-pmap]: http://nathanmlong.com/2014/07/pmap-in-elixir/
