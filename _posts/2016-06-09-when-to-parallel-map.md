@@ -27,10 +27,9 @@ In the case of parallel map there are two taxes:
 Therefore...
 
 Use parallel if:
-> cost of iteration + cost of processes **<** sum(cost of operations)
+> sum(cost of operations) **>** cost of iteration + cost of processes
 
-Use regular map if:
-> cost of iteration + cost of processes **>** sum(cost of operations)
+Otherwise, use regular map.
 
 Put more succinctly, parallel map is a good fit if the operation being performed on each element is slow.
 
