@@ -3,6 +3,7 @@ layout: post
 title: When to parallel map
 tags:
 - functional programming
+- elixir
 ---
 
 In his book, [Programming Elixir][prog-ex], Dave Thomas referrs to the parallel map function as the "hello world of Erlang".
@@ -22,6 +23,47 @@ In the case of parallel map there are two taxes:
 
 1. the overhead of creating and communicating with processes
 1. two iterations through the list (one to start processes, one to get results)
+
+Therefore...
+
+Use parallel if:
+> cost of iteration + cost of processes **<** sum(cost of operations)
+
+Use regular map if:
+> cost of iteration + cost of processes **>** sum(cost of operations)
+
+Put more succinctly, parallel map is a good fit if the operation being performed on each element is slow.
+
+Here's a benchmark in Elixir.
+
+<script src="http://gist-it.appspot.com/http://github.com/iamvery/elixir-parallel-mapping/blob/master/samples/maps.exs"></script>
+
+And the results:
+
+```
+● master ~/Code/OSS/parallel » mix run samples/maps.exs
+Benchmarking quick pmap...
+Benchmarking quick map...
+
+Name                          ips            average        deviation      median
+quick map                     23093.24       43.30μs        (±19.05%)      41.00μs
+quick pmap                    140.88         7098.46μs      (±16.30%)      6926.00μs
+
+Comparison:
+quick map                     23093.24
+quick pmap                    140.88          - 163.93x slower
+
+Benchmarking slow pmap...
+Benchmarking slow map...
+
+Name                          ips            average        deviation      median
+slow pmap                     78.93          12668.78μs     (±9.53%)       12592.50μs
+slow map                      0.50           2000475.00μs   (±0.02%)       2000475.00μs
+
+Comparison:
+slow pmap                     78.93
+slow map                      0.50            - 157.91x slower
+```
 
 
 [prog-ex]: https://pragprog.com/book/elixir/programming-elixir
