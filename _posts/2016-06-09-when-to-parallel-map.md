@@ -9,7 +9,7 @@ tags:
 In his book, [Programming Elixir][prog-ex], Dave Thomas referrs to the parallel map function as the "hello world of Erlang".
 It is a fun problem to solve!
 The premise is relatively simple, the operation performed on each element is done in separate processes.
-This allows the work to potentially be done in parallel on the collection.
+This allows the work to be done in parallel on the collection.
 If you're interested in an exmaple, check out my friend [Nathan Long's post][nl-pmap]
 
 So why would you want to map over a collection in parallel?
