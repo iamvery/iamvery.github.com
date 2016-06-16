@@ -3,7 +3,7 @@ layout: post
 title: Spawning Agent Smiths
 description:
   State in a functional programming environment is much different than object oriented.
-  Implementing something like Elixir's Agent module on your own isn't as hard as you might thing.
+  Implementing something like Elixir's Agent module on your own isn't as hard as you might think.
 tags:
 - elixir
 ---
