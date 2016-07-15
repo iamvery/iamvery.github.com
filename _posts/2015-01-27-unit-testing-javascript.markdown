@@ -10,6 +10,10 @@ tags:
 - testing
 ---
 
+**Update** The jasmine-npm module and its README is an even more to the point example of this setup. Check it out https://github.com/jasmine/jasmine-npm.
+
+---
+
 **TL;DR** - I had to learn myself to unit test JavaScript recently. I made [a repository](https://github.com/iamvery/js-unit-testing-example)
 to illustrate my findings.
 
