@@ -10,7 +10,7 @@ tags:
 - testing
 ---
 
-**Update** The jasmine-npm module and its README is an even more to the point example of this setup. Check it out https://github.com/jasmine/jasmine-npm.
+**Update** The jasmine-npm module and its README is an even more to the point example of this setup. Check it out [https://github.com/jasmine/jasmine-npm](https://github.com/jasmine/jasmine-npm).
 
 ---
 
