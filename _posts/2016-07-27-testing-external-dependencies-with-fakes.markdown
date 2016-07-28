@@ -103,7 +103,7 @@ Here's a pull request that shows a similar [implementation in the context of an 
 
 ## Confidence in the Implementation
 
-No real integration happens in test. How can we be sure it really works? That's a genuine concern.
+No real integration happens in test. How can you be sure it really works? That's a genuine concern.
 
 The library code (the bit performing external communication) must itself have integration tests written that verify its own external behavior. When using a third-party library, this is often a responsibility that maintainers take seriously. If you have written the integration (or you don't trust theirs), test the integration directly in isolation. You might use a tool like [VCR][vcr] to record and play back web requests for tests.
 
