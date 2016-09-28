@@ -6,7 +6,7 @@ title: "Getting Started with Elixir Metaprogramming"
 description: Implement persistence in an Alexa Skill so that users can access saved data.
 excerpt: After spending a little time with Elixir, you might have found out its secret. Elixir embraces metaprogramming. In fact most of Elixir is written in Elixir. Let that sink in.
 tags:
-- Elixir
+- elixir
 canonical: https://www.bignerdranch.com/blog/getting-started-with-elixir-metaprogramming/
 ---
 
