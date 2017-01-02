@@ -33,7 +33,7 @@ h/t [@CodingItWrong][ciw] for the "fig leaf" metaphor
 
 
 
-[core-list]: https://groups.google.com/forum/#!topic/elixir-lang-core
+[core-list]: https://groups.google.com/forum/#!forum/elixir-lang-core
 [the-post]: https://groups.google.com/forum/#!topic/elixir-lang-core/Otz0uuML764
 [koans]: https://elixirkoans.io
 [bug]: https://github.com/elixirkoans/elixir-koans/pull/134/commits/a2e3fe6d93b14e9105238f85554c8661e8ad9c53
