@@ -90,7 +90,7 @@ Hurray, you have visited the first object, but the algorithm is incomplete. How 
 
 To answer this question, consider the _types_ of children that must also be visited: arrays and objects. Take those into account:
 
-```Javascript
+```javascript
 function* visit(obj) {
   let queue = [obj], next
   while(queue.length > 0) {
@@ -165,7 +165,7 @@ each(obj, console.log) // THIS IS THE LOOP THAT NEVER ENDS
 
 The issue is easily addressed by ensuring that the exact same node is never visited twice. You can accomplish this by keeping track of which nodes have been seen:
 
-```Diff
+```diff
  function* visit(obj) {
 -  let queue = [obj], next
 +  let queue = [obj], next, seen = new Set()
