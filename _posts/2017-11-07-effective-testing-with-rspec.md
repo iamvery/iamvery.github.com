@@ -1,3 +1,12 @@
+---
+layout: post
+title: Effective Testing with RSpec 3
+description: A book review. TL;DR 👍
+tags:
+- ruby
+- testing
+---
+
 If you know me, you know I have opinions about testing software. I've been writing software for over ten years now. The single most important skill that I have picked up is writing automated tests. It helps make our work more predictable and increases confidence to make changes. Heck, it's even fun! If you haven't used tests to drive a feature, check out [my workshop from RailsConf][rc-ws].
 
 Cool, so I love testing. So you can imagine my excitement when [Myron Marston][myron] asked me to have a look at his new book, [Effective Testing with RSpec 3][rspec-book]. At 600+ (iPad) pages, this is a book _packed_ with information. In a way it has multiple personalities, but they'll all help you write better software.
