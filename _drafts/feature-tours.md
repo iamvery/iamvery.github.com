@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Feature Tours"
-description: TODO
+description: "Combine many acceptance test examples into a single tour of the feature being tested."
 tags:
 - testing
 - ruby
