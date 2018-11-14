@@ -49,7 +49,7 @@ RSpec.describe 'Post management' do
     expect(page).to have_content('Once upon a time, there was a post.')
 
     click_on 'Delete'
-	expect(page).to have_content('Post deleted.')
+    expect(page).to have_content('Post deleted.')
     expect(page).not_to have_content('An Post')
 
     visit '/'
@@ -65,12 +65,12 @@ RSpec.describe 'Post management' do
   it 'supports creating, viewing, editing, and deleting' do
     add_post('An Post', 'An post body.')
     see_post_created('An Post', 'An post body.')
-    
+
     edit_post('Once upon a time, there was a post.')
-	see_post_updated('An Post', 'Once upon a time, there was a post.')
+    see_post_updated('An Post', 'Once upon a time, there was a post.')
 
     delete_post('An Post')
-	see_post_deleted('An Post')
+    see_post_deleted('An Post')
   end
 
   def add_post(title, body)
@@ -94,7 +94,7 @@ RSpec.describe 'Post management' do
     click_on title
     click_on 'Delete'
   end
-    
+
   def see_post_created(title, body)
     expect(page).to have_content('Post created.')
     see_post(title, body)
@@ -108,7 +108,7 @@ RSpec.describe 'Post management' do
   def see_post_deleted(title)
     expect(page).to have_content('Post deleted.')
     expect(page).not_to have_content(title)
-   	visit '/'
+    visit '/'
     expect(page).not_to have_content(title)
   end
 
