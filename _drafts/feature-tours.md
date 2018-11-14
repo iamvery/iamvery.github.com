@@ -20,6 +20,10 @@ Tests at this level are supposed to exercise the system _as a user of it_. There
 
 Another problem with writing code to set up acceptance-level examples is that everything you're writing is in some way coupled to the underlying implementation. Therefore, you will often see this features begin to fail when seemingly unimportant implementation changes are made to the system. This might be categorized as what TestDouble calls a ["NOOOPE" test](https://github.com/testdouble/contributing-tests/wiki/Testing-Pyramid).
 
+## Speed
+
+As a final observation, I would like to mention that this style of testing may lead to a faster test suite. It's true, these style of tests can be _very_ slow. In the context of web, they often involve some sort of browser automation that just takes time to setup and teardown. Therefore, the fewer times you have to do this the better off you are.
+
 ## Feature Tours
 
 The proposal is that we write such tests as _tours_ of the feature being exercised. For example, if you're building some basic CRUD functionality in a web app, the test script might look like this:
@@ -58,7 +62,7 @@ RSpec.describe 'Post management' do
 end
 ```
 
-If you're like me, this is a bit hard to understand at a glance. As such, I like to extract methods to really emphasize what is in the tour.
+If you're like me, this is a bit hard to understand at a glance. As such, I like to extract methods to really emphasize what is in the tour. It's important to recognize that this is just a code organization change and does not affect the run. Everything still happens sequentially.
 
 ```ruby
 RSpec.describe 'Post management' do
@@ -119,13 +123,9 @@ RSpec.describe 'Post management' do
 end
 ```
 
-You may noticed some interesting things about this approach. First, the order of the steps in the tour is very important. For example, you can't very well _see_ a post until it exists. So for a CRUD feature, very often your tour will end up in the namesake's order: create, read, update, delete.
+You may have noticed some interesting things about this approach. First, the order of the steps in the tour is very important. For example, you can't very well _see_ a post until it exists. So for a CRUD feature, very often your tour will end up in the namesake's order: create, read, update, delete.
 
-But most importantly this tour is entirely agnostic of the implementation details of the system. It's only dependencies are the text and links on the page. It's _content_ focused. This is also useful when it comes to making visual changes to an app that should not affect behavior.
-
-## Speed
-
-As a final observation, I would like to mention that this style of testing may lead to a faster test suite. It's true, these style of tests can be _very_ slow. In the context of web, they often involve some sort of browser automation that just takes time to setup and teardown. Therefore, the fewer times you have to do this the better off you are.
+But most importantly this tour is entirely agnostic of the implementation details of the system. Its only dependencies are the text and links on the page. It's _content_ focused. This is also useful when it comes to making visual changes to an app that should not affect behavior.
 
 ## Summary
 
