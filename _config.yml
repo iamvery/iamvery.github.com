@@ -4,4 +4,4 @@ url: http://iamvery.com
 exclude: ["bin", "Gemfile", "Gemfile.lock", "README.md"]
 highlighter: rouge
 markdown: kramdown
-gems: [jekyll-gist]
+plugins: [jekyll-gist]
