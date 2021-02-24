@@ -1,0 +1,119 @@
+html {
+  font-family: 'Merriweather', serif;
+}
+
+body {
+  margin: 30px 0;
+  font-weight: light;
+}
+
+h2 { line-height: 1; }
+
+h3 a {
+  text-decoration: none;
+  color: black;
+}
+h3 i.fa { display: none; }
+h3:hover i { display: inline-block; }
+
+header h3 {
+  font-weight: normal;
+}
+
+blockquote {
+  padding-left: 15px;
+  border-left: 5px solid rgb(200, 200, 200);
+}
+
+footer { text-align: center; }
+
+footer small {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+code {
+  padding: 0 3px;
+  background-color: rgb(245, 245, 245);
+  border-radius: .24rem;
+}
+
+pre {
+  padding: .24rem;
+  background-color: rgb(245, 245, 245);
+  border-radius: .24rem;
+  overflow-x: scroll;
+}
+
+.pull-left { float: left; }
+.pull-right { float: right; }
+
+img {
+  max-width: 100%;
+  display: block;
+  margin: .24rem;
+  border-radius: .24rem;
+}
+
+p img {
+  max-width: 100%;
+}
+
+.container { max-width: 1200px; }
+
+@media screen and (max-width: 650px) {
+  img {
+    margin: 0;
+    margin-bottom: 30px;
+    margin-bottom: 1.5rem;
+    float: none !important;
+  }
+}
+
+ul.nav {
+  padding: 0;
+  list-style-type: none;
+}
+
+a { color: rgb(215, 100, 100); }
+a:hover { text-decoration: none; }
+
+.logo {
+  margin: 0;
+  margin-bottom: 5px;
+  margin-bottom: .2rem;
+}
+
+.logo a {
+  color: black;
+  text-decoration: none;
+  font-family: 'Crete Round', serif;
+  font-weight: normal;
+  font-size: 70px;
+  font-size: 3.5rem;
+  transition: 0.1s linear;
+}
+
+.logo a:hover { color: rgb(215, 100, 100); }
+
+.button {
+  display: block;
+  margin: .24rem;
+  padding: .375rem;
+  text-align: center;
+  color: white;
+  background-color: rgba(0,0,0,.15);
+  border-radius: .24rem;
+  text-shadow: 0 1px 1px rgba(0,0,0,.1);
+  text-decoration: none;
+  border: 1px solid rgba(0,0,0,.1);
+  transition: 0.1s linear;
+}
+
+.button:hover {
+  background-color: rgba(0,0,0,.2);
+  transition: 0.1s linear;
+}
+
+.button.red { background-color: rgb(215, 100, 100); }
+.button.red:hover { background-color: rgb(190, 80, 80); }
