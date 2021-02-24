@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Folding Elixir / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Folding Elixir" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2016/04/28/folding-elixir.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2016/04/28/folding-elixir.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Folding Elixir</h1>
+</header>
+
+<p>
+  &mdash;
+  Apr 28, 2016
+</p>
+
+<p>In functional programming, “folding” is a building block of other operations.
+You may be familiar with some of them: <code class="language-plaintext highlighter-rouge">map</code>, <code class="language-plaintext highlighter-rouge">filter</code>, etc.
+Folding can be done from the left and from the right.
+Choosing the best direction depends on the problem you’re solving.</p>
+
+<p>New to fold? Check out my <a href="/2016/06/08/visual-guide-to-folding.html">visual guide</a>.</p>
+
+<h2 id="folding-addition">Folding Addition</h2>
+
+<p>For simple operations, like addition, it doesn’t really matter which direction you go.
+Addition is an associative operation, and folding on addition is reducing a collection down to a single value, so the direction we chose only affects the order the values are combined in.
+For example, a right fold of addition would look something like this.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># add_foldr(0, [1,2,3])
+(1 + (2 + (3 + 0)))
+</code></pre></div></div>
+
+<p>And from the left.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># add_foldl(0, [1,2,3])
+(((0 + 1) + 2) + 3)
+</code></pre></div></div>
+
+<p>There are essentially two differences.</p>
+
+<ol>
+  <li>The side that folding proceeds from.</li>
+  <li>The element that is combined with the initial (<code class="language-plaintext highlighter-rouge">0</code> in this case) value.</li>
+</ol>
+
+<p>So you might imagine an implementation of <code class="language-plaintext highlighter-rouge">add_foldr</code> and <code class="language-plaintext highlighter-rouge">add_foldl</code> looks something like this.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>add_foldr(initial, [first|rest]) = first + foldr(initial, rest)
+add_foldl(initial, [first|rest]) = foldl(initial + first, rest)
+</code></pre></div></div>
+
+<p>These implementations are limited to addition which cripples the power of folding, so here’s another implementation that accepts a generic binary operation (<code class="language-plaintext highlighter-rouge">op</code>).</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>foldr(op, initial, [first|rest]) = first op foldr(initial, rest)
+foldl(op, initial, [first|rest]) = foldl(initial op first, rest)
+</code></pre></div></div>
+
+<p>That’s enough talking in abstract.
+It’s time to see some real code.
+Check out this Elixir implementation of <code class="language-plaintext highlighter-rouge">foldr</code> and <code class="language-plaintext highlighter-rouge">foldl</code>.</p>
+
+<h2 id="elixir-folds">Elixir Folds</h2>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">defmodule</span> <span class="no">Folds</span> <span class="k">do</span>
+  <span class="k">def</span> <span class="n">foldr</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="p">[]),</span> <span class="k">do</span><span class="p">:</span> <span class="n">v</span>
+  <span class="k">def</span> <span class="n">foldr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="p">[</span><span class="n">x</span><span class="o">|</span><span class="n">xs</span><span class="p">])</span> <span class="k">do</span>
+    <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">foldr</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">xs</span><span class="p">))</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="n">foldl</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="p">[]),</span> <span class="k">do</span><span class="p">:</span> <span class="n">v</span>
+  <span class="k">def</span> <span class="n">foldl</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="p">[</span><span class="n">x</span><span class="o">|</span><span class="n">xs</span><span class="p">])</span> <span class="k">do</span>
+    <span class="n">foldl</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="n">xs</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Take a moment to study this.
+You should be able to see that it’s very similar to the above pseudocode.
+Both functions define a base case when the list is empty that returns the initial value (<code class="language-plaintext highlighter-rouge">v</code>).
+The recursive case contains the difference.</p>
+
+<h2 id="mapping-with-fold">Mapping with Fold</h2>
+
+<p>So you may be asking yourself when it will matter which direction you fold.
+Take the mapping operation as an example.
+Start by defining right and left versions of map/2.</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="n">mapr</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">do</span>
+  <span class="n">mapper</span> <span class="o">=</span> <span class="k">fn</span> <span class="n">item</span><span class="p">,</span> <span class="n">rest</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">|</span><span class="n">rest</span><span class="p">]</span> <span class="k">end</span>
+  <span class="n">foldr</span><span class="p">(</span><span class="n">mapper</span><span class="p">,</span> <span class="p">[],</span> <span class="n">list</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="k">def</span> <span class="n">mapl</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">do</span>
+  <span class="n">mapper</span> <span class="o">=</span> <span class="k">fn</span> <span class="n">list</span><span class="p">,</span> <span class="n">item</span> <span class="o">-&gt;</span> <span class="n">list</span> <span class="o">++</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">item</span><span class="p">)]</span> <span class="k">end</span>
+  <span class="n">foldl</span><span class="p">(</span><span class="n">mapper</span><span class="p">,</span> <span class="p">[],</span> <span class="n">list</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>Both implementations define a mapper function and pass it along to their corresponding fold.
+You should notice that the mapper from the right can take advantage of the cons(truct) operation (<code class="language-plaintext highlighter-rouge">[head|tail]</code>).
+The mapper from the left cannot use cons because the elements are evaluated in the opposite order.
+Instead list concatenation must be used.
+Unfortunately concatenation is demonstrably slower than cons.
+Here’s a benchmark of the above code.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>● master ~/Code/OSS/folding_elixir » mix bench
+Settings:
+  duration:      1.0 s
+
+## MapBench
+[20:15:50] 1/2: mapping via foldr
+[20:15:54] 2/2: mapping via foldl
+
+Finished in 5.57 seconds
+
+## MapBench
+mapping via foldr        5000   649.56 µs/op
+mapping via foldl           5   263533.40 µs/op
+</code></pre></div></div>
+
+<p>The benchmark maps over a list of 10,000 elements.
+The results show that <code class="language-plaintext highlighter-rouge">mapr</code> was able to iterate 5000 times during the duration of the test, and each iteration took only a few hundred microseconds.
+In contract, the <code class="language-plaintext highlighter-rouge">mapl</code> function was only able to iterate 5 times, and each iteration took about 400x longer to execute!</p>
+
+<p>As you can see, implementing map/2 in terms of folding from the left, is a <em>significantly</em> slower operation than the opposite, and this is to do with how lists work in Elixir.</p>
+
+<p>The keen reader may have recognized an opportunity to optimize <code class="language-plaintext highlighter-rouge">mapl</code>.
+The function could be implemented with cons, however the result of the fold would be in reverse order.
+Since lists in Elixir are implemented as a linked list, reversing them is a very inexpensive operation.
+As it turns out, doing this significantly improves the speed of mapping from the left.</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="n">maplr</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">do</span>
+  <span class="n">mapper</span> <span class="o">=</span> <span class="k">fn</span> <span class="n">list</span><span class="p">,</span> <span class="n">item</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="o">|</span><span class="n">list</span><span class="p">]</span> <span class="k">end</span>
+  <span class="n">foldl</span><span class="p">(</span><span class="n">mapper</span><span class="p">,</span> <span class="p">[],</span> <span class="n">list</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="no">Enum</span><span class="o">.</span><span class="n">reverse</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>And the benchmark results.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mapping via foldl and reversing        5000   695.76 µs/op
+</code></pre></div></div>
+
+<p>Quite close to the mapping from the right!
+However, this implementation is no longer implemented in terms of <em>just</em> folding.</p>
+
+<p>If you’re interested in the code used above, it’s <a href="https://github.com/iamvery/folding_elixir">available on Github</a>.</p>
+
+
+<footer>
+  <p>
+    <a href="/2016/04/13/assignment-vs-matching.html">&laquo; Previous</a>
+    |
+    <a href="/2016/05/16/fix-elixir-build.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

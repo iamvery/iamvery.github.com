@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="All about routing resources in Rails." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Routing Rails Resources / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Routing Rails Resources" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2014/12/09/routing-rails-resources.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="All about routing resources in Rails." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2014/12/09/routing-rails-resources.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Routing Rails Resources</h1>
+</header>
+
+<p>
+  &mdash;
+  Dec 09, 2014
+</p>
+
+<p>Recently I had a conversation with a coworker about the routes in their app. It
+turns out that they (an experienced Rails dev) had not seen nested resources
+on collections rather than members. (If you don’t know what that means, stay
+tuned.) During our discussion I quickly realized I had some serious gaps in
+my knowledge of Rails routing as well!.. TO THE INTERNET</p>
+
+<p><img src="/img/blog/2014/12/batman-spinning.gif" alt="" /></p>
+
+<h2 id="a-basic-resource">A Basic Resource</h2>
+
+<p>One of the simplest routes in a Rails app is a resource. A plural resource
+generates 8 routes.</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="err">#</span> in config/rountes.rb
+<span class="p">resources :foos
+</span>
+# output of bin/rake routes:
+<span class="p">Prefix Verb   URI Pattern              Controller#Action
+</span>    foos GET    /foos(.:format)          foos#index
+         POST   /foos(.:format)          foos#create
+ new_foo GET    /foos/new(.:format)      foos#new
+<span class="p">edit_foo GET    /foos/:id/edit(.:format) foos#edit
+</span>     foo GET    /foos/:id(.:format)      foos#show
+         PATCH  /foos/:id(.:format)      foos#update
+         PUT    /foos/:id(.:format)      foos#update
+         DELETE /foos/:id(.:format)      foos#destroy</code></pre></figure>
+
+<p>You can restrict the generated routes by <code class="language-plaintext highlighter-rouge">:only</code> defining particular actions.
+Let’s use that option for the following examples to keep outputs to a minimum.</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="err">#</span> in config/routes.rb
+<span class="gd">- resources :foos
+</span><span class="gi">+ resources :foos, only: :index
+</span>
+# output of bin/rake routes:
+<span class="p">Prefix Verb   URI Pattern              Controller#Action
+</span>    foos GET    /foos(.:format)          foos#index
+<span class="gd">-          POST   /foos(.:format)          foos#create
+-  new_foo GET    /foos/new(.:format)      foos#new
+- edit_foo GET    /foos/:id/edit(.:format) foos#edit
+-      foo GET    /foos/:id(.:format)      foos#show
+-          PATCH  /foos/:id(.:format)      foos#update
+-          PUT    /foos/:id(.:format)      foos#update
+-          DELETE /foos/:id(.:format)      foos#destroy</span></code></pre></figure>
+
+<h2 id="as">As</h2>
+
+<p>Depending on how familiar you are with Rails, you may not know what “Prefix”
+means in the context of routing. These names correspond to Rails generated
+<a href="http://guides.rubyonrails.org/routing.html#path-and-url-helpers">path helpers</a>.
+So what if you want to customize the name of these helper methods?</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="err">#</span> in config/routes.rb
+<span class="gd">- resources :foos, only: :index
+</span><span class="gi">+ resources :foos, only: :index, as: :bar
+</span>
+# output of bin/rake routes:
+<span class="p">Prefix Verb   URI Pattern              Controller#Action
+</span><span class="gd">-     foos GET    /foos(.:format)          foos#index
+</span><span class="gi">+ bar_index GET    /foos(.:format)          foos#index</span></code></pre></figure>
+
+<p>You’ll notice that the prefix is now named after “bar” rather than “foo”. One
+tricky little detail is that the “index” path is no longer pluralized. Instead
+it has an “_index” suffix.</p>
+
+<h2 id="path">Path</h2>
+
+<p>What if instead you want to change the URI for a particular resource without
+affecting the generated path helpers and associated controller? CAN DO!</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="err">#</span> in config/routes.rb
+<span class="gd">- resources :foos, only: :index
+</span><span class="gi">+ resources :foos, only: :index, path: :bar
+</span>
+# output of bin/rake routes:
+<span class="p">Prefix Verb   URI Pattern              Controller#Action
+</span><span class="gd">-     foos GET    /foos(.:format)          foos#index
+</span><span class="gi">+     foos GET    /bar(.:format)           foos#index</span></code></pre></figure>
+
+<p>Now the resource is accessed from “outside” the app by the URI <code class="language-plaintext highlighter-rouge">/bar</code>, but
+internally it is still referred to as <code class="language-plaintext highlighter-rouge">foo</code>. Don’t miss that the value of
+<code class="language-plaintext highlighter-rouge">:path</code> is used exactly as the resource’s path. It isn’t pluralized for a
+plural route.</p>
+
+<h2 id="controller">Controller</h2>
+
+<p>You can also customize the name the controller name of your resource.</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="err">#</span> in config/routes.rb
+<span class="gd">- resources :foos, only: :index
+</span><span class="gi">+ resources :foos, only: :index, controller: :bar
+</span>
+# output of bin/rake routes:
+<span class="p">Prefix Verb   URI Pattern              Controller#Action
+</span><span class="gd">-     foos GET    /foos(.:format)          foos#index
+</span><span class="gi">+     foos GET    /foos(.:format)          bar#index</span></code></pre></figure>
+
+<p>You can see that this defines a route which expects a <code class="language-plaintext highlighter-rouge">BarController</code> to be
+defined. It’s also worth nothing that while the controller is (as always)
+suffixed with “Controller”, it does <em>not</em> pluralize the given name for
+plural resources.</p>
+
+<h2 id="module">Module</h2>
+
+<p>Ruby programmers commonly use Ruby <code class="language-plaintext highlighter-rouge">Module</code> to namespace objects. By default all
+resources are defined at the top level. You may still want to take advantage of
+code organization by modules for your objects.</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="err">#</span> in config/routes.rb
+<span class="gd">- resources :foos, only: :index
+</span><span class="gi">+ resources :foos, only: :index, module: :bar
+</span>
+# output of bin/rake routes:
+<span class="p">Prefix Verb   URI Pattern              Controller#Action
+</span><span class="gd">-     foos GET    /foos(.:format)          foos#index
+</span><span class="gi">+     foos GET    /foos(.:format)          bar/foos#index</span></code></pre></figure>
+
+<p>If you’re not familiar with the output of the Rails <code class="language-plaintext highlighter-rouge">routes</code> rake task, it may
+not be immediately obvious what’s going on here. But the short of it is that
+the controller must now we “namespaced” by a <code class="language-plaintext highlighter-rouge">Bar</code> Module. So the relevant
+controller would be <code class="language-plaintext highlighter-rouge">Bar::FoosController</code>. Conveniently the URI pattern and
+“prefix” (which corresponds to <a href="http://guides.rubyonrails.org/routing.html#path-and-url-helpers">path helpers</a>)
+are not affected by this option. Sweet.</p>
+
+<h2 id="namespace">Namespace</h2>
+
+<p>Commonly enough it is desirable to “prefix” path helpers, URI, and the
+controller with an identifier. One example of such might be “nesting” a number
+of resources in an “admin” namespace.</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="err">#</span> in config/routes.rb
+<span class="gd">- resources :foos, only: :index
+</span><span class="gi">+ namespace :bar do
++   resources :foos, only: :index
++ end
+</span>
+# output of bin/rake routes:
+<span class="p">Prefix Verb   URI Pattern              Controller#Action
+</span><span class="gd">-     foos GET    /foos(.:format)          foos#index
+</span><span class="gi">+ bar_foos GET    /bar/foos(.:format)      bar/foos#index</span></code></pre></figure>
+
+<p>This is the first “block style” routing directive that you’re seeing. Route
+namespaces are specified by calling the <code class="language-plaintext highlighter-rouge">namespace</code> method with a block
+defining the namespaced resources. If you only wish to namespace a single
+resource, it might be tempting to pass a <code class="language-plaintext highlighter-rouge">:namespace</code> option to your resource.
+Be warned! It doesn’t work as you might expect.</p>
+
+<h1 id="nested-resources">Nested Resources</h1>
+
+<p>It is often desirable to design routes based on the relations that exist
+in your model. For example, if you wanted to get all comments made by a user
+you might expect the route for this resource to exist at <code class="language-plaintext highlighter-rouge">/users/jay/comments</code>.</p>
+
+<h2 id="a-basic-nested-resource">A Basic Nested Resource</h2>
+
+<p>As a baseline here is the most basic nested resource. Much like the basic
+resource, a suite of routes is defined for each resource.</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="err">#</span> in config/routes.rb
+<span class="p">resources :foos do
+</span>  resources :bars
+<span class="p">end
+</span>
+# output of bin/rake routes:
+      Prefix Verb   URI Pattern                           Controller#Action
+    foo_bars GET    /foos/:foo_id/bars(.:format)          bars#index
+             POST   /foos/:foo_id/bars(.:format)          bars#create
+ new_foo_bar GET    /foos/:foo_id/bars/new(.:format)      bars#new
+<span class="p">edit_foo_bar GET    /foos/:foo_id/bars/:id/edit(.:format) bars#edit
+</span>     foo_bar GET    /foos/:foo_id/bars/:id(.:format)      bars#show
+             PATCH  /foos/:foo_id/bars/:id(.:format)      bars#update
+             PUT    /foos/:foo_id/bars/:id(.:format)      bars#update
+             DELETE /foos/:foo_id/bars/:id(.:format)      bars#destroy
+        foos GET    /foos(.:format)                       foos#index
+             POST   /foos(.:format)                       foos#create
+     new_foo GET    /foos/new(.:format)                   foos#new
+    edit_foo GET    /foos/:id/edit(.:format)              foos#edit
+         foo GET    /foos/:id(.:format)                   foos#show
+             PATCH  /foos/:id(.:format)                   foos#update
+             PUT    /foos/:id(.:format)                   foos#update
+             DELETE /foos/:id(.:format)                   foos#destroy</code></pre></figure>
+
+<p>That’s a ton of routes for 3 lines. You will notice that the “nested” resource
+establishes routes “beneath” individual “parent” resources. Also as you might
+have expected, you get 16 routes. 8 for each resource. In effort to keep noise
+to a minimum, you will use the <code class="language-plaintext highlighter-rouge">only: :index</code> option from here on.</p>
+
+<h2 id="module-1">Module</h2>
+
+<p>You may not have caught the detail that “bars”, while indeed nested in the path
+helper and URI, were <em>not</em> namespaced at the controller. Grab the familiar
+<code class="language-plaintext highlighter-rouge">module</code> option to nest the controller.</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="err">#</span> in config/routes.rb
+<span class="p">resources :foos, only: :index do
+</span><span class="gd">-  resources :bars, only: :index
+</span><span class="gi">+  resources :bars, only: :index, module: :baz
+</span><span class="p">end
+</span>
+# output of bin/rake routes:
+      Prefix Verb   URI Pattern                           Controller#Action
+<span class="gd">-    foo_bars GET    /foos/:foo_id/bars(.:format)          bars#index
+</span><span class="gi">+    foo_bars GET    /foos/:foo_id/bars(.:format)          baz/bars#index
+</span>        foos GET    /foos(.:format)                       foos#index</code></pre></figure>
+
+<p>Perhaps the contrived nature of the example doesn’t do the behavior justice,
+but you may run into a case for this eventually.</p>
+
+<h2 id="collection">Collection</h2>
+
+<p>Above I mentioned that the nested resource is under an individual “member”
+(instance) of the parent resource. So what if we wanted to nest under the
+“collection”?</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="err">#</span> in config/routes.rb
+<span class="p">resources :foos, only: :index do
+</span><span class="gd">-  resources :bars, only: :index
+</span><span class="gi">+  controller do
++    resources :bars, only: :index
++  end
+</span><span class="p">end
+</span>
+# output of bin/rake routes:
+      Prefix Verb   URI Pattern                           Controller#Action
+<span class="gd">-    foo_bars GET    /foos/:foo_id/bars(.:format)          bars#index
+</span><span class="gi">+    foo_bars GET    /foos/bars(.:format)                  bars#index
+</span>        foos GET    /foos(.:format)                       foos#index</code></pre></figure>
+
+<p>Now the resource is nested beneath the Foos’ index action as opposed to an
+individual Foo record. Similar to the <code class="language-plaintext highlighter-rouge">namespace</code> method, <code class="language-plaintext highlighter-rouge">collection</code> <em>only</em>
+works as expected in the block form. Confusingly, you may specify an <code class="language-plaintext highlighter-rouge">on:
+:collection</code> option for the nested resource, but the behavior is not as
+expected.</p>
+
+<h2 id="other-options">Other Options</h2>
+
+<p>Additional resource options, such as <code class="language-plaintext highlighter-rouge">:path</code> and <code class="language-plaintext highlighter-rouge">:as</code>, also work with nested
+resources. You should note, however, that Rails still prefixes paths and
+helpers with the parent resource.</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="err">#</span> in config/routes.rb
+<span class="p">resources :foos, only: :index do
+</span><span class="gd">-  resources :bars, only: :index
+</span><span class="gi">+  resources :bars, only: :index, as: :baz, path: qux
+</span><span class="p">end
+</span>
+# output of bin/rake routes:
+      Prefix Verb   URI Pattern                           Controller#Action
+<span class="gd">-    foo_bars GET    /foos/:foo_id/bars(.:format)          bars#index
+</span><span class="gi">+    foo_baz  GET    /foos/:foo_id/qux(.:format)           bars#index
+</span>        foos GET    /foos(.:format)                       foos#index</code></pre></figure>
+
+<h1 id="but-wait-theres-more">But wait, there’s more!</h1>
+
+<p>There’s always more. Routing can be very complicated. There are a lot of
+options, so covering all their possible combinations would be exhausting. We
+didn’t even talk about <a href="http://guides.rubyonrails.org/routing.html#specifying-constraints">constraints</a>.
+Take some time to explore the options and be creative when defining routes.
+You will likely run into cases where you want to model them in a specific way.
+Chances are you are able to accomplish what you want to. If you have to much
+difficulty your design may be smelling. Seek some advise from a peer!</p>
+
+<p>Good luck routing! Let me know if the comments if anything is unclear or
+glaringly missing.</p>
+
+
+<footer>
+  <p>
+    <a href="/2014/10/20/edit-my-stuff-make-me-better.html">&laquo; Previous</a>
+    |
+    <a href="/2015/01/27/unit-testing-javascript.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

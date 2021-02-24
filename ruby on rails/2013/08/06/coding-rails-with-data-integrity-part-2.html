@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Coding Rails with Data Integrity, Part 2 / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Coding Rails with Data Integrity, Part 2" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/ruby%20on%20rails/2013/08/06/coding-rails-with-data-integrity-part-2.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://www.bignerdranch.com/blog/coding-rails-with-data-integrity-part-2" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Coding Rails with Data Integrity, Part 2</h1>
+</header>
+
+<p>
+  &mdash;
+  Aug 06, 2013
+</p>
+
+<p>Originally posted on the <a href="http://www.bignerdranch.com/blog/coding-rails-with-data-integrity-part-2">Big Nerd Ranch Blog</a>.</p>
+
+<hr />
+
+<p><a href="/blog/coding-rails-with-data-integrity">Last time</a>, we discussed how database <a href="http://www.w3schools.com/sql/sql_notnull.asp">null constraints</a> and <a href="http://www.w3schools.com/sql/sql_default.asp">default values</a> can increase confidence in your app’s data.</p>
+
+<p>This time, I want to take a look at <a href="http://www.w3schools.com/sql/sql_unique.asp">uniqueness constraints</a>. Rails provides uniqueness validations, but as we learned in the previous post, validations aren’t necessarily the right tool to ensure data integrity. And Rails’ uniqueness validation in particular is not without <a href="http://robots.thoughtbot.com/post/55689359336/the-perils-of-uniqueness-validations">its perils</a>.</p>
+
+<h2 id="uniqueness-by-example">Uniqueness by Example</h2>
+
+<p>Eventually you’ll realize that correctness demands certain data be unique. One of the most common examples for a uniqueness constraint is for users. If you allowed multiple users to have the same email address or username, users would be indistinguishable. Such information serves as identification for individuals.This example has been driven into the ground, so let’s talk about something more interesting.</p>
+
+<h3 id="team-membership">Team Membership</h3>
+
+<p>Consider an app that has teams and users. Say we want users to be a member of any number of teams. This is an example of a <a href="http://en.wikipedia.org/wiki/Many-to-many_%28data_model%29">many-to-many</a> relationship and will require a <a href="http://en.wikipedia.org/wiki/Junction_table">join table</a>. Let’s call this table <code class="language-plaintext highlighter-rouge">memberships</code>:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">CreateMemberships</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">create_table</span> <span class="ss">:memberships</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">belongs_to</span> <span class="ss">:team</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">belongs_to</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>We’ve intentionally left out the uniqueness constraint in this example to illustrate its pitfalls. Also, don’t miss the null constraints! These join records don’t make much sense without pointing in both directions.</p>
+
+<p>Let’s we have the respective models <a href="http://guides.rubyonrails.org/association_basics.html#the-has-many-through-association">set up as needed for such a relationship</a>. Time to take them for a spin:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">t</span> <span class="o">=</span> <span class="no">Team</span><span class="p">.</span><span class="nf">create!</span>    <span class="c1"># =&gt; #&lt;Team id: 1&gt;</span>
+<span class="n">t</span><span class="p">.</span><span class="nf">users</span>             <span class="c1"># =&gt; []</span>
+<span class="n">u</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create!</span>    <span class="c1"># =&gt; #&lt;User id: 1&gt;</span>
+<span class="n">t</span><span class="p">.</span><span class="nf">users</span> <span class="o">&lt;&lt;</span> <span class="n">u</span>        <span class="c1"># =&gt; [#&lt;User id: 1&gt;], nice!</span>
+<span class="n">t</span><span class="p">.</span><span class="nf">users</span> <span class="o">&lt;&lt;</span> <span class="n">u</span>        <span class="c1"># =&gt; [#&lt;User id: 1&gt;, #&lt;User id: 1&gt;], WHOOPS!</span>
+<span class="no">Membership</span><span class="p">.</span><span class="nf">all</span>      <span class="c1"># =&gt; [#&lt;Membership id: 1, team_id: 1, user_id: 1&gt;, #&lt;Membership id: 2, team_id: 1, user_id: 1&gt;]</span></code></pre></figure>
+
+<p>As you can see, without the uniqueness constraint we allow users to be a member of a team <em>more than once</em>. That doesn’t make much sense (I recently experienced this <a href="https://github.com/iamvery/snapme-web/issues/13">first hand</a>). Now we’ll lock this table down by adding the constraint. In SQL, uniqueness is enfored by creating a “unique” index. This index may span multiple columns to ensure uniqueness with respect to multiple attributes:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">CreateMemberships</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">create_table</span> <span class="ss">:memberships</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">belongs_to</span> <span class="ss">:team</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">belongs_to</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">index</span> <span class="p">[</span><span class="ss">:team_id</span><span class="p">,</span> <span class="ss">:user_id</span><span class="p">],</span> <span class="ss">unique: </span><span class="kp">true</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>That’s pretty much it! Now the database won’t allow multiple membership records to exist that reference the same team and user.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">t</span> <span class="o">=</span> <span class="no">Team</span><span class="p">.</span><span class="nf">create!</span>  <span class="c1"># =&gt; #&lt;Team id: 1&gt;</span>
+<span class="n">t</span><span class="p">.</span><span class="nf">users</span>           <span class="c1"># =&gt; []</span>
+<span class="n">u</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create!</span>  <span class="c1"># =&gt; #&lt;User id: 1&gt;</span>
+<span class="n">t</span><span class="p">.</span><span class="nf">users</span> <span class="o">&lt;&lt;</span> <span class="n">u</span>      <span class="c1"># =&gt; [#&lt;User id: 1&gt;], nice!</span>
+<span class="n">t</span><span class="p">.</span><span class="nf">users</span> <span class="o">&lt;&lt;</span> <span class="n">u</span>      <span class="c1"># =&gt; [#&lt;User id: 1&gt;], thanks for no errors, Rails!</span></code></pre></figure>
+
+<p><em><strong>Note:</strong> You won’t be able to adjust the migration as I did in the example without rolling it back first.</em></p>
+
+<h3 id="adding-constraints-to-existing-tables">Adding Constraints to Existing Tables</h3>
+
+<p>As always, it is tricky to add constraints to existing tables because we are unable to assume the state of the data will allow such constraints to be added. For uniqueness we need to make sure the target column is unique before adding the constraint. Here is an idea to get your wheels turning:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># Assume widgets have a `foo` string column with no constraints</span>
+<span class="k">class</span> <span class="nc">AddUniquenessConstraintToWidgetFoo</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">up</span>
+    <span class="n">execute</span> <span class="s2">"UPDATE widgets SET foo = coalesce(foo,'') || id"</span>
+    <span class="n">add_index</span> <span class="ss">:widgets</span><span class="p">,</span> <span class="ss">:foo</span><span class="p">,</span> <span class="ss">unique: </span><span class="kp">true</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">down</span>
+    <span class="c1"># For simplicity we won't allow the rollback of this migration as it is</span>
+    <span class="c1"># difficult to get the data in exactly the same state as before the</span>
+    <span class="c1"># migration.</span>
+    <span class="k">raise</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">IrreversibleMigration</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>Since we’re assuming there are no constraints on <code class="language-plaintext highlighter-rouge">foo</code> we first need to make sure it is at least an empty string, so we <a href="http://www.postgresql.org/docs/9.2/static/functions-conditional.html#FUNCTIONS-COALESCE-NVL-IFNULL">coalesce</a> its value to an empty string. Then we <a href="http://www.postgresql.org/docs/9.1/static/functions-string.html">concatenate</a> that value with the record’s <code class="language-plaintext highlighter-rouge">id</code> since we know it as a unique value. The resulting value will always be unique to the record!</p>
+
+<p>You may also be interested in <a href="https://github.com/iamvery/snapme-web/commit/d2ad7aa0091822915265882b511785ef9e5e6196">my solution</a> to the team membership problem mentioned above.</p>
+
+<h2 id="until-next-time">Until next time…</h2>
+
+<p>I hope that you now have an understanding of the uniqueness database constraint and why it can really help improve your app’s data integrity. There is one other constraint that was overlooked in the memberships example. That’ll be our next target: foreign keys.</p>
+
+<hr />
+
+<h2 id="other-posts">Other Posts</h2>
+
+<ul>
+  <li>
+    <p><a href="/blog/coding-rails-with-data-integrity">Coding Rails with Data Integrity, Part 1</a> (null constraints and default values)</p>
+  </li>
+  <li>
+    <p><a href="/blog/coding-rails-with-data-integrity-part-2">Coding Rails with Data Integrity, Part 2</a> (uniquness constraints)</p>
+  </li>
+</ul>
+
+<p>What other ways have you come up with to ensure data integrity in your apps? We’d love to hear what you think!</p>
+
+
+<footer>
+  <p>
+    <a href="/ruby%20on%20rails/2013/07/26/coding-rails-with-data-integrity.html">&laquo; Previous</a>
+    |
+    <a href="/2013/08/07/a-successful-rspec-contribution.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

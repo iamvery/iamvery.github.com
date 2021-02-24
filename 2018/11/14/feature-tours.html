@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="Combine many acceptance test examples into a single tour of the feature being tested." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Feature Tours / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Feature Tours" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2018/11/14/feature-tours.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="Combine many acceptance test examples into a single tour of the feature being tested." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2018/11/14/feature-tours.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Feature Tours</h1>
+</header>
+
+<p>
+  &mdash;
+  Nov 14, 2018
+</p>
+
+<p>You write tests that serve many different purposes. On one end of the spectrum, there are “unit tests” which isolate small units of behavior in your code to drive out a well-factored design. At the other extreme there are “feature” or “acceptance” tests that allow you to automate the use of a system as a user of it. These tests are great for specifying the system behavior of a <em>feature</em>. However, you sometimes still choose to isolate each use case of a feature in its own example. That’s where <em>feature <strong>tours</strong></em> come in.</p>
+
+<p>A <em>feature tour</em> is an acceptance test that “tours” an entire feature in a single example. First question: Why? There are probably many reasons one could conjure up, but here are a few to consider.</p>
+
+<h2 id="as-a-user">As a user…</h2>
+
+<p>Tests at this level are supposed to exercise the system <em>as a user of it</em>. Therefore, any direct database access or other “code level” effects of these tests are technically cheating, because a user cannot do them. You sometimes fall to this temptation so that you can “set up the world” in order to run an example. However, it’s true that in production the only way for the system to get into the states that you’re producing manually is by its use. In this way, your tests are more realistic and less prone to errors in the margins of the behavior being tested.</p>
+
+<h2 id="coupling">Coupling</h2>
+
+<p>Another problem with writing code to set up acceptance-level examples is that everything you’re writing is in some way coupled to the underlying implementation. Therefore, you will often see this features begin to fail when seemingly unimportant implementation changes are made to the system. This might be categorized as what TestDouble calls a <a href="https://github.com/testdouble/contributing-tests/wiki/Testing-Pyramid">“NOOOPE” test</a>.</p>
+
+<h2 id="speed">Speed</h2>
+
+<p>As a final observation, I would like to mention that this style of testing may lead to a faster test suite. It’s true, these style of tests can be <em>very</em> slow. In the context of web, they often involve some sort of browser automation that just takes time to setup and teardown. Therefore, the fewer times you have to do this the better off you are.</p>
+
+<h2 id="feature-tours">Feature Tours</h2>
+
+<p>The proposal is that we write such tests as <em>tours</em> of the feature being exercised. For example, if you’re building some basic CRUD functionality in a web app, the test script might look like this:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="s1">'Post management'</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'supports creating, viewing, editing, and deleting'</span> <span class="k">do</span>
+    <span class="n">visit</span> <span class="s1">'/'</span>
+
+    <span class="n">click_on</span> <span class="s1">'Add Post'</span>
+    <span class="n">fill_in</span> <span class="s1">'Title'</span><span class="p">,</span> <span class="ss">with: </span><span class="s1">'An Post'</span>
+    <span class="n">fill_in</span> <span class="s1">'Body'</span><span class="p">,</span> <span class="ss">with: </span><span class="s1">'An post body.'</span>
+    <span class="n">click_on</span> <span class="s1">'Create Post'</span>
+
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Post created.'</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'An Post'</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'An post body.'</span><span class="p">)</span>
+
+    <span class="n">visit</span> <span class="s1">'/'</span>
+    <span class="n">click_on</span> <span class="s1">'An Post'</span>
+
+    <span class="n">click_on</span> <span class="s1">'Edit'</span>
+    <span class="n">fill_in</span> <span class="s1">'Body'</span><span class="p">,</span> <span class="ss">with: </span><span class="s1">'Once upon a time, there was a post.'</span>
+    <span class="n">click_on</span> <span class="s1">'Save Post'</span>
+
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Post updated.'</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Once upon a time, there was a post.'</span><span class="p">)</span>
+
+    <span class="n">click_on</span> <span class="s1">'Delete'</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Post deleted.'</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">not_to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'An Post'</span><span class="p">)</span>
+
+    <span class="n">visit</span> <span class="s1">'/'</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">not_to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'An Post'</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>If you’re like me, this is a bit hard to understand at a glance. As such, I like to extract methods to really emphasize what is in the tour. It’s important to recognize that this is just a code organization change and does not affect the run. Everything still happens sequentially.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">RSpec</span><span class="p">.</span><span class="nf">describe</span> <span class="s1">'Post management'</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'supports creating, viewing, editing, and deleting'</span> <span class="k">do</span>
+    <span class="n">add_post</span><span class="p">(</span><span class="s1">'An Post'</span><span class="p">,</span> <span class="s1">'An post body.'</span><span class="p">)</span>
+    <span class="n">see_post_created</span><span class="p">(</span><span class="s1">'An Post'</span><span class="p">,</span> <span class="s1">'An post body.'</span><span class="p">)</span>
+
+    <span class="n">edit_post</span><span class="p">(</span><span class="s1">'Once upon a time, there was a post.'</span><span class="p">)</span>
+    <span class="n">see_post_updated</span><span class="p">(</span><span class="s1">'An Post'</span><span class="p">,</span> <span class="s1">'Once upon a time, there was a post.'</span><span class="p">)</span>
+
+    <span class="n">delete_post</span><span class="p">(</span><span class="s1">'An Post'</span><span class="p">)</span>
+    <span class="n">see_post_deleted</span><span class="p">(</span><span class="s1">'An Post'</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">add_post</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+    <span class="n">visit</span> <span class="s1">'/'</span>
+    <span class="n">click_on</span> <span class="n">title</span>
+    <span class="n">fill_in</span> <span class="s1">'Title'</span><span class="p">,</span> <span class="ss">with: </span><span class="n">title</span>
+    <span class="n">fill_in</span> <span class="s1">'Body'</span><span class="p">,</span> <span class="ss">with: </span><span class="n">body</span>
+    <span class="n">click_on</span> <span class="s1">'Create Post'</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">edit_post</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+    <span class="n">visit</span> <span class="s1">'/'</span>
+    <span class="n">click_on</span> <span class="n">title</span>
+    <span class="n">click_on</span> <span class="s1">'Edit'</span>
+    <span class="n">fill_in</span> <span class="s1">'Body'</span><span class="p">,</span> <span class="ss">with: </span><span class="n">body</span>
+    <span class="n">click_on</span> <span class="s1">'Save Post'</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">delete_post</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">visit</span> <span class="s1">'/'</span>
+    <span class="n">click_on</span> <span class="n">title</span>
+    <span class="n">click_on</span> <span class="s1">'Delete'</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">see_post_created</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Post created.'</span><span class="p">)</span>
+    <span class="n">see_post</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">see_post_updated</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Post updated.'</span><span class="p">)</span>
+    <span class="n">see_post</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">see_post_deleted</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="s1">'Post deleted.'</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">not_to</span> <span class="n">have_content</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">visit</span> <span class="s1">'/'</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">not_to</span> <span class="n">have_content</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">see_post</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">page</span><span class="p">).</span><span class="nf">to</span> <span class="n">have_content</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>You may have noticed some interesting things about this approach. First, the order of the steps in the tour is very important. For example, you can’t very well <em>see</em> a post until it exists. So for a CRUD feature, very often your tour will end up in the namesake’s order: create, read, update, delete.</p>
+
+<p>But most importantly this tour is entirely agnostic of the implementation details of the system. Its only dependencies are the text and links on the page. It’s <em>content</em> focused. This is also useful when it comes to making visual changes to an app that should not affect behavior.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>While there are pros and cons on both sides of this approach, the truth is it’s often very difficult to maintain these ideals. I believe the real benefit is a strong emphasis on closely considering any implementation coupling that you are introducing to an acceptance test. Such coupling will lead to brittleness and churn in the example, limiting its value over time and frustrating developers.</p>
+
+
+<footer>
+  <p>
+    <a href="/2018/10/10/tedx-remotely-productive.html">&laquo; Previous</a>
+    |
+    <a href="/2019/07/31/a-not-scary-introduction-to-lambda-calculus.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

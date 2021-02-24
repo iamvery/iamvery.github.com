@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Discover Swift with this One Weird Rubyist! / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Discover Swift with this One Weird Rubyist!" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/ios/ruby/swift/2014/08/12/discover-swift-with-this-one-weird-rubyist.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://www.bignerdranch.com/blog/discover-swift-with-this-one-weird-rubyist" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Discover Swift with this One Weird Rubyist!</h1>
+</header>
+
+<p>
+  &mdash;
+  Aug 12, 2014
+</p>
+
+<p>Originally posted on the <a href="http://www.bignerdranch.com/blog/discover-swift-with-this-one-weird-rubyist">Big Nerd Ranch Blog</a>.</p>
+
+<hr />
+
+<p>At Big Nerd Ranch, we love certain things. We love coffee, we love fitness and we
+<em>really</em> love technology. When Apple announced <a href="https://developer.apple.com/swift">Swift</a>, I found it really hard to
+resist cracking open the
+<a href="https://itunes.apple.com/us/book/the-swift-programming-language/id881256329?mt=11&amp;ls=1">free</a>
+<a href="https://itunes.apple.com/us/book/using-swift-cocoa-objective/id888894773?mt=11&amp;ls=1">books</a>
+and seeing what it’s all about.</p>
+
+<p>I write Ruby every day and love the language, and
+there’s a lot for a Rubyist to love here. Apple’s cooking up something special.</p>
+
+<h2 id="getting-started">Getting Started</h2>
+
+<p>With Swift, Apple introduced <a href="https://developer.apple.com/library/prerelease/ios/recipes/xcode_help-source_editor/ExploringandEvaluatingSwiftCodeinaPlayground/ExploringandEvaluatingSwiftCodeinaPlayground.html">playgrounds</a>, a way of getting inline feedback from code as it’s typed into Xcode.
+This is really helpful in discovering the language, because you can jump to the
+documentation in Xcode and really get down to business.</p>
+
+<h3 id="swift-cli">Swift CLI</h3>
+
+<p>Apple included a Swift
+<a href="http://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop">REPL</a> in
+their Xcode 6 betas. Additionally, scripts provided as arguments will be run
+with “immediate execution.”</p>
+
+<p>The usage is pretty simple. If you run the command, you get the Swift REPL:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xcrun swift
+Welcome to Swift!  Type :help for assistance.
+  1&gt;
+</code></pre></div></div>
+
+<p>If you reference a Swift file, it will compile and run it:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% xcrun swift harvey.swift
+I am the batman!
+</code></pre></div></div>
+
+<p>I like to keep an alias in my environment:</p>
+
+<figure class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="nb">alias </span><span class="nv">swift</span><span class="o">=</span><span class="s2">"xcrun swift"</span></code></pre></figure>
+
+<p>Apple seems to be investing in Swift as a scripting language as well. You can
+even “shebang” Swift scripts. Check out Apple’s <a href="https://developer.apple.com/swift/blog/?id=7">“Files and Initialization”</a> blog post.</p>
+
+<p><img src="/img/blog/2014/08/computering-kid-thumbs-up.gif" alt="thumbs up" /></p>
+
+<h2 id="constant-change">Constant Change</h2>
+
+<p>Swift makes the distinction between constant and variable values during
+assignment. In Ruby, we indicate constant values by naming their identifier
+with a capital first letter. By convention, we use ALL CAPS for constants and
+CamelCase for types. Any other identifier is a variable value.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">WOW_GREAT_DEV</span> <span class="o">=</span> <span class="s1">'Jay'</span>
+<span class="no">Dev</span> <span class="o">=</span> <span class="no">Struct</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span>
+
+<span class="n">dev</span> <span class="o">=</span> <span class="no">Dev</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">WOW_GREAT_DEV</span><span class="p">)</span>
+<span class="nb">puts</span> <span class="n">dev</span><span class="p">.</span><span class="nf">name</span>
+<span class="c1"># Jay</span>
+
+<span class="no">WOW_GREAT_DEV</span> <span class="o">=</span> <span class="s1">'Dog'</span> <span class="c1"># this produces a warning</span>
+
+<span class="n">dev</span> <span class="o">=</span> <span class="no">Dev</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s2">"Dog"</span><span class="p">)</span>
+<span class="nb">puts</span> <span class="n">dev</span><span class="p">.</span><span class="nf">name</span>
+<span class="c1"># Dog</span></code></pre></figure>
+
+<p>Constant and variable values in Swift are created using the <code class="language-plaintext highlighter-rouge">let</code> and <code class="language-plaintext highlighter-rouge">var</code>
+keywords respectively.</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="nv">wowGreatDev</span> <span class="o">=</span> <span class="s">"Jay"</span>
+
+<span class="kd">struct</span> <span class="kt">Dev</span> <span class="p">{</span>
+  <span class="k">var</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">dev</span> <span class="o">=</span> <span class="kt">Dev</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="n">wowGreatDev</span><span class="p">)</span>
+<span class="nf">println</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="cp"># Jay</span>
+
+<span class="n">wowGreatDev</span> <span class="o">=</span> <span class="s">"Dog"</span> <span class="c1">// this produces an error</span>
+
+<span class="n">dev</span> <span class="o">=</span> <span class="kt">Dev</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"Dog"</span><span class="p">)</span>
+<span class="nf">println</span><span class="p">(</span><span class="n">dev</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></code></pre></figure>
+
+<h2 id="tuples">Tuples</h2>
+
+<p>Tuples are a great, low-ceremony way of passing around a collection of related
+values. They allow us to collect things into a compound value. Unlike other
+structures in Swift, they don’t have much behavior.</p>
+
+<h3 id="value-collections">Value Collections</h3>
+
+<p>In Ruby, we will sometimes use a <code class="language-plaintext highlighter-rouge">Hash</code> to collect related values. Consider an
+options hash in Ruby:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+  <span class="nb">puts</span> <span class="n">options</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="ss">:force</span><span class="p">,</span> <span class="kp">false</span><span class="p">)</span>
+  <span class="nb">puts</span> <span class="n">options</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="ss">:format</span><span class="p">,</span> <span class="ss">:json</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">process</span>
+<span class="n">process</span><span class="p">(</span><span class="ss">force: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">format: :html</span><span class="p">)</span>
+<span class="c1"># false</span>
+<span class="c1"># :json</span>
+<span class="c1"># true</span>
+<span class="c1"># :html</span></code></pre></figure>
+
+<p>We might reach for a tuple in Swift to do something similar. A notable
+difference is that we must explicitly state the valid options:</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">func</span> <span class="nf">process</span><span class="p">(</span><span class="nv">options</span><span class="p">:</span> <span class="p">(</span><span class="nv">force</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">,</span> <span class="nv">format</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="nv">force</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">format</span><span class="p">:</span> <span class="s">"json"</span><span class="p">))</span> <span class="p">{</span>
+  <span class="nf">println</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">force</span><span class="p">)</span>
+  <span class="nf">println</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">format</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nf">process</span><span class="p">()</span>
+<span class="nf">process</span><span class="p">(</span><span class="nv">options</span><span class="p">:</span> <span class="p">(</span><span class="nv">force</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nv">format</span><span class="p">:</span> <span class="s">"html"</span><span class="p">))</span>
+<span class="c1">// false</span>
+<span class="c1">// "json"</span>
+<span class="c1">// true</span>
+<span class="c1">// "html"</span></code></pre></figure>
+
+<p>Notice one difference is that the Swift implementation uses an “external
+parameter” to set the <code class="language-plaintext highlighter-rouge">options</code> parameter to the method.</p>
+
+<h3 id="destructured-assignment">Destructured Assignment</h3>
+
+<p>In both Ruby and Swift, certain values may be destructured during assignment to
+multiple variables. As long as the grouping on the left matches the structure
+on the right, the collection is destructured to match. This may be done with
+arrays in Ruby:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">x</span><span class="p">,(</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+<span class="nb">puts</span> <span class="n">x</span>
+<span class="nb">puts</span> <span class="n">y</span>
+<span class="nb">puts</span> <span class="n">z</span>
+<span class="c1"># 1</span>
+<span class="c1"># 2</span>
+<span class="c1"># 3</span></code></pre></figure>
+
+<p>Similarly, Swift tuples can be destructured during assignment:</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="p">(</span><span class="nv">x</span><span class="p">,(</span><span class="nv">y</span><span class="p">,</span><span class="nv">z</span><span class="p">))</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="nf">println</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nf">println</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="nf">println</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="c1">// 1</span>
+<span class="c1">// 2</span>
+<span class="c1">// 3</span></code></pre></figure>
+
+<p>Another example of Ruby destructuring is as parameters to a message call.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">foo</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="k">do</span> <span class="o">|</span><span class="p">(</span><span class="n">x</span><span class="p">,(</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">))</span><span class="o">|</span>
+  <span class="nb">puts</span> <span class="n">x</span>
+  <span class="nb">puts</span> <span class="n">y</span>
+  <span class="nb">puts</span> <span class="n">z</span>
+<span class="k">end</span>
+
+<span class="n">bar</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]]</span>
+<span class="n">foo</span><span class="p">.</span><span class="nf">call</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+<span class="c1"># 1</span>
+<span class="c1"># 2</span>
+<span class="c1"># 3</span></code></pre></figure>
+
+<p>Unlike Ruby, Swift argument lists are not treated the same as assignment. To
+destructure an argument in Swift, it must be done using assignment in the body
+of the method or closure:</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="p">{</span> <span class="nv">bar</span><span class="p">:</span> <span class="p">(</span><span class="kt">Int</span><span class="p">,</span> <span class="p">(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">Int</span><span class="p">))</span> <span class="k">in</span>
+  <span class="k">let</span> <span class="p">(</span><span class="nv">x</span><span class="p">,(</span><span class="nv">y</span><span class="p">,</span><span class="nv">z</span><span class="p">))</span> <span class="o">=</span> <span class="n">bar</span>
+  <span class="nf">println</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+  <span class="nf">println</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+  <span class="nf">println</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">bar</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="nf">foo</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+<span class="c1">// 1</span>
+<span class="c1">// 2</span>
+<span class="c1">// 3</span></code></pre></figure>
+
+<h2 id="value-bindings">Value Bindings</h2>
+
+<p>Another interesting feature of Swift is <em>value bindings</em>. In combination with a
+<code class="language-plaintext highlighter-rouge">switch</code> statement, you can execute separate blocks of code based on the
+destructured state of a tuple. You can even add conditions to the statements to
+direct matches further. The canonical example is directing execution by
+anchoring parts of a <code class="language-plaintext highlighter-rouge">point</code> tuple:</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">func</span> <span class="nf">printPoint</span><span class="p">(</span><span class="nv">point</span><span class="p">:</span> <span class="p">(</span><span class="kt">Int</span><span class="p">,</span> <span class="kt">Int</span><span class="p">))</span> <span class="p">{</span>
+  <span class="k">switch</span> <span class="n">point</span> <span class="p">{</span>
+  <span class="k">case</span> <span class="p">(</span><span class="k">let</span> <span class="nv">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="nf">println</span><span class="p">(</span><span class="s">"x: </span><span class="se">\(</span><span class="n">x</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+  <span class="k">case</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="k">let</span> <span class="nv">y</span><span class="p">):</span>
+    <span class="nf">println</span><span class="p">(</span><span class="s">"y: </span><span class="se">\(</span><span class="n">y</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+  <span class="k">case</span> <span class="p">(</span><span class="k">let</span> <span class="nv">x</span><span class="p">,</span> <span class="k">let</span> <span class="nv">y</span><span class="p">)</span> <span class="k">where</span> <span class="n">x</span> <span class="o">==</span> <span class="nv">y</span><span class="p">:</span>
+    <span class="nf">println</span><span class="p">(</span><span class="s">"Both x and y: </span><span class="se">\(</span><span class="n">x</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+  <span class="k">case</span> <span class="p">(</span><span class="k">let</span> <span class="nv">x</span><span class="p">,</span> <span class="k">let</span> <span class="nv">y</span><span class="p">):</span>
+    <span class="nf">println</span><span class="p">(</span><span class="s">"x: </span><span class="se">\(</span><span class="n">x</span><span class="se">)</span><span class="s">, y: </span><span class="se">\(</span><span class="n">y</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nf">printPoint</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<span class="nf">printPoint</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="nf">printPoint</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="c1">// x: 2</span>
+<span class="c1">// Both x and y: 3</span>
+<span class="c1">// x: 1, y: 2</span></code></pre></figure>
+
+<p>The first case is matched because the destructured tuple matches where its
+second part is equal. Its first part is set to a constant and made available in
+the scope of the case block. The second call matches the third case due to the
+additional <code class="language-plaintext highlighter-rouge">where</code> condition being met.</p>
+
+<p>Here’s a solution I came up with in Ruby. The syntax is a bit more involved,
+because Ruby doesn’t have the value binding syntactic sugar of Swift:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">print_point</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+  <span class="k">case</span> <span class="n">point</span>
+  <span class="k">when</span> <span class="o">-&gt;</span><span class="p">((</span><span class="n">_</span><span class="p">,</span><span class="n">y</span><span class="p">))</span> <span class="p">{</span> <span class="n">y</span><span class="p">.</span><span class="nf">zero?</span> <span class="p">}</span>
+    <span class="nb">puts</span> <span class="s2">"x: </span><span class="si">#{</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">when</span> <span class="o">-&gt;</span><span class="p">((</span><span class="n">x</span><span class="p">,</span><span class="n">_</span><span class="p">))</span> <span class="p">{</span> <span class="n">x</span><span class="p">.</span><span class="nf">zero?</span> <span class="p">}</span>
+    <span class="nb">puts</span> <span class="s2">"y: </span><span class="si">#{</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">when</span> <span class="o">-&gt;</span><span class="p">((</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">))</span> <span class="p">{</span> <span class="n">x</span> <span class="o">==</span> <span class="n">y</span> <span class="p">}</span>
+    <span class="nb">puts</span> <span class="s2">"Both x and y: </span><span class="si">#{</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">else</span>
+    <span class="nb">puts</span> <span class="s2">"x: </span><span class="si">#{</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, y: </span><span class="si">#{</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">print_point</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">print_point</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">print_point</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="c1"># x: 2</span>
+<span class="c1"># Both x and y: 3</span>
+<span class="c1"># x: 1, y: 2</span></code></pre></figure>
+
+<p>This example uses a lambda to match each case. This works because Ruby
+overrides Proc’s <code class="language-plaintext highlighter-rouge">===</code> operator as an alias to <code class="language-plaintext highlighter-rouge">call</code>.</p>
+
+<h2 id="enums-as-a-state-machine">Enums as a State Machine</h2>
+
+<p>In Ruby, enums aren’t a thing. We’re generally cool with that. We tend to
+reach for namespaced constant values to mimic the most basic behavior of enums
+as collections of values.</p>
+
+<p>Swift introduces <code class="language-plaintext highlighter-rouge">enum</code> as a value type and allows us to add behavior to them.
+An interesting side effect is that enumerations in Swift may be used as state
+machines:</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="kd">enum</span> <span class="kt">TrafficLight</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span>
+  <span class="k">case</span> <span class="kt">Red</span> <span class="o">=</span> <span class="s">"STOP"</span><span class="p">,</span> <span class="kt">Yellow</span> <span class="o">=</span> <span class="s">"WHOA"</span><span class="p">,</span> <span class="kt">Green</span> <span class="o">=</span> <span class="s">"GO"</span>
+
+  <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">next</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">switch</span> <span class="k">self</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="kt">Red</span><span class="p">:</span> <span class="k">self</span> <span class="o">=</span> <span class="kt">Green</span>
+    <span class="k">case</span> <span class="kt">Yellow</span><span class="p">:</span> <span class="k">self</span> <span class="o">=</span> <span class="kt">Red</span>
+    <span class="k">case</span> <span class="kt">Green</span><span class="p">:</span> <span class="k">self</span> <span class="o">=</span> <span class="kt">Yellow</span>
+    <span class="p">}</span>
+
+    <span class="nf">println</span><span class="p">(</span><span class="s">"The light has changed..."</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">var</span> <span class="nv">light</span> <span class="o">=</span> <span class="kt">TrafficLight</span><span class="o">.</span><span class="kt">Green</span>
+
+<span class="nf">println</span><span class="p">(</span><span class="s">"You approach a traffic light..."</span><span class="p">)</span>
+<span class="nf">println</span><span class="p">(</span><span class="n">light</span><span class="o">.</span><span class="nf">toRaw</span><span class="p">())</span>
+<span class="n">light</span><span class="o">.</span><span class="nf">next</span><span class="p">()</span>
+<span class="nf">println</span><span class="p">(</span><span class="n">light</span><span class="o">.</span><span class="nf">toRaw</span><span class="p">())</span>
+<span class="n">light</span><span class="o">.</span><span class="nf">next</span><span class="p">()</span>
+<span class="nf">println</span><span class="p">(</span><span class="n">light</span><span class="o">.</span><span class="nf">toRaw</span><span class="p">())</span>
+<span class="c1">// You approach a traffic light...</span>
+<span class="c1">// GO</span>
+<span class="c1">// The light has changed...</span>
+<span class="c1">// WHOA</span>
+<span class="c1">// The light has changed...</span>
+<span class="c1">// STOP</span></code></pre></figure>
+
+<p>The ability to wrap the state transition logic into a single type is pretty
+cool. This type might be used in collaboration with other objects that
+observe the current value without care of how and when transitions are made.</p>
+
+<p>Ruby’s lack of “enum” as a concept leads to more code, but it’s not indicative
+of a problem per se. I opted to keep the usage as similar to the Swift
+implementation as possible, providing class methods for each state. Also, this
+implementation is without dependency outside Ruby’s stdlib. It may be worth
+checking out the <a href="https://github.com/pluginaweek/state_machine"><code class="language-plaintext highlighter-rouge">state_machine</code> gem</a>
+amongst <a href="https://www.ruby-toolbox.com/categories/state_machines">others</a>.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">TrafficLight</span>
+  <span class="no">COLORS</span> <span class="o">=</span> <span class="p">[</span><span class="no">RED</span> <span class="o">=</span> <span class="s2">"STOP"</span><span class="p">,</span> <span class="no">YELLOW</span> <span class="o">=</span> <span class="s2">"WHOA"</span><span class="p">,</span> <span class="no">GREEN</span> <span class="o">=</span> <span class="s2">"GO"</span><span class="p">]</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">Red</span>
+    <span class="n">new</span><span class="p">(</span><span class="no">RED</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">Yellow</span>
+    <span class="n">new</span><span class="p">(</span><span class="no">YELLOW</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">Green</span>
+    <span class="n">new</span><span class="p">(</span><span class="no">GREEN</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="nb">attr_reader</span> <span class="ss">:state</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+    <span class="vi">@state</span> <span class="o">=</span> <span class="n">state</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">next</span>
+    <span class="vi">@state</span> <span class="o">=</span> <span class="k">case</span> <span class="n">state</span>
+      <span class="k">when</span> <span class="no">RED</span> <span class="k">then</span> <span class="no">GREEN</span>
+      <span class="k">when</span> <span class="no">YELLOW</span> <span class="k">then</span> <span class="no">RED</span>
+      <span class="k">when</span> <span class="no">GREEN</span> <span class="k">then</span> <span class="no">YELLOW</span>
+    <span class="k">end</span>
+
+    <span class="nb">puts</span> <span class="s1">'The light has changed...'</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">light</span> <span class="o">=</span> <span class="no">TrafficLight</span><span class="o">.</span><span class="no">Green</span>
+
+<span class="nb">puts</span> <span class="s1">'You approach a traffic light...'</span>
+<span class="nb">puts</span> <span class="n">light</span><span class="p">.</span><span class="nf">state</span>
+<span class="n">light</span><span class="p">.</span><span class="nf">next</span>
+<span class="nb">puts</span> <span class="n">light</span><span class="p">.</span><span class="nf">state</span>
+<span class="n">light</span><span class="p">.</span><span class="nf">next</span>
+<span class="nb">puts</span> <span class="n">light</span><span class="p">.</span><span class="nf">state</span>
+<span class="c1"># You approach a traffic light...</span>
+<span class="c1"># GO</span>
+<span class="c1"># The light has changed...</span>
+<span class="c1"># WHOA</span>
+<span class="c1"># The light has changed...</span>
+<span class="c1"># STOP</span></code></pre></figure>
+
+<h2 id="consider-demeter">Consider Demeter</h2>
+
+<p>“Optional types” are a particularly interesting and important feature of Swift.
+Optionals allow Swift to have strong type safety, while also being compatible
+with existing Objective-C frameworks that may respond with <code class="language-plaintext highlighter-rouge">nil</code>.  Due to their
+explicitness, optional types are an arguably more expressive way of indicating
+that a value may be missing.</p>
+
+<p>One aspect of optionals does concern me. Some examples the Swift book
+illustrate how optionals can be used to ignore chained method calls if any of
+the values in the chain are nil:</p>
+
+<figure class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="c1">// assume we have a reference to a `widget` object</span>
+<span class="k">let</span> <span class="nv">tophat</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">foo</span><span class="p">?</span><span class="o">.</span><span class="n">bar</span><span class="p">?</span><span class="o">.</span><span class="n">tophat</span>
+<span class="c1">// say tophat is nil, why?</span></code></pre></figure>
+
+<p>My warning is that optional chainings enable some nested Law of Demeter
+violations. In the above example, there is no way to know what in the chain of
+things turned out to be nil, we just know there’s no <code class="language-plaintext highlighter-rouge">tophat</code> in the end.</p>
+
+<p>In the Rails world, this is very similar to the <code class="language-plaintext highlighter-rouge">try</code> method which allows you
+to attempt to send messages to an object that might be nil.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># assume `widget` is a valid message in scope</span>
+<span class="n">widget</span><span class="p">.</span><span class="nf">try</span><span class="p">(</span><span class="ss">:foo</span><span class="p">).</span><span class="nf">try</span><span class="p">(</span><span class="ss">:bar</span><span class="p">).</span><span class="nf">try</span><span class="p">(</span><span class="ss">:tophat</span><span class="p">)</span>
+<span class="c1"># say tophat is nil, why?</span></code></pre></figure>
+
+<p>I’m not familiar enough with the Apple development ecosystem to make a
+statement against optional types in Swift—heck, every variable in Ruby is
+“optional.” My point is to highlight the risk for your code to lose confidence
+and become tightly coupled to a hierarchy of objects.</p>
+
+<p>Optional types are a tool like anything else. You may build a masterpiece; you
+may cut your arm off.</p>
+
+<h2 id="always-learning">Always Learning</h2>
+
+<p>Playing with Swift over the past few weeks has been a lot of fun. Ruby
+developers should feel pretty comfortable in the language. A number of modern
+syntaxes have been included, which increases its approachability. Apple has made it
+pretty clear that things could change drastically before its first release, but
+the direction they’re taking it is exciting.</p>
+
+<p>By the way, <a href="http://www.bignerdranch.com/we-teach">we teach</a> incredible classes
+on this stuff! Check out <a href="https://training.bignerdranch.com/classes">our offerings</a>
+(including <a href="https://training.bignerdranch.com/classes/ruby-on-the-server">Ruby!</a>)
+and come learn with me.</p>
+
+
+<footer>
+  <p>
+    <a href="/ruby%20on%20rails/2014/04/16/adding-versions-rails-api.html">&laquo; Previous</a>
+    |
+    <a href="/2014/08/26/swift-at-nshuntsville.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

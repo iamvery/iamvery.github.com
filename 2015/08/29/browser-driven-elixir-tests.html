@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="Automated testing of features in Elixir with a headless browser" name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Browser-driven Elixir Tests / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Browser-driven Elixir Tests" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2015/08/29/browser-driven-elixir-tests.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="Automated testing of features in Elixir with a headless browser" />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2015/08/29/browser-driven-elixir-tests.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Browser-driven Elixir Tests</h1>
+</header>
+
+<p>
+  &mdash;
+  Aug 29, 2015
+</p>
+
+<p>An indispensable tool of web development is the ability to drive a browser for automated feature testing.
+In Ruby, we tend to reach for <a href="https://github.com/jnicklas/capybara">Capybara</a> (a test framework) and <a href="https://github.com/teampoltergeist/poltergeist">Poltergeist</a> (a <a href="http://phantomjs.org/">PhantomJS</a> driver).
+Regardless of what tool you choose, browser-driven feature tests are a great way to ensure the expected behavior of your apps.
+Let’s do that in Elixir.</p>
+
+<p><strong>TL;DR</strong> Check out this <a href="https://github.com/iamvery/hound-example">example of how one might configure Hound</a> to run browser-driven feature tests in Elixir.</p>
+
+<h2 id="hound">Hound</h2>
+
+<p>On such tool in the Elixir ecosystem, is <a href="https://github.com/HashNuke/hound">Hound</a>.
+Much like Capybara, Hound is a test framework which provides an interface for using a webdriver to test the behavior of pages.
+Also like Capybara, it does not make any assumption about the driver you wish to use.
+Instead you must configure it to use the driver of your choice, such as <a href="http://www.seleniumhq.org/projects/webdriver/">Selenium</a>, <a href="https://code.google.com/p/selenium/wiki/ChromeDriver">ChromeDriver</a>, or <a href="http://phantomjs.org/">PhantomJS</a>.
+Since we’re familiar with PhantomJS (and love the headless nature of it), we’ll go with that!</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<p>The truth is <a href="http://hashnuke.com/">Akash Manohar</a> has already written an excellent <a href="http://hashnuke.com/2015/06/07/hound-phoenix-framework-integration-testing.html">blog post about configuring Hound</a> to work with <a href="http://www.phoenixframework.org/">Phoenix</a>, so I won’t rehash that here.
+<strong>Go read this blog!</strong>
+Instead, I will hit the highlights and emphasize the particulars that tripped me up.</p>
+
+<h3 id="webdriver">Webdriver</h3>
+
+<p>First, if you haven’t already, you will need to install PhantomJS.
+If you’re on a Mac, this is probably easiest done with <a href="http://brew.sh/">Homebrew</a>.
+From the command line:</p>
+
+<figure class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="nv">$ </span>brew <span class="nb">install </span>phantomjs</code></pre></figure>
+
+<p>The successful completion of that command should add a <code class="language-plaintext highlighter-rouge">phantomjs</code> command to your path.</p>
+
+<figure class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="nv">$ </span>which phantomjs
+/usr/local/bin/phantomjs</code></pre></figure>
+
+<h3 id="-start-the-webdriver-">🚨 START THE WEBDRIVER 🚨</h3>
+
+<p>Finally, in order to actually run the tests <strong>YOU MUST START THE WEBDRIVER</strong>.
+A lot of time was wasted trying to figure this out.
+In Ruby with Poltergeist, this step is not necessary as that gem manages the <code class="language-plaintext highlighter-rouge">phantomjs</code> process for you.</p>
+
+<p>The easiest way to start PhantomJS is:</p>
+
+<figure class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="nv">$ </span>phantomjs <span class="nt">--wd</span>
+PhantomJS is launching GhostDriver...
+<span class="o">[</span>INFO  - 2015-08-29T16:15:05.347Z] GhostDriver - Main - running on port 8910</code></pre></figure>
+
+<p>This starts PhantomJS as a webdriver (without the <code class="language-plaintext highlighter-rouge">--wd</code> option, it starts in interactive mode).
+As you can see the driver runs on it’s default port <code class="language-plaintext highlighter-rouge">8910</code> which is conveniently configured by default in Hound.</p>
+
+<h2 id="automate-the-things">Automate The Things</h2>
+
+<p>Basically, it isn’t great having to remember to start PhantomJS before running your tests.
+With a small Bash script, we can make sure it’s running every time we run our tests.</p>
+
+<script src="https://gist.github.com/iamvery/a50a77a301217c810e42.js"></script>
+
+<p>This will start PhantomJS before running <code class="language-plaintext highlighter-rouge">mix test</code>.
+The <code class="language-plaintext highlighter-rouge">trap</code> ensures that PhantomJS is stopped when the script exits (or is terminated).
+You might drop this in your <code class="language-plaintext highlighter-rouge">./bin/</code> directory and then a full test run is as easy as <code class="language-plaintext highlighter-rouge">bin/test</code>.</p>
+
+<h2 id="cleaning-up">Cleaning Up</h2>
+
+<p>You may have noticed <code class="language-plaintext highlighter-rouge">--include feature</code> above.
+Using the <a href="http://iamvery.com/2015/07/25/elixir-pending-tests.html">technique from my previous post</a> you can configure ExUnit to exclude tests tagged with <code class="language-plaintext highlighter-rouge">:feature</code> by default.
+That way tests depending on the webdrive don’t fail when you run <code class="language-plaintext highlighter-rouge">mix test</code> alone.
+This option will then ensure that feature tests are included when you run <code class="language-plaintext highlighter-rouge">bin/test</code>.</p>
+
+<p>I put together an <a href="https://github.com/iamvery/hound-example">example application</a> implementing all these ideas.
+Check it out: <a href="https://github.com/iamvery/hound-example">https://github.com/iamvery/hound-example</a>.</p>
+
+<p>One other thing I want to note is that perhaps Hound (or some other small library) could/should manage the <code class="language-plaintext highlighter-rouge">phantomjs</code> process itself.
+I haven’t given this a try yet, but it sounds like a good challenge!</p>
+
+
+
+<footer>
+  <p>
+    <a href="/2015/07/27/open-graph.html">&laquo; Previous</a>
+    |
+    <a href="/2015/08/29/phoenix-database-config.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

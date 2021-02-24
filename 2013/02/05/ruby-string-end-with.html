@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Ruby String#end_with? / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Ruby String#end_with?" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2013/02/05/ruby-string-end-with.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2013/02/05/ruby-string-end-with.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Ruby String#end_with?</h1>
+</header>
+
+<p>
+  &mdash;
+  Feb 05, 2013
+</p>
+
+<p><strong>TL;DR</strong> Use Ruby’s String#end_with? to check a string for suffixes!</p>
+
+<p>For a recent Rails project, I needed to exclude a number of strings from an array
+if they ended with any of several difference suffixes. After coming up with a
+<a href="http://localhost:4000/2013/02/05/ruby-array-fuzzy-include.html">questionable solution</a>,
+I discovered Ruby’s String#end_with? method! The solution is simple and idiomatic.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">    <span class="n">suffixes</span> <span class="o">=</span> <span class="sx">%w(abc def ing)</span>
+    <span class="sx">%w(something abcdef other_things)</span><span class="p">.</span><span class="nf">delete_if</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span>
+      <span class="n">item</span><span class="p">.</span><span class="nf">end_with?</span> <span class="o">*</span><span class="n">suffixes</span>
+    <span class="k">end</span>
+    <span class="c1"># =&gt; ["other_things"]</span></code></pre></figure>
+
+<p>Notice you have to “splat” the suffixes array. This is because <code class="language-plaintext highlighter-rouge">end_with?</code> takes
+any number of suffixes as arguments rather than an array.</p>
+
+
+<footer>
+  <p>
+    <a href="/2013/02/05/ruby-array-fuzzy-include.html">&laquo; Previous</a>
+    |
+    <a href="/conferences/ruby%20on%20rails/2013/04/09/ancient-city-ruby.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

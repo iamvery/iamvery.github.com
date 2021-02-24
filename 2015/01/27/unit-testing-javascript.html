@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="This is how I unit tested some JavaScript code." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Unit Testing JavaScript / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Unit Testing JavaScript" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2015/01/27/unit-testing-javascript.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="This is how I unit tested some JavaScript code." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2015/01/27/unit-testing-javascript.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Unit Testing JavaScript</h1>
+</header>
+
+<p>
+  &mdash;
+  Jan 27, 2015
+</p>
+
+<p><strong>Update</strong> - The jasmine-npm module and its README is an even more to the point example of this setup. Check it out <a href="https://github.com/jasmine/jasmine-npm">https://github.com/jasmine/jasmine-npm</a>.</p>
+
+<hr />
+
+<p><strong>TL;DR</strong> - I had to learn myself to unit test JavaScript recently. I made <a href="https://github.com/iamvery/js-unit-testing-example">a repository</a>
+to illustrate my findings.</p>
+
+<hr />
+
+<p>I tend to lean heavily on TDD to realize the design of objects. I recently
+had to jump into some JavaScript and wanted the same advantage while writing
+it. I found it tricky to come about a unit testing setup, so this is the
+result of my afternoon experimenting. I’m fairly pleased with the result, but
+I wouldn’t trust it as idiomatic.</p>
+
+<h2 id="the-things">The Things</h2>
+
+<h3 id="nodejs">Node.js</h3>
+
+<p>The goto whenever you want to run JavaScript outside of the browser. I’m
+running this test suite from the command line.</p>
+
+<h3 id="jasmine">Jasmine</h3>
+
+<p>The test framework I settled on is <a href="http://jasmine.github.io">Jasmine</a>.
+Currently, I really like the <a href="https://relishapp.com/rspec">RSpec</a> style of
+writing tests, and this scratches that itch in JavaScript world.</p>
+
+<h3 id="grunt">Grunt</h3>
+
+<p>I’m a command line guy, so I really want to be able to run these tests
+<a href="http://phantomjs.org/headless-testing.html">“headless”</a>. <a href="http://gruntjs.com">Grunt</a>
+is a JavaScript task runner that has <a href="https://github.com/gruntjs/grunt-contrib-jasmine">a jasmine plugin</a>
+for headless test runs.</p>
+
+<p>To use Grunt on the command line, I also need to install the <a href="https://github.com/gruntjs/grunt-cli">grunt-cli</a>
+library.</p>
+
+<h2 id="setup">Setup</h2>
+
+<h3 id="nodejs-1">Node.js</h3>
+
+<p>If you use <a href="http://brew.sh">Homebrew</a>, the Node.js install is straight forward:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ brew install node
+</code></pre></div></div>
+
+<h3 id="node-modules">Node Modules</h3>
+
+<p>Once node is installed, I use <code class="language-plaintext highlighter-rouge">npm</code> (“node package manager”) to install
+the JavaScript dependencies. These are stored in a file named <code class="language-plaintext highlighter-rouge">package.json</code> in
+the root directory of your project. Here are the dependencies for our simple
+test suite:</p>
+
+<script src="http://gist-it.appspot.com/https://github.com/iamvery/js-unit-testing-example/blob/master/package.json"></script>
+
+<p>Install the JavaScript dependencies:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ npm install
+</code></pre></div></div>
+
+<h3 id="create-gruntfilejs">Create Gruntfile.js</h3>
+
+<p>This file configures the Grunt task runner. Here is a simple configuration:</p>
+
+<script src="http://gist-it.appspot.com/https://github.com/iamvery/js-unit-testing-example/blob/master/Gruntfile.js"></script>
+
+<p>This file looks for JavaScript files in the <code class="language-plaintext highlighter-rouge">./lib</code> directory and finds spec
+files named <code class="language-plaintext highlighter-rouge">*Spec.js</code> in the <code class="language-plaintext highlighter-rouge">./spec/lib</code> directory.</p>
+
+<h2 id="run-the-suite">Run the suite</h2>
+
+<p>I skipped over adding specs in this post. Checkout <a href="https://github.com/iamvery/js-unit-testing-example">my example repo</a>
+for a simple, complete example. You can run the test suite with this command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ grunt jasmine
+</code></pre></div></div>
+
+<p>You should see output like:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Running "jasmine:tappy" (jasmine) task
+Testing jasmine specs via PhantomJS
+
+ Thing
+   ✓ does stuff
+
+1 spec in 0.004s.
+&gt;&gt; 0 failures
+
+Done, without errors.
+</code></pre></div></div>
+
+<h2 id="thats-all-folks">That’s all, folks</h2>
+
+<p>Let me know if you have any questions in the comments! I may not know the
+answer, but I love opportunities to learn!</p>
+
+
+<footer>
+  <p>
+    <a href="/2014/12/09/routing-rails-resources.html">&laquo; Previous</a>
+    |
+    <a href="/2015/02/04/bias-towards-actionable.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

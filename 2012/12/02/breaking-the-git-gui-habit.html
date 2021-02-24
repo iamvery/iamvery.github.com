@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Breaking the git gui habit / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Breaking the git gui habit" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2012/12/02/breaking-the-git-gui-habit.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2012/12/02/breaking-the-git-gui-habit.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Breaking the git gui habit</h1>
+</header>
+
+<p>
+  &mdash;
+  Dec 02, 2012
+</p>
+
+<p><strong>Updated</strong>: See <a href="https://github.com/garybernhardt">Gary Bernhardt’s</a> <a href="https://github.com/garybernhardt">alternate
+method</a> for pretty <code class="language-plaintext highlighter-rouge">git log</code> output.</p>
+
+<p>I have been long-time dependent on Git’s <code class="language-plaintext highlighter-rouge">gitk</code> application for my work. I suppose I’m just
+visually minded, because it is quite difficult for me to work 100% command line with Git. A
+couple days ago I was inspired again to look for command line alternatives to satisfy my
+visual habit and found a very helpful customization of <code class="language-plaintext highlighter-rouge">git log</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Found at: http://gitready.com/intermediate/2009/01/13/visualizing-your-repo.html#comment-445365575
+git log --graph --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+</code></pre></div></div>
+
+<p>The format it produces is quite nice! Something along the lines of (plus coloring you can’t see here):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>* 34cb970 - (HEAD, jekyll) Fixed some problem (6 seconds ago)
+* d6c114d - (origin/jekyll, origin/HEAD) Added some meta content to site head (19 hours ago)
+* d77a0eb - Removed ruby age from about markdown (19 hours ago)
+* a8d2ea7 - Added CNAME file for github custom domain name (2 days ago)
+* a666cec - Updated resume (2 days ago)
+* f0ee430 - Added assets and updated markup to match current site (2 days ago)
+* 335d3a1 - Ignore sass cache (2 days ago)
+| * 7e8f3f9 - (some-feature) Started some feature (53 seconds ago)
+|/  
+* aa61903 - Removed haml; Decided there's really no benefit and it complicates build (2 days ago)
+* 601e9bc - Made haml title single line (5 days ago)
+</code></pre></div></div>
+
+<p>This quickly became the <code class="language-plaintext highlighter-rouge">glog</code> alias in my <code class="language-plaintext highlighter-rouge">.zshrc</code> ;)</p>
+
+
+<footer>
+  <p>
+    <a href="">&laquo; Previous</a>
+    |
+    <a href="/2012/12/03/use-the-rails-truncate-helper.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

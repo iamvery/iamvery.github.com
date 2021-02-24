@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>On Elixir's Deprecation of Barewords / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="On Elixir's Deprecation of Barewords" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2016/12/05/elixir-deprecation-of-barewords.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2016/12/05/elixir-deprecation-of-barewords.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>On Elixir's Deprecation of Barewords</h1>
+</header>
+
+<p>
+  &mdash;
+  Dec 05, 2016
+</p>
+
+<p>I subscribe to the <a href="https://groups.google.com/forum/#!forum/elixir-lang-core">Elixir language core mailing list</a> as a means of keeping my finger on the pulse of the language. A <a href="https://groups.google.com/forum/#!topic/elixir-lang-core/Otz0uuML764">post of particular interest</a> has recently fired up the discussion. <strong>Elixir 1.4 introduces a warning for function invocation without parenthesis.</strong> This style, commonly referred to as “barewords” makes variables and zero-arity function invocations look syntactically identical.</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">self</span> <span class="c1"># Q: Is it a local variable or a function with no arguments? A: It Depends.™</span>
+</code></pre></div></div>
+
+<p><strong>To date, I have never written a line of Elixir that violates my strict loyalty to barewords style, but today I’m fine with this change.</strong> Given a little reflection and the well-stated reasons for the change in the above-reference post, I’ll go along with the ride. Allow me to explain.</p>
+
+<h2 id="functions-and-values">Functions and Values</h2>
+
+<p>Elixir is a functional programming language. As such Elixir maintains a strong distinction between functions and values (data). Values do not have functionality. You cannot invoke a <em>method</em> on a value as you might in an object-centric language like Ruby. If you wish to perform some work on a value, it is passed as a parameter to a function.</p>
+
+<p>The barewords style that I have grown to love acts to subtly obscure this distinction. You must look around in context to determine whether a bareword is simply a reference to a variable or a function invocation that may very well cost computation. As much as you may want a bareword function to read as a <em>value</em>, a value it is not. At the simplest it’s a function that returns a literal at which point, you might want to check out module attributes or macros.</p>
+
+<p>Barewords also introduce some ambiguity that can lead to real confusion. For example, there was recently <a href="https://github.com/elixirkoans/elixir-koans/pull/134/commits/a2e3fe6d93b14e9105238f85554c8661e8ad9c53">a subtle bug</a> in the <a href="https://elixirkoans.io">elixirkoans.io</a> project that would have been caught with this warning. Having forgotten to name a parameter in the function, things went on “working” because the zero-arity function <code class="language-plaintext highlighter-rouge">Kernel.node/0</code> was automatically included.</p>
+
+<p><strong>It feels a little offputting to me that a function (zero-arity) might be masquerading as a value (bareword).</strong> The small parenthetical tax paid to reinforce the function/value distinction seems worth it.</p>
+
+<h2 id="change-is-hard">Change is Hard</h2>
+
+<p>It’s always hard to lose something you love, but these struggles are inevitable. I am very thankful for José and team for being willing to make the hard decisions to keep the language lean and spry. Keep up the fine works, folks.</p>
+
+<p>Here’s to you fig leaf operator <code class="language-plaintext highlighter-rouge">()</code>. 🍻 Keep us from baring all.</p>
+
+<p>h/t <a href="https://twitter.com/codingitwrong">@CodingItWrong</a> for the “fig leaf” metaphor</p>
+
+
+
+<footer>
+  <p>
+    <a href="/2016/09/28/elixir-conf.html">&laquo; Previous</a>
+    |
+    <a href="/2016/12/16/composing-elixir-functions.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

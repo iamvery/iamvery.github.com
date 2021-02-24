@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Tmux Pairing Anywhere: On Your Box / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Tmux Pairing Anywhere: On Your Box" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2013/11/16/tmux-pairing-anywhere-on-your-box.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2013/11/16/tmux-pairing-anywhere-on-your-box.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Tmux Pairing Anywhere: On Your Box</h1>
+</header>
+
+<p>
+  &mdash;
+  Nov 16, 2013
+</p>
+
+<p><strong>TL;DR</strong> Armed with my <a href="http://goo.gl/BrqApT"><code class="language-plaintext highlighter-rouge">pair</code></a> and
+<a href="http://goo.gl/vlgsrz"><code class="language-plaintext highlighter-rouge">ng</code></a> scripts in one hand and <a href="https://ngrok.com">ngrok</a>
+in the other, I have finally found a quick, effective and secure way to pair
+program with anyone, anywhere using tmux on my local box.</p>
+
+<p>If you want more information about the setup, read on.</p>
+
+<hr />
+
+<p>**<strong>Updated</strong>** November 17, 2013</p>
+
+<p><a href="http://tmux.sourceforge.net">Tmux</a> is a fantastic productivity tool for
+developers that prefer to stick with the command line. The hardest part is
+sharing a session from <em><strong>anywhere</strong></em> (securely).</p>
+
+<p>I’d like to share my setup for remote tmux pair programming with you.  Here’s
+what we’re going to accomplish:</p>
+
+<ol>
+  <li><a href="#step_one_authentication_without_a_password">Allow remote, key based auth to your machine</a></li>
+  <li><a href="#step_two_connect_from_anywhere">Connect from <em>anywhere</em></a></li>
+  <li><a href="#bonus_round_my_trickery">Bonus Round: More about my scripts</a></li>
+  <li><a href="#thoughts_on_security">Thoughts on security</a></li>
+</ol>
+
+<h2 id="step-one-authentication-without-a-password">Step one: Authentication without a password</h2>
+
+<p>Seriously, you don’t want to hand out passwords. <a href="http://en.wikipedia.org/wiki/Public-key_infrastructure">PKI</a>
+is a great way to allow connections by handshake with users. True story: if
+you’re a Github user, your public keys are <a href="https://api.github.com/users/iamvery/keys">publically available</a>.
+Don’t worry, they’re supposed to be public, and this allows us to do very cool
+things.</p>
+
+<p><a href="http://chrishunt.co/">Chris Hunt’s</a> <a href="https://github.com/chrishunt/github-auth">github-auth</a>
+gem allows you to manage Github users’ public keys in your
+<code class="language-plaintext highlighter-rouge">~/.ssh/authorized_keys</code> file so that you can easily allow/revoke users’
+ability to remote into your machine.</p>
+
+<p>Install github-auth:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gem install github-auth
+</code></pre></div></div>
+
+<p>We use the gem’s binary <code class="language-plaintext highlighter-rouge">gh-auth</code> to authorize Github users to remote into our
+machine. It’s pretty straightforward:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gh-auth add --users="iamvery" --command="$(which tmux) attach -s pairing"
+</code></pre></div></div>
+
+<p>This adds the public keys for the specified Github user “iamvery” (me!) to the
+your <code class="language-plaintext highlighter-rouge">~/.ssh/authorized_keys</code> file. The <code class="language-plaintext highlighter-rouge">--command</code> option allows us to specify
+a <a href="http://oreilly.com/catalog/sshtdg/chapter/ch08.html">forced command</a>
+(you’ll have to browse down for section on “Forced Commands”) which
+automatically connects them to the tmux session.</p>
+
+<p>You can remove added users by the similar <code class="language-plaintext highlighter-rouge">gh-auth remove</code> command. Luckily
+all of this is wrapped up for simplicity by my <a href="#pair_script"><code class="language-plaintext highlighter-rouge">pair script</code></a>.</p>
+
+<h2 id="step-two-connect-from-anywhere">Step two: Connect from <em>anywhere</em></h2>
+
+<p>This is the <em><strong>holy grail</strong></em> of a solid tmux pairing setup. It’s not very
+practical to pair with someone logged into your account locally. In most cases
+your pair is far removed from you, and networking is hard. You might be at a
+coffee shop or tethering to your 3G smartphone on the way to Disney World. In
+these situations it’s tricky to provide an SSH connection back to your machine
+without access to a firewall’s port forwarding settings (if even you would want
+to do such a thing).</p>
+
+<h3 id="enter-ngrok">Enter ngrok</h3>
+
+<p>The beautiful people at <a href="https://ngrok.com">ngrok.com</a> have created an excellent
+tool for establishing reverse tunnels back to your machine. This is great for
+sharing a local development web server over the Internet. However, with their
+inclusion of TCP in the list of supported protocols, they hit it out of the
+park. The implication is that we can establish a reverse <em>TCP</em> connection back
+to our computer through their service. Yes.</p>
+
+<p><a href="https://ngrok.com/signup">Signup</a>, <a href="https://ngrok.com/download">download</a> and
+install <code class="language-plaintext highlighter-rouge">ngrok</code> (I like to keep it in my <code class="language-plaintext highlighter-rouge">~/bin</code> directory). Then spin up a TCP
+tunnel for SSH:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ngrok --proto=tcp 22  # tunneling to SSH
+ngrok                                              (Ctrl+C to quit)
+
+Tunnel Status                 online
+Version                       1.6/1.5
+Forwarding                    tcp://ngrok.com:12345 -&gt; 127.0.0.1:22
+Web Interface                 127.0.0.1:4040
+# Conn                        0
+Avg Conn Time                 0.00ms
+</code></pre></div></div>
+
+<p>This command takes over the terminal with some connection information, so you
+may want to open up another terminal window to test it out. You’ll notice the
+connection to your machine is available at <code class="language-plaintext highlighter-rouge">ngrok.com</code> on port <code class="language-plaintext highlighter-rouge">12345</code>. Let’s
+connect to our machine through ngrok and make sure the setup is working:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ssh -p 12345 tmux@ngrok.com
+Password:  # unless you're use key-based auth... You are using key-based auth, right?
+$          # :boom:
+</code></pre></div></div>
+
+<p>Any connection error when running this SSH command indicates a problem with
+your ngrok setup or perhaps a typo in the SSH command.</p>
+
+<p>I encourge you to <a href="https://ngrok.com/pay">support this service</a>. They probably
+just made your day.</p>
+
+<h3 id="tmateio">tmate.io</h3>
+
+<p>I was recently turned on to this service. <a href="http://tmate.io">http://tmate.io</a> is an
+interesting take on terminal pairing.  It’s a fork of tmux proper that does the
+heavy lifting of setting up and securing the connection between you and your
+pair. Check it out, it may be exactly what you need, but do take the time to
+<a href="https://github.com/nviennot/tmate/issues/21">understand the tradeoffs</a>.</p>
+
+<h2 id="bonus-round-my-trickery">Bonus Round: My trickery</h2>
+
+<p>I keep a lot of my environment <a href="https://github.com/iamvery/dotfiles">on Github</a>.
+I have been working on a couple scripts to make this process easier.  They’re
+not perfect, but hopefully they’re helpful. I’ll to continue to improve them
+over time.</p>
+
+<h3 id="pair_script"><code>~/bin/pair</code></h3>
+
+<p>My <a href="http://goo.gl/BrqApT"><code class="language-plaintext highlighter-rouge">pair</code> script</a>.  makes the processes of adding and
+removing tmux users a little easier. It also automates the process of spinning
+up your pairing environment.</p>
+
+<p>When all the dependencies are met, type the command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pair up iamvery  # where "iamvery" is the github username of your pair
+</code></pre></div></div>
+
+<p>This will:</p>
+
+<ol>
+  <li>Open a new tmux session named “pairing”</li>
+  <li>Start the ngrok reverse tunnel in the top tmux pane</li>
+  <li>Echo the SSH command your pair will need to connect with in the bottom pane</li>
+  <li>Copy this command to your clipboard (using <a href="https://github.com/ChrisJohnsen/tmux-MacOSX-pasteboard"><code class="language-plaintext highlighter-rouge">reattach-to-user-namespace</code></a>)</li>
+</ol>
+
+<p>Try <code class="language-plaintext highlighter-rouge">pair --help</code> for the full command signature.</p>
+
+<h3 id="ng_script"><code>~/bin/ng</code></h3>
+
+<p>My <a href="http://goo.gl/vlgsrz"><code class="language-plaintext highlighter-rouge">ng</code> script</a> is a small wrapper of the ngrok command.
+It also figures out the SSH command needed to connect to your tunnel. Since
+ngrok doesn’t provide a simple means for determining the port it selected for
+your connection we have to do a little scraping of the local ngrok web server
+to gather all the pieces.</p>
+
+<p>The end result is a couple of helpful commands:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ng connect
+#  connects and runs the ngrok tunnel
+$ ng ssh
+ssh -p 12345 your_username@ngrok.com
+</code></pre></div></div>
+
+<p>This script is used by the <code class="language-plaintext highlighter-rouge">pair</code> script to put all the pieces together for a
+quick remote pairing session.</p>
+
+<h2 id="thoughts-on-security">Thoughts on security</h2>
+
+<h3 id="disable-forwarding">Disable forwarding</h3>
+
+<p>One thing that is <a href="https://github.com/chrishunt/github-auth/pull/25">currently excluded</a>
+from github-auth is the ability to <a href="http://oreilly.com/catalog/sshtdg/chapter/ch08.html">disable forwarding</a>
+(see the section named “Disabling Forwarding”). This would prevent connecting
+users from establishing <a href="http://en.wikipedia.org/wiki/Tunneling_protocol">tunnels</a>
+through their connection to your machine. For now I use a local build of the
+gem that includes these additional options.</p>
+
+<h3 id="username-alias">Username alias</h3>
+
+<p>For some reason it creeps me out a little bit to hand out my local username to
+pairs. That may be silly, but it prompted me to <a href="http://iamvery.com/2013/11/18/mac-os-x-username-aliases.html">learn about a neat little
+feature of Mac OS X, user aliases</a>.
+I’m not sure this really provides any <em>security</em>, but I do like the feel of
+having the pair SSH with the “tmux” username.</p>
+
+<h2 id="closing">Closing</h2>
+
+<p>Wow, this was a <em>long winded</em> post, but hopefully full of great information.
+Pair programming with tmux is a fantastic in a lot of ways, but doing it remotely
+has always been a little tricky. It feels great to <em>finally</em> have a setup that’s
+quick and easy to spin up when the mood strikes.</p>
+
+<p>What do you think of the method? Is it horribly insecure? Do you love it? Hate
+it? Let me know!</p>
+
+
+<footer>
+  <p>
+    <a href="/2013/11/05/bootstrapping-mavericks.html">&laquo; Previous</a>
+    |
+    <a href="/2013/11/18/mac-os-x-username-aliases.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

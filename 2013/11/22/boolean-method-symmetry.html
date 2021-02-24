@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Boolean Method Symmetry / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Boolean Method Symmetry" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2013/11/22/boolean-method-symmetry.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2013/11/22/boolean-method-symmetry.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Boolean Method Symmetry</h1>
+</header>
+
+<p>
+  &mdash;
+  Nov 22, 2013
+</p>
+
+<p>Symmetry is beauty. This applies to lots of things, programming included.</p>
+
+<p>Boolean methods answer a question with “yes” or “no”. To adequately test such a
+method, you must assert on the positive and negative cases. Chances are you’ll
+want the complementary method eventually, so let’s start with symmetry and see
+where it takes us.</p>
+
+<h2 id="people-be-active">People, be active!</h2>
+
+<p>Let’s say we have a <code class="language-plaintext highlighter-rouge">Person</code> class as follows:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Person</span> <span class="o">=</span> <span class="no">Struct</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">:awake</span><span class="p">,</span> <span class="ss">:moving</span><span class="p">)</span></code></pre></figure>
+
+<p>We’re presented with a feature that states a <code class="language-plaintext highlighter-rouge">Person</code> should be able to report
+if they are active. Let’s start with a spec:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">'#active?'</span> <span class="k">do</span>
+    <span class="n">it</span> <span class="s1">'is true when they are awake and moving'</span> <span class="k">do</span>
+      <span class="n">person</span> <span class="o">=</span> <span class="n">described_class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="kp">true</span><span class="p">,</span> <span class="kp">true</span><span class="p">)</span>
+
+      <span class="n">expect</span><span class="p">(</span><span class="n">person</span><span class="p">).</span><span class="nf">to</span> <span class="n">be_active</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>And now for a <em>very</em> high-value implementation:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Person</span> <span class="o">=</span> <span class="no">Struct</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">:awake</span><span class="p">,</span> <span class="ss">:moving</span><span class="p">)</span> <span class="k">do</span>
+  <span class="k">def</span> <span class="nf">active?</span>
+    <span class="kp">true</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>Yay! All green :). But, ahem, not exactly feature complete. Alright, so we
+should probably test the negative case. At this point we’re presented with
+a choice. Do we test the negative cases of <code class="language-plaintext highlighter-rouge">active?</code> or introduce the
+complementary method <code class="language-plaintext highlighter-rouge">inactive?</code>. We’ll choose symmetry:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">'#active?'</span> <span class="k">do</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+
+  <span class="n">describe</span> <span class="s1">'#inactive?'</span> <span class="k">do</span>
+    <span class="n">it</span> <span class="s1">'is true when they are asleep'</span> <span class="k">do</span>
+      <span class="n">person</span> <span class="o">=</span> <span class="n">described_class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="kp">false</span><span class="p">,</span> <span class="kp">true</span><span class="p">)</span>
+
+      <span class="n">expect</span><span class="p">(</span><span class="n">person</span><span class="p">).</span><span class="nf">to</span> <span class="n">be_inactive</span>
+    <span class="k">end</span>
+
+    <span class="n">it</span> <span class="s1">'is true when they are still'</span> <span class="k">do</span>
+      <span class="n">person</span> <span class="o">=</span> <span class="n">described_class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="kp">true</span><span class="p">,</span> <span class="kp">false</span><span class="p">)</span>
+
+      <span class="n">expect</span><span class="p">(</span><span class="n">person</span><span class="p">).</span><span class="nf">to</span> <span class="n">be_inactive</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>Cool, these new specs are erroring with a <code class="language-plaintext highlighter-rouge">NoMethodError</code>. We’ll implement
+this complementary method as a function of <code class="language-plaintext highlighter-rouge">active?</code>:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Person</span> <span class="o">=</span> <span class="no">Struct</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">:awake</span><span class="p">,</span> <span class="ss">:moving</span><span class="p">)</span> <span class="k">do</span>
+  <span class="k">def</span> <span class="nf">active?</span>
+    <span class="kp">true</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">inactive?</span>
+    <span class="o">!</span><span class="n">active?</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>Nice, we see a properly failing spec. The final implementation is straight forward
+(althrough if we’re practicing TDD, we may get there in a couple steps):</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Person</span> <span class="o">=</span> <span class="no">Struct</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">:awake</span><span class="p">,</span> <span class="ss">:moving</span><span class="p">)</span> <span class="k">do</span>
+  <span class="k">def</span> <span class="nf">active?</span>
+    <span class="n">awake</span> <span class="o">&amp;&amp;</span> <span class="n">moving</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">inactive?</span>
+    <span class="o">!</span><span class="n">active?</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>Alright, so what have we accomplished? We have implemented a simple boolean method
+along with its complement, and we done this with tests providing adequate coverage
+for both methods. The complementary method could be argued YAGNI (“You ain’t
+gonna need it”), but in most cases you’ll end up negating your method. Having a
+complementary method feels symmetric… and beautiful. Further our specs
+cover the implementation well without duplication.</p>
+
+<h2 id="wrapping-up">Wrapping up</h2>
+
+<p>Symmetry not only looks good, it makes logical sense to client developers and
+makes your test suite more expressive. When you encounter a boolean method you
+probably assume its logical complement is defined. Perhaps in this case YAGNI
+may be set aside for expressiveness.</p>
+
+<p>How do you feel about symmetry? How important is it to the interfaces you define?</p>
+
+
+<footer>
+  <p>
+    <a href="/2013/11/18/mac-os-x-username-aliases.html">&laquo; Previous</a>
+    |
+    <a href="/craftsmanship/culture/2014/01/15/code-review-four-steps.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Ancient City Ruby 2013 / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Ancient City Ruby 2013" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/conferences/ruby%20on%20rails/2013/04/09/ancient-city-ruby.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://www.bignerdranch.com/blog/ancient-city-ruby" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Ancient City Ruby 2013</h1>
+</header>
+
+<p>
+  &mdash;
+  Apr 09, 2013
+</p>
+
+<p>Originally posted on the <a href="http://www.bignerdranch.com/blog/ancient-city-ruby">Big Nerd Ranch Blog</a>.</p>
+
+<hr />
+
+<p>St. Augustine, Florida, was packed with brilliant minds this past week, and I’m glad to have been a part of it. It’s a bit startling to think about all the information that was delivered and receiving during the two short days we met for <a href="http://ancientcityruby.com">Ancient City Ruby</a> (ACR).</p>
+
+<p>If you’re a Ruby developer you probably won’t be surprised that the talks fell pretty cleanly into three camps: your environment, testing and pairing.</p>
+
+<h2 id="summary">Summary</h2>
+
+<p>Here’s a glimpse of what blew my mind:</p>
+
+<ul>
+  <li>
+    <p><a href="http://blog.russolsen.com">Russ Olsen</a> gave us some great tips on cutting down the noise in our apps so that we can get down to the important stuff: programming.</p>
+  </li>
+  <li>
+    <p><a href="http://www.nellshamrell.com">Nell Shamrell</a> delivered a wonderful love story about test driven development in narrative form.</p>
+  </li>
+  <li>
+    <p><a href="http://chrishunt.co">Chris Hunt</a> filled his time with a ton of ridiculously insightful <a href="https://speakerdeck.com/chrishunt/ruby-productivity-with-vim-and-tmux"><code class="language-plaintext highlighter-rouge">vim</code> and <code class="language-plaintext highlighter-rouge">tmux</code> usage</a>.</p>
+  </li>
+  <li>
+    <p><a href="http://onestepback.org">Jim Weirich</a> gave us the rundown of his <a href="http://rubygems.org/gems/rspec-given"><code class="language-plaintext highlighter-rouge">rspec-given</code></a>, and how it can make our tests lean and mean.</p>
+  </li>
+  <li>
+    <p><a href="http://about.me/coderoshi">Eric Redmond</a> taught all we’d ever need to know about distributed programming and communication.</p>
+  </li>
+  <li>
+    <p><a href="https://twitter.com/beanstalksurf">Jacob Burkhart</a> gave us the <a href="http://jacobo.github.io/background_jobs">rundown on background jobs</a>.</p>
+  </li>
+  <li>
+    <p><a href="http://ducktypo.blogspot.com">Paolo Perrotta</a> told us things we’d never known about our (chicken) brains!</p>
+  </li>
+  <li>
+    <p><a href="http://alindeman.github.io">Andy Lindeman</a> represented us like a champ with some <em>sick</em> live <a href="http://goo.gl/9hvLg">coding of a mock library</a> for <code class="language-plaintext highlighter-rouge">MiniTest</code>.</p>
+  </li>
+  <li>
+    <p><a href="https://twitter.com/r00k">Ben Orenstein</a> showed us how to refactor like a TDD champ… and did it live.</p>
+  </li>
+  <li>
+    <p><a href="http://sandimetz.com">Sandi Metz</a> boiled the massive subject of unit testing down into <a href="http://i.imgur.com/7Y61dWv.jpg">a brilliantly minimal set of rules (pic)</a> that will make any programmer better.</p>
+  </li>
+  <li>
+    <p><a href="http://avdi.org">Avdi Grimm</a> <a href="https://speakerdeck.com/avdi/pairing-is-caring">reminded us</a> that pairing makes you and me better programmers. Do it well and do it often!</p>
+  </li>
+  <li>
+    <p><a href="https://github.com/benjaminleesmith">Ben Smith</a> humbled us with his <a href="https://speakerdeck.com/benjaminleesmith/hacking-with-gems-ancient-city-ruby">insight into Ruby gem security</a> and scared the crap out of some of us!</p>
+  </li>
+</ul>
+
+<h2 id="development-environment">Development Environment</h2>
+
+<p>What’s arguably the most important part of our (virtual) development environment? The text editor, of course! If you came to ACR with any doubt of the current trend in our community, it should be settled. It’s a vim, vim world.</p>
+
+<p>One of the coolest things I picked up for vim is use of its macros. <a href="http://chrishunt.co">Chris Hunt</a> showed us how to create a macro <em>capable of doing math</em> to calculate people’s ages and sort lines accordingly. Check out <a href="https://speakerdeck.com/chrishunt/ruby-productivity-with-vim-and-tmux">his presentation</a> if you’re interested in the details.</p>
+
+<p>Another tool we can’t seem to get enough of is <a href="http://tmux.sourceforge.net"><code class="language-plaintext highlighter-rouge">tmux</code></a>. Just about everyone had something to say about this slick little terminal multiplexer. I was also introduced to <a href="https://github.com/zolrath/wemux"><code class="language-plaintext highlighter-rouge">wemux</code></a>, a wrapper that is supposed to smooth out some of the issues you have when trying to share a tmux session with others. Additionally, I was reminded of <a href="http://mosh.mit.edu"><code class="language-plaintext highlighter-rouge">mosh</code></a>, a “mobile shell” written by MIT that aims to let you work effectively in a remote shell over a highly latent network. Sweet.</p>
+
+<h2 id="testing">Testing</h2>
+
+<p>If there’s anything we claim to be in the Ruby community, it’s testers. We can’t have a conversation about our craft without getting into testing, and this is a wonderful quality. The trick has always been doing it right, and that’s not an easy problem to solve.</p>
+
+<p>Our very own <a href="http://alindeman.github.io">Andy Lindeman</a> stepped up to the plate ready to crush his opportunity as a first-time conference speaker. <a href="https://docs.google.com/presentation/d/1laaQYHFyzcTJzlB9qMmEHyoHIB-S93p9B4L8SbbhoTw/edit#slide=id.p">He delivered</a> what was described as some of the absolute best live coding I’ve ever experienced. It was hard to believe he was actually typing, it was that smooth.</p>
+
+<p>Jim Weirich told us about his <a href="http://rubygems.org/gems/rspec-given"><code class="language-plaintext highlighter-rouge">rspec-given</code></a> library, which adds some elegant syntax to rspec for writting minimal specs. He asserts (ha) that the descriptive string following <code class="language-plaintext highlighter-rouge">it</code> is duplication that should be easily read in the spec itself and showed us how <code class="language-plaintext highlighter-rouge">rspec-given</code> addresses that problem.</p>
+
+<p><a href="http://sandimetz.com">Sandi Metz</a> attacked unit testing and broke it down into some <a href="http://i.imgur.com/7Y61dWv.jpg">simple rules</a>. We should worry about testing methods, and those can be categorized into two camps:</p>
+
+<ol>
+  <li>
+    <p>Query</p>
+  </li>
+  <li>
+    <p>Command</p>
+  </li>
+</ol>
+
+<p>After learning that, here’s how to spec them:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">|</span> <span class="no">Message</span>      <span class="o">|</span> <span class="no">Query</span>         <span class="o">|</span> <span class="no">Command</span>                            <span class="o">|</span>
+<span class="o">|</span> <span class="o">------------</span> <span class="o">|</span> <span class="o">-------------</span> <span class="o">|</span> <span class="o">----------------------------------</span> <span class="o">|</span>
+<span class="o">|</span> <span class="no">Incoming</span>     <span class="o">|</span> <span class="no">Assert</span> <span class="no">Result</span> <span class="o">|</span> <span class="no">Assert</span> <span class="n">direct</span><span class="p">,</span> <span class="kp">public</span> <span class="n">side</span> <span class="n">effects</span> <span class="o">|</span>
+<span class="o">|</span> <span class="no">Sent</span> <span class="n">to</span> <span class="nb">self</span> <span class="o">|</span> <span class="no">Ignore</span>                                             <span class="o">|</span>
+<span class="o">|</span> <span class="no">Outgoing</span>     <span class="o">|</span> <span class="no">Ignore</span>        <span class="o">|</span> <span class="no">Expect</span> <span class="n">to</span> <span class="nb">send</span>                     <span class="o">|</span></code></pre></figure>
+
+<p>So simple, so elegant, so Sandi.</p>
+
+<h2 id="pairing">Pairing</h2>
+
+<p>The last theme was pair programming. All of us do it. All of us like it. <a href="http://avdi.org">Avdi Grimm</a> used his extensive experience to <a href="https://speakerdeck.com/avdi/pairing-is-caring">tell us</a> why it’s essential. Pair programming is arguably one of the most effective ways to help a new developer level up to a seasoned status in as little time as possible. It requires great energy, but delivers big results.</p>
+
+<p>Avdi reminded us to “put out the pairing welcome mat” with <a href="http://www.pairprogramwith.me/">www.pairprogramwith.me</a> and his pairing badge. He also mentioned the use of <a href="https://twitter.com/search?q=%23pairwithme&amp;src=typd">#pairwithme</a> and <a href="https://twitter.com/search?q=%23pairingwith&amp;src=typd">#pairingwith</a> Twitter hash tags to get the word out.</p>
+
+<h2 id="honorable-mention-security">Honorable Mention: Security</h2>
+
+<p><a href="https://github.com/benjaminleesmith">Ben Smith</a> brought some <a href="https://speakerdeck.com/benjaminleesmith/hacking-with-gems-ancient-city-ruby">serious perspective</a> to the table with his talk on gem security. He reminded us that despite the general trust and character in the Ruby community, <strong><em>gems are code executing on your computer</em></strong>. That means they shouldn’t be trusted implicitly.</p>
+
+<p>He proved his point by showing us several inconspicuous gems that seemed to perform run-of-the-mill tasks with a little “extra.” He went on to demonstrate gems capable of inserting themselves into systems as log readers, source code revealers and private key stealers.</p>
+
+<p>He wrapped up the show by humbling several of us (myself included) by revealing his social experiment <code class="language-plaintext highlighter-rouge">gem install ancient-city-ruby</code> (don’t do it!). Long story short, the victims had their usernames <a href="https://speakerdeck.com/benjaminleesmith/hacking-with-gems-ancient-city-ruby?slide=118">emblazoned</a> across the projection screen mid-talk (and now the Internet). Burn.</p>
+
+<h3 id="summary-1">Summary</h3>
+
+<p>This is a one-track, regional conference to keep your eye on. The folks in attendence seemed to have a blast—I know I did. You definitely don’t want to miss out on this one next year!</p>
+
+
+
+<footer>
+  <p>
+    <a href="/2013/02/05/ruby-string-end-with.html">&laquo; Previous</a>
+    |
+    <a href="/2013/06/17/postgresapp-with-unix-socket.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

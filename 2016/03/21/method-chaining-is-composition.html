@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Method Chaining is Composition / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Method Chaining is Composition" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2016/03/21/method-chaining-is-composition.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2016/03/21/method-chaining-is-composition.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Method Chaining is Composition</h1>
+</header>
+
+<p>
+  &mdash;
+  Mar 21, 2016
+</p>
+
+<p>Have you ever chained several method invocations together in a single statement?
+You may not have thought about it, but this is composition!</p>
+
+<h2 id="an-example">An Example</h2>
+
+<p>Take this Ruby example.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># methodchain.rb</span>
+<span class="s2">"foo bar"</span><span class="p">.</span><span class="nf">upcase</span><span class="p">.</span><span class="nf">split</span>
+<span class="o">=&gt;</span> <span class="p">[</span><span class="s2">"FOO"</span><span class="p">,</span> <span class="s2">"BAR"</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>In essence, the result of everything to the left of the “dots” is the subject of the methods on the right.
+Let’s have a little fun and write this out in a more traditional (not idiomatic) composition sense, i.e. <code class="language-plaintext highlighter-rouge">foo(bar(_))</code>.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># composition.rb</span>
+<span class="n">upcase</span> <span class="o">=</span> <span class="o">-&gt;</span><span class="p">(</span><span class="n">s</span><span class="p">){</span> <span class="n">s</span><span class="p">.</span><span class="nf">upcase</span> <span class="p">}</span>
+<span class="nb">split</span> <span class="o">=</span> <span class="o">-&gt;</span><span class="p">(</span><span class="n">s</span><span class="p">){</span> <span class="n">s</span><span class="p">.</span><span class="nf">split</span> <span class="p">}</span>
+
+<span class="nb">split</span><span class="o">.</span><span class="p">(</span><span class="n">upcase</span><span class="o">.</span><span class="p">(</span><span class="s2">"foo bar"</span><span class="p">))</span>
+<span class="o">=&gt;</span> <span class="p">[</span><span class="s2">"FOO"</span><span class="p">,</span> <span class="s2">"BAR"</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>That’s harder to read.
+You have to read it from the inside out.
+This is exactly why functional programming languages often have a “pipe” operator.
+Here’s an example of Elixir’s pipe, <code class="language-plaintext highlighter-rouge">|&gt;</code>.</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># pipe.exs</span>
+<span class="s2">"foo bar"</span> <span class="o">|&gt;</span> <span class="no">String</span><span class="o">.</span><span class="n">upcase</span> <span class="o">|&gt;</span> <span class="no">String</span><span class="o">.</span><span class="n">split</span>
+<span class="o">=&gt;</span> <span class="p">[</span><span class="s2">"FOO"</span><span class="p">,</span> <span class="s2">"BAR"</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>It’s harder to read the composition when there is more than one function being called.</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># composition.exs</span>
+<span class="no">String</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="no">String</span><span class="o">.</span><span class="n">upcase</span><span class="p">(</span><span class="s2">"foo bar"</span><span class="p">))</span>
+<span class="o">=&gt;</span> <span class="p">[</span><span class="s2">"FOO"</span><span class="p">,</span> <span class="s2">"BAR"</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>You might notice this is actually very similar in structure to the original Ruby “dot” example.
+You could even import the <code class="language-plaintext highlighter-rouge">String</code> functions to eliminate some noise.</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="no">String</span>
+
+<span class="s2">"foo bar"</span> <span class="o">|&gt;</span> <span class="n">upcase</span> <span class="o">|&gt;</span> <span class="n">split</span>
+<span class="o">=&gt;</span> <span class="p">[</span><span class="s2">"FOO"</span><span class="p">,</span> <span class="s2">"BAR"</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>While you’re having so much fun, hack Ruby to add a “pipe” operator.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Object</span>
+  <span class="k">def</span> <span class="nf">&gt;&gt;</span><span class="p">(</span><span class="nb">proc</span><span class="p">)</span>
+    <span class="nb">proc</span><span class="o">.</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">Object</code> class is reopened and a method <code class="language-plaintext highlighter-rouge">&gt;&gt;</code> is implemented.
+This will be Ruby’s “pipe”.
+The operation is straight forward.
+When piping, the right-hand side must be callable.
+Let’s see an example of it in action with our second Ruby example.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s2">"foo bar"</span> <span class="o">&gt;&gt;</span> <span class="n">upcase</span> <span class="o">&gt;&gt;</span> <span class="nb">split</span>
+<span class="o">=&gt;</span> <span class="p">[</span><span class="s2">"FOO"</span><span class="p">,</span> <span class="s2">"BAR"</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>Now that <em>does</em> look like the Elixir code!
+This works because all objects (including the string <code class="language-plaintext highlighter-rouge">"foo bar"</code>) will now implement the <code class="language-plaintext highlighter-rouge">&gt;&gt;</code> method.</p>
+
+<p>Is this useful?
+Maybe, maybe not, but it’s an interesting thought experiment to think of chained method calls as the composition of multiple method executions.
+The inverse is also interesting.
+That is since Elixir’s <code class="language-plaintext highlighter-rouge">|&gt;</code> operator passes along the left-hand side as the first argument to the right hand side, those functions are being “called on” the left hand side.
+Many Elixir functions are implemented so that the “subject” of the function is the first argument for this very reason!</p>
+
+
+<footer>
+  <p>
+    <a href="/2016/02/23/a-method-by-any-other-name.html">&laquo; Previous</a>
+    |
+    <a href="/2016/03/21/ruby-blocks-are-not-a-thing.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

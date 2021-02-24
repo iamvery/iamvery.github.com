@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="Be wary of shortcuts, they don't always make things easier." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Shortcut, Long Pain / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Shortcut, Long Pain" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2015/02/16/shortcut-long-pain.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="Be wary of shortcuts, they don't always make things easier." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2015/02/16/shortcut-long-pain.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Shortcut, Long Pain</h1>
+</header>
+
+<p>
+  &mdash;
+  Feb 16, 2015
+</p>
+
+<p>Programmers are often tempted to take the shortest route possible to deliver a
+feature. While there is a lot to be said about pragmatism, every decision has
+consequence. Make the best possible decisions.</p>
+
+<p><img src="/img/blog/2015/02/convenience-hinders-clarity.jpg" alt="Convenience of code hinders clarity" /></p>
+
+<h2 id="shortcut">Shortcut</h2>
+
+<p>You receive a feature request. You are to implement a view for pet management.</p>
+
+<blockquote>
+  <p>A pet has 4 attributes:</p>
+
+  <ul>
+    <li>name (required): Emme</li>
+    <li>color: brown</li>
+    <li>size: medium</li>
+    <li>species (required): dog</li>
+  </ul>
+
+  <p>Create an interface allowing a pet to be edited. The editable fields are
+displayed in the order: name, species, color, and size. The order is
+required to support [BEAUTIFUL INTERFACE].</p>
+</blockquote>
+
+<p>To reduce duplication, you decide to iterate over the collections of fields.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>required_fields = ["name", "species"]
+other_fields = ["color", "size", "owner"]
+</code></pre></div></div>
+
+<p>Your view looks like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;% required_fields.each do |field| %&gt;
+  &lt;%= f.text_field field, required: true %&gt;
+&lt;% end %&gt;
+
+&lt;% other_fields.each do |field| %&gt;
+  &lt;%= f.text_field field %&gt;
+&lt;% end %&gt;
+</code></pre></div></div>
+
+<p>Conveniently, this renders the required fields at the top and the other fields
+below just as the feature was requested.</p>
+
+<h2 id="long-pain">Long Pain</h2>
+
+<p>Some time passes and the client is back with a new feature.</p>
+
+<blockquote>
+  <p>A pet’s size is a required field. Preserve current order.</p>
+</blockquote>
+
+<p>The best we can do is break out of the “other fields” iteration.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;% required_fields.each do |field| %&gt;
+  &lt;%= f.text_field field, required: true %&gt;
+&lt;% end %&gt;
+
+&lt;%= f.text_field "color" %&gt;
+&lt;%= f.text_field "size", required: true %&gt;
+&lt;%= f.text_field "owner" %&gt;
+</code></pre></div></div>
+
+<p>You had to give up the convenience of looping over the fields to display the
+last set. Further, it seems a little odd that “size”, a required field, is not
+included in the <code class="language-plaintext highlighter-rouge">required_fields</code> collection.</p>
+
+<p>As it turns out, the programmer convenience of iterating over these fields to
+save some keystrokes should not have been captured in the code. This is an
+example of <a href="coincidental-duplication">coincidental duplication</a>. If you want
+to save typing, try setting up <a href="emmet">macros</a> in your <a href="vim-macros">text</a>
+<a href="sublime-macros">editor</a>. Convenience of tool helps you. Convenience of code
+hinders clarity.</p>
+
+<blockquote class="twitter-tweet" lang="en"><p>Writing code is like writing a book, your efforts are for _other_ readers.</p>&mdash; Sandi Metz (@sandimetz) <a href="https://twitter.com/sandimetz/status/566273151315623938">February 13, 2015</a></blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>What other examples of painful shortcuts have you seen in code?</p>
+
+
+
+<footer>
+  <p>
+    <a href="/2015/02/04/bias-towards-actionable.html">&laquo; Previous</a>
+    |
+    <a href="/2015/02/17/rails-new-for-you.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Isolated Tests / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Isolated Tests" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2015/12/08/isolated-tests.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2015/12/08/isolated-tests.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Isolated Tests</h1>
+</header>
+
+<p>
+  &mdash;
+  Dec 08, 2015
+</p>
+
+<p>Testing interfaces in isolation leads to good software design.
+Coupling becomes glaringly obvious when mocks and stubs get out of hand.
+You may have heard this called unit testing, but <a href="http://martinfowler.com/bliki/UnitTest.html">not everyone agrees that implies isolation</a>.
+Names are important, but let’s not get caught up in terminology.
+The real benefit of isolated in tests is the affect it has on design.</p>
+
+<p>Consider a duck.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="code"><pre><span class="k">class</span> <span class="nc">Duck</span>
+  <span class="k">def</span> <span class="nf">speak</span>
+    <span class="nb">puts</span> <span class="s2">"*quack*"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+
+<p>To test that the duck can speak, you would have try one of:</p>
+
+<ol>
+  <li>Mock stdout and assert that <code class="language-plaintext highlighter-rouge">puts</code> is called with the expected value.</li>
+  <li>Temporarily capture stdout and assert on it’s value.</li>
+</ol>
+
+<p>Have a look at both of these options.</p>
+
+<h4 id="mocking-stdout">Mocking stdout</h4>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="n">describe</span> <span class="no">Duck</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s2">"speaks"</span> <span class="k">do</span>
+    <span class="n">expect</span><span class="p">(</span><span class="vg">$stdout</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:puts</span><span class="p">)</span> <span class="p">{</span> <span class="s2">"*quack*"</span> <span class="p">}</span>
+    <span class="no">Duck</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">speak</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+
+<h4 id="capturing-stdout">Capturing stdout</h4>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre></td><td class="code"><pre><span class="n">describe</span> <span class="no">Duck</span> <span class="k">do</span>
+  <span class="nb">require</span> <span class="s2">"stringio"</span>
+  <span class="k">def</span> <span class="nf">capture_stdout</span>
+    <span class="n">stdout</span> <span class="o">=</span> <span class="vg">$stdout</span>
+    <span class="vg">$stdout</span> <span class="o">=</span> <span class="no">StringIO</span><span class="p">.</span><span class="nf">new</span>
+    <span class="k">yield</span>
+    <span class="vg">$stdout</span><span class="p">.</span><span class="nf">string</span>
+  <span class="k">ensure</span>
+    <span class="vg">$stdout</span> <span class="o">=</span> <span class="n">stdout</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s2">"speaks"</span> <span class="k">do</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">capture_stdout</span> <span class="p">{</span> <span class="no">Duck</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">speak</span> <span class="p">}</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">output</span><span class="p">.</span><span class="nf">chomp</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="s2">"*quack*"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+
+<p>At a cursory glance, you might side with the first option.
+It’s less code.
+Regardless, the fact is a passing test implies “a duck quacks”.</p>
+
+<h2 id="an-important-distinction">An Important Distinction</h2>
+
+<p>Testing that a duck <em>quacks</em> is more than testing that a duck <em>speaks</em>.
+It is interesting to consider that if you change what a speaking duck “sounds like” the failing test implies that a duck can no longer speak.
+Said differently, <strong>altering the perception of quacking destroys our understanding of the duck.</strong></p>
+
+<p>Additionally, as illustrated by the second test implementation, our duck is coupled tightly to standard output.</p>
+
+<h2 id="refactor">Refactor</h2>
+
+<p>Both of these concerns may be addresses by applying the Single Responsibility Principal.
+First, identify the responsibilities:</p>
+
+<ul>
+  <li>a duck speaks</li>
+  <li>a quack sounds quacky</li>
+</ul>
+
+<p>Now that you recognize a quack as having responsibility of its own, it’s easy to imagine it being an object.
+Below we implement <code class="language-plaintext highlighter-rouge">Quack</code> with an injectable interface for IO.
+This allows us to test the quack itself in isolation.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+</pre></td><td class="code"><pre><span class="k">class</span> <span class="nc">Quack</span>
+  <span class="nb">attr_reader</span> <span class="ss">:io</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="ss">io: </span><span class="no">STDOUT</span><span class="p">)</span>
+    <span class="vi">@io</span> <span class="o">=</span> <span class="n">io</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">utter</span>
+    <span class="n">io</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"*quack*"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="nb">require</span> <span class="s2">"stringio"</span>
+
+<span class="n">describe</span> <span class="no">Quack</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s2">"quacks"</span> <span class="k">do</span>
+    <span class="n">io</span> <span class="o">=</span> <span class="no">StringIO</span><span class="p">.</span><span class="nf">new</span>
+    <span class="n">quack</span> <span class="o">=</span> <span class="no">Quack</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">io: </span><span class="n">io</span><span class="p">)</span>
+    <span class="n">quack</span><span class="p">.</span><span class="nf">utter</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">io</span><span class="p">.</span><span class="nf">string</span><span class="p">.</span><span class="nf">chomp</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="s2">"*quack*"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+
+<p>With this new concept realized, it’s easy to imagine giving the duck a voice.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+</pre></td><td class="code"><pre><span class="k">class</span> <span class="nc">Duck</span>
+  <span class="nb">attr_reader</span> <span class="ss">:voice</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="ss">voice: </span><span class="no">Quack</span><span class="p">.</span><span class="nf">new</span><span class="p">)</span>
+    <span class="vi">@voice</span> <span class="o">=</span> <span class="n">voice</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">speak</span>
+    <span class="n">voice</span><span class="p">.</span><span class="nf">utter</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">describe</span> <span class="no">Duck</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s2">"speaks"</span> <span class="k">do</span>
+    <span class="n">quack</span> <span class="o">=</span> <span class="n">double</span>
+    <span class="n">duck</span> <span class="o">=</span> <span class="no">Duck</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">voice: </span><span class="n">quack</span><span class="p">)</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">quack</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:utter</span><span class="p">)</span>
+    <span class="n">duck</span><span class="p">.</span><span class="nf">speak</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+
+<p>Testing that a duck speaks is just a matter of making sure that it utters its voice.
+This frees you to change what it means to utter a quack without affecting the means the duck uses to speak.</p>
+
+<h2 id="integration">Integration</h2>
+
+<p>Of course these tests do <em>not</em> ensure that a duck actually quacks.
+Such would be done with an integration test that gives you confidence in the collaboration between objects in your system.</p>
+
+<p><strong>Isolated tests free you to refactor and encourage flexible software design.</strong></p>
+
+<p>Maybe you never considered a duck quacking to a file.
+Well now it’s nbd.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="code"><pre><span class="n">quackings</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="s2">"quackings"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span>
+<span class="no">Duck</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">voice: </span><span class="no">Quack</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">io: </span><span class="n">quackings</span><span class="p">))</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+
+
+
+<footer>
+  <p>
+    <a href="/2015/11/05/work-better.html">&laquo; Previous</a>
+    |
+    <a href="/2016/01/21/spawning-agent-smiths.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

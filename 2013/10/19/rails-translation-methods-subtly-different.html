@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Rails translate methods are subtly different / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Rails translate methods are subtly different" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2013/10/19/rails-translation-methods-subtly-different.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2013/10/19/rails-translation-methods-subtly-different.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Rails translate methods are subtly different</h1>
+</header>
+
+<p>
+  &mdash;
+  Oct 19, 2013
+</p>
+
+<p><strong>TL;DR</strong> - <code class="language-plaintext highlighter-rouge">I18n.translate</code> and the <code class="language-plaintext highlighter-rouge">translate</code> view helper are not created equal.</p>
+
+<p>Working on a Rails app this week, I discovered a subtle difference in the Rails
+<code class="language-plaintext highlighter-rouge">translate</code> view helper method and <code class="language-plaintext highlighter-rouge">I18n.translate</code> proper. The tricky
+difference is that the view helper method actually provides
+<a href="http://api.rubyonrails.org/classes/ActionView/Helpers/TranslationHelper.html#method-i-translate">additional functionality</a>.</p>
+
+<p>Check this out:</p>
+
+<noscript><pre>400: Invalid request</pre></noscript>
+<script src="https://gist.github.com/7057588.js"> </script>
+
+<p>Notice the types for each returned value. Is that what you expected? As it
+turns out, only the view helper method is able
+to detect HTMLy translation keys. This is documented behavior, but admittedly
+it’s rather unexpected. Rather than proposing modifications to the API, I opted
+to update the <a href="http://guides.rubyonrails.org/">Rails Guides</a> to be a little more
+explicit about this difference. <a href="https://github.com/rails/docrails/commit/da1d2fb483b521419ce6c350bc6a5721266c0fc6#commitcomment-4375238">Check out my contribution</a>
+and let me know what you think!</p>
+
+
+<footer>
+  <p>
+    <a href="/craftsmanship/2013/09/25/small-distinct-commits-say-you-care.html">&laquo; Previous</a>
+    |
+    <a href="/2013/11/05/bootstrapping-mavericks.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

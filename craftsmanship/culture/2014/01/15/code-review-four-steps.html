@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Code Review in Four Steps / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Code Review in Four Steps" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/craftsmanship/culture/2014/01/15/code-review-four-steps.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://www.bignerdranch.com/blog/code-review-four-steps" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Code Review in Four Steps</h1>
+</header>
+
+<p>
+  &mdash;
+  Jan 15, 2014
+</p>
+
+<p>Originally posted on the <a href="http://www.bignerdranch.com/blog/code-review-four-steps">Big Nerd Ranch Blog</a>.</p>
+
+<hr />
+
+<p>When I started at Big Nerd Ranch, I was starved for <a href="http://en.wikipedia.org/wiki/Code_review">code review</a>. I had received very few deep, insightful comments on the code I had produced up to that point. Then the code review process at Big Nerd Ranch changed the game for me. </p>
+
+<p><a href="/img/blog/2014/01/code-review.jpg"><img src="/img/blog/2014/01/code-review.jpg" alt="one does not simply do code review" /></a></p>
+
+<p>I quickly found out how valuable code review is—not just as a programmer, but also as a reviewer. I began learning about new strategies and tools for solving problems, along with new ways to use the tools I already had. And reviewing code myself forced me to think about my preconceptions of code and figure out how to effectively communicate my views to others.</p>
+
+<h3 id="the-process">The Process</h3>
+
+<p>The code review process is quite simple, really:</p>
+
+<ol>
+  <li>Read all code written by a developer over the last few days.</li>
+  <li>Understand the changes.</li>
+  <li>Offer actionable feedback.</li>
+  <li>Follow up with discussion.</li>
+</ol>
+
+<h4 id="read">Read</h4>
+
+<p>You should look at the diff itself as well as the context that it exists in. To do so:</p>
+
+<ol>
+  <li>Open up the project and select the target branch.</li>
+</ol>
+
+<p><a href="/img/blog/2013/12/branch.jpg"><img src="/img/blog/2013/12/branch.jpg" alt="branch" /></a></p>
+
+<ol>
+  <li>View the commits.</li>
+</ol>
+
+<p><a href="/img/blog/2013/12/commits.jpg"><br />
+<img src="/img/blog/2013/12/commits.jpg" alt="commits" /></a></p>
+
+<ol>
+  <li>Starting with the oldest commit you would like to review, read them in chronological order.</li>
+</ol>
+
+<p>As you read through the commits, consider the notes and analyze the diff. You’ll begin to build a mental model of <a href="/blog/small-distinct-commits-say-you-care/">the story being told by the commits</a>. With experience, you’ll be able to quickly decide what is important enough to devote time to, and what may be quickly breezed over (such as whitespace commits).</p>
+
+<h4 id="understand">Understand</h4>
+
+<p>It’s one thing to read code and another thing entirely to understand it. You can start your review by looking for obvious mistakes such as typos, syntax errors, stale comments and the like. You should also consider the readability of the code. If the role of an object is unclear, you may consider commenting on its responsibility or naming. (Naming is a notoriously difficult problem, and code review can be a great way to work fuzzy names into concrete identifiers that clearly communicate the purpose of objects and methods.)</p>
+
+<p>The goal here is to understand another programmer’s decisions. This may involve viewing <a href="https://github.com/blog/1705-expanding-context-in-diffs">more context</a> or asking questions. If you have difficulty grokking a set of changes, that might indicate a flaw in the design.</p>
+
+<p>After gaining understanding, you are ready to comment on the code.</p>
+
+<h4 id="respond">Respond</h4>
+
+<p>The best question to ask yourself when leaving a comment is: “Is this comment actionable?” While it is encouraging to litter code with “+1” and “Awwww yeah! Dat code is HAWT!”, that kind of feedback can grow old.</p>
+
+<p><strong>Remember</strong>: Every comment you make will notify the programmer whose code you’re reviewing, and potentially consume his or her time with reading and following up. </p>
+
+<p>Your comments should include a call to action:</p>
+
+<ul>
+  <li>“Have you considered eager-loading these records to reduce the number of queries needed? (i.e. <code class="language-plaintext highlighter-rouge">SomeModel.includes(:related_models)</code>)”</li>
+  <li>“This object appears to carry too much responsibility. You may consider extracting each responsibility into individual objects to more clearly define the boundaries of logic. What do you think about that?”</li>
+</ul>
+
+<p>Notice that the last example is followed up with a question. This reminds the person you’re reviewing that your word is not gospel, but rather a suggestion. The developer may have good reason behind his or her decisions, and should be given the benefit of the doubt.</p>
+
+<p>When reviewing, always ask yourself if a comment you’re about to leave is actually valuable. There are many times that I’ve typed a long comment and subsequently thrown it out because it really didn’t offer value. Yes, throwing it out is a waste of your time, but sending it may end up wasting the developer’s time as well. </p>
+
+<h4 id="discuss">Discuss</h4>
+
+<p>If you’ve provided excellent comments on someone’s work, conversation will spring up. Further discussion may be needed in order to find a suitable solution, or the reviewee may simply disagree with you. Be ready to support your opinions, and don’t be afraid to admit your own error.</p>
+
+<h3 id="go-forth-and-provide-value">Go forth and provide value!</h3>
+
+<p>Confronting your assumptions about the way code should look and feel forces you to clearly articulate those ideas. You will inevitably grow as a result, and I am amazed by how quickly knowledge spreads in both directions when code review is taken seriously by everyone involved.</p>
+
+<p>Do you practice code review? Does your process differ? Let us know how!</p>
+
+
+<footer>
+  <p>
+    <a href="/2013/11/22/boolean-method-symmetry.html">&laquo; Previous</a>
+    |
+    <a href="/2014/01/20/pairing-with-tmux.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

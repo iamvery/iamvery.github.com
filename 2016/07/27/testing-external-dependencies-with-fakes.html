@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="Third-party solutions complicate automated testing in your app. Solve this by using fakes to test external dependencies in your code." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Testing External Dependencies with Fakes / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Testing External Dependencies with Fakes" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2016/07/27/testing-external-dependencies-with-fakes.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="Third-party solutions complicate automated testing in your app. Solve this by using fakes to test external dependencies in your code." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="https://www.bignerdranch.com/blog/testing-external-dependencies-with-fakes/" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Testing External Dependencies with Fakes</h1>
+</header>
+
+<p>
+  &mdash;
+  Jul 27, 2016
+</p>
+
+<p>Communication with remote services is often an inevitable part of writing interesting software. Difficult problems (e.g., address validation) are easily solved by integrating with third-party solutions.</p>
+
+<p>Unfortunately, relying on remote services complicates the goal of writing automated tests for your application. Without decoupling your code from these external factors, your test suite grows continually slower each time an example communicates with the outside. Additionally, services may or may not be available during the run, causing test failures unrelated to your code.</p>
+
+<p>An effective strategy to address this problem is to draw a line at the boundary between your code and the service. At that boundary, replace the external integration with a stand-in, a fake.</p>
+
+<h2 id="a-testing-strategy">A Testing Strategy</h2>
+
+<p>To get familiar with this approach, consider an example. Say you want to add a feature to your application that fetches page titles using the <a href="http://ogp.me/">Open Graph protocol</a>. After some research, you settle on a small library that gets the job done.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>OpenGraph.new("https://bignerdranch.com").title
+# time passes as request is made and response is processed...
+# =&gt; "Big Nerd Ranch - App Development, Training, &amp; Programming Guides"
+</code></pre></div></div>
+
+<h3 id="wrap-it">Wrap It</h3>
+
+<p><a href="https://twitter.com/searls">Justin Searls</a> recently wrote an article that clarifies a phrase you often see: <a href="https://github.com/testdouble/contributing-tests/wiki/Don't-mock-what-you-don't-own">“Don’t mock what you don’t own”</a>. As he points out, the purpose of that phrase is to encourage test writers to wrap external dependencies in an application-owned adapter.</p>
+
+<p>The benefit is two-part:</p>
+
+<ul>
+  <li>It establishes a consistent interface for accessing the behavior you need.</li>
+  <li>It serves “as a specification of what you’re using in that dependency.”</li>
+</ul>
+
+<p>Go ahead and introduce a trivial adapter for your Open Graph integration.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class WebPage
+  def initialize(url)
+    @open_graph = OpenGraph.new(url)
+  end
+
+  def title
+    open_graph.title
+  end
+
+  private
+
+  attr_reader :open_graph
+end
+</code></pre></div></div>
+
+<p>This step may seem unnecessary, but there is value in establishing a consistent interface in your application. The benefit is quickly felt if you later decide to use a different Open Graph library, or the initialization of the library you’re using is awkward. With your adapter’s interface established, you’re ready to create a test fake.</p>
+
+<p>Note: It is important to write tests that verify your adapter correctly integrates with the library it wraps. However, those tests feel very off-subject for this post. I’ve written a pull request to demonstrate how one might <a href="https://github.com/iamvery/pinster-cable/pull/6">test the adapter</a>.</p>
+
+<h3 id="fake-it">Fake It</h3>
+
+<p>To avoid the pitfalls of external influence on your tests, implement a fake that is a <a href="https://en.wikipedia.org/wiki/Duck_typing">duck type</a> for <code class="language-plaintext highlighter-rouge">WebPage</code>. The fake should be simple, but as <a href="http://martinfowler.com/bliki/TestDouble.html">Martin Fowler says</a>, it must have a <em>working implementation</em> to support dependent code.</p>
+
+<p>Consider this implementation that returns a URL’s hostname as its title:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>require "uri"
+
+class FakeWebPage
+  attr_reader :url
+
+  def initialize(url)
+    @url = url
+  end
+
+  def title
+    host
+  end
+
+  private
+
+  def host
+    uri.host
+  end
+
+  def uri
+    URI(url)
+  end
+end
+</code></pre></div></div>
+
+<p>This stand-in provides an alternative strategy for determining the page title without having to make a web request. Try it out for yourself, and see that it’s good enough.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>FakeWebPage.new("http://some_web_page.com")
+# =&gt; "some_web_page.com"
+</code></pre></div></div>
+
+<p>It seems to get the job done. Now you can configure your application to use the test fake when running tests.</p>
+
+<p>Here’s a pull request that shows a similar <a href="https://github.com/iamvery/pinster-cable/pull/6">implementation in the context of an app</a>.</p>
+
+<h2 id="confidence-in-the-implementation">Confidence in the Implementation</h2>
+
+<p>No real integration happens in test. How can you be sure it really works? That’s a genuine concern.</p>
+
+<p>The library code (the bit performing external communication) must itself have integration tests written that verify its own external behavior. When using a third-party library, this is often a responsibility that maintainers take seriously. If you have written the integration (or you don’t trust theirs), test the integration directly in isolation. You might use a tool like <a href="https://github.com/vcr/vcr">VCR</a> to record and play back web requests for tests.</p>
+
+<p>For critical integrations, you may even want to allow external communication by an isolated portion of your tests that is only run in certain environments. This provides the absolute confidence that the real integration works. However, realize that it comes at the cost of speed and reliability (e.g. external service may go down).</p>
+
+<h2 id="responsibility">Responsibility</h2>
+
+<p>Fundamentally, the struggle of how to test external integrations is one of responsibility. Is it really your application code that should bear the task of maintaining this integration? No. That burden falls to library code. It might be that the library is born out of your application’s codebase (see Rails’ <a href="http://blog.codeclimate.com/blog/2012/02/07/what-code-goes-in-the-lib-directory/"><code class="language-plaintext highlighter-rouge">./lib</code> directory</a>). But the library itself is not concerned with the domain of your application, e.g. selling widgets. Conversely, the application should not be concerned with the domain of the library, e.g. fetching and parsing Open Graph metadata. These distinctions become easier to see when library code is extracted as a dependency from your application.</p>
+
+<p><strong>You might say that an application should be built solely out of domain-specific code, libraries and configuration.</strong></p>
+
+<h2 id="summary">Summary</h2>
+
+<ul>
+  <li>Create thin wrappers to establish consistent, app-owned interfaces for faking.</li>
+  <li>Replace these adapters with fakes to avoid external dependencies in your tests.</li>
+  <li>Enjoy speedy tests that are unaffected by remote services you do not control.</li>
+</ul>
+
+
+
+<footer>
+  <p>
+    <a href="/2016/06/09/when-to-parallel-map.html">&laquo; Previous</a>
+    |
+    <a href="/2016/09/15/catching-strong-params-problems-early.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

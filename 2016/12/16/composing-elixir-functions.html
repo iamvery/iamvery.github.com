@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="Learn how to Elixir can be extended to build complex functions out of simpler ones." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Composing Elixir Functions / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Composing Elixir Functions" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2016/12/16/composing-elixir-functions.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="Learn how to Elixir can be extended to build complex functions out of simpler ones." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="https://www.bignerdranch.com/blog/composing-elixir-functions/" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Composing Elixir Functions</h1>
+</header>
+
+<p>
+  &mdash;
+  Dec 16, 2016
+</p>
+
+<p><a href="https://en.wikipedia.org/wiki/Function_composition_(computer_science)">Function composition</a> is a technique used to build complex functions out of simpler ones. Elixir does not provide a mechanism for composing two functions into a new function. Let’s play with that a little and see what can be done.</p>
+
+<h2 id="an-example">An Example</h2>
+
+<p>Say using Elixir you want a function that appends an element to a list. An efficient way to do this is by first reversing the list, then <em>prepending</em> the element, and finally reversing the list again.</p>
+
+<p>Kick things off by manually implementing <code class="language-plaintext highlighter-rouge">append</code> in terms of reversal and prepending:</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">iex</span><span class="o">&gt;</span> <span class="n">append</span> <span class="o">=</span> <span class="k">fn</span> <span class="n">list</span><span class="p">,</span> <span class="n">item</span> <span class="o">-&gt;</span>
+  <span class="n">list</span> <span class="o">=</span> <span class="no">Enum</span><span class="o">.</span><span class="n">reverse</span><span class="p">(</span><span class="n">list</span><span class="p">)</span>
+  <span class="n">list</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="o">|</span><span class="n">list</span><span class="p">]</span>
+  <span class="no">Enum</span><span class="o">.</span><span class="n">reverse</span><span class="p">(</span><span class="n">list</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="c1">#Function&lt;...&gt;</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="n">append</span><span class="o">.</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>This certainly gets the job done, but perhaps it could be even more to the point. The main problem is the implementation shifts the focus from the operations to state management. The <code class="language-plaintext highlighter-rouge">list</code> variable is introduced and repeatedly referenced (5 times!) during the execution of the function. As <a href="https://www.bignerdranch.com/about-us/nerds/josh-justice/">Josh</a> points out in his <a href="https://www.bignerdranch.com/blog/breaking-up-is-hard-to-do-how-to-decompose-your-code/">decomposition blog</a>, Elixir provides a mechanism for composing function applications with its pipe <code class="language-plaintext highlighter-rouge">|&gt;</code> operator. Refactor it with pipes:</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">iex</span><span class="o">&gt;</span> <span class="n">prepend</span> <span class="o">=</span> <span class="o">&amp;</span><span class="p">[</span><span class="nv">&amp;2</span><span class="o">|</span><span class="nv">&amp;1</span><span class="p">]</span>
+<span class="c1">#Function&lt;...&gt;</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="n">append</span> <span class="o">=</span> <span class="k">fn</span> <span class="n">list</span><span class="p">,</span> <span class="n">item</span> <span class="o">-&gt;</span>
+  <span class="n">list</span>
+  <span class="o">|&gt;</span> <span class="no">Enum</span><span class="o">.</span><span class="n">reverse</span>
+  <span class="o">|&gt;</span> <span class="n">prepend</span><span class="o">.</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+  <span class="o">|&gt;</span> <span class="no">Enum</span><span class="o">.</span><span class="n">reverse</span>
+<span class="k">end</span>
+<span class="c1">#Function&lt;...&gt;</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="n">append</span><span class="o">.</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>That does seem quite a bit better (idiomatic, even)! You no longer repeatly refer to <code class="language-plaintext highlighter-rouge">list</code>, and the implementation is more clearly composed of <code class="language-plaintext highlighter-rouge">prepend/2</code> between calls to <code class="language-plaintext highlighter-rouge">reverse/1</code>. Even so, the state management is still present in the form of arguments. Is there an implementation that’s even more clearly composed of the operations? What if you could compose the existing functions together into a new <code class="language-plaintext highlighter-rouge">append</code> function?</p>
+
+<p>Elixir does not provide such an operation, but imagine a custom infix operator, <code class="language-plaintext highlighter-rouge">&lt;|&gt;</code>, for composing functions:</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">iex</span><span class="o">&gt;</span> <span class="n">append</span> <span class="o">=</span> <span class="n">reverse</span> <span class="o">&lt;|&gt;</span> <span class="n">prepend</span> <span class="o">&lt;|&gt;</span> <span class="n">reverse</span>
+<span class="c1">#Function&lt;...&gt;</span>
+</code></pre></div></div>
+
+<p>Such an <code class="language-plaintext highlighter-rouge">append</code> function would, in effect, capture the expression <code class="language-plaintext highlighter-rouge">reverse(prepend(reverse(list), item))</code>, requiring the arguments <code class="language-plaintext highlighter-rouge">list</code> and <code class="language-plaintext highlighter-rouge">item</code> in that order.</p>
+
+<h2 id="compose">Compose</h2>
+
+<p>To arrive at the final implementation, start by implementing a <code class="language-plaintext highlighter-rouge">compose/2</code> function using recursion. First define the base case:</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">defmodule</span> <span class="no">Compose</span> <span class="k">do</span>
+  <span class="k">def</span> <span class="n">compose</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This base case effectively <em>applies</em> the <code class="language-plaintext highlighter-rouge">arg</code> to the function <code class="language-plaintext highlighter-rouge">f</code>. For example:</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">iex</span><span class="o">&gt;</span> <span class="n">double</span> <span class="o">=</span> <span class="k">fn</span> <span class="n">n</span> <span class="o">-&gt;</span> <span class="n">n</span><span class="o">*</span><span class="mi">2</span> <span class="k">end</span>
+<span class="c1">#Function&lt;...&gt;</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="no">Compose</span><span class="o">.</span><span class="n">compose</span><span class="p">(</span><span class="n">double</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="mi">8</span>
+</code></pre></div></div>
+
+<p>Next add an implementation of <code class="language-plaintext highlighter-rouge">compose/2</code> that recurses when the second argument is a function:</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">defmodule</span> <span class="no">Compose</span> <span class="k">do</span>
+  <span class="k">def</span> <span class="n">compose</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span> <span class="ow">when</span> <span class="n">is_function</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">do</span>
+    <span class="k">fn</span> <span class="n">arg</span> <span class="o">-&gt;</span> <span class="n">compose</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">arg</span><span class="p">))</span> <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="n">compose</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This version of <code class="language-plaintext highlighter-rouge">compose/2</code> returns a function that applies its argument to <code class="language-plaintext highlighter-rouge">g</code> and then composes the result with <code class="language-plaintext highlighter-rouge">f</code>. However, at this point the implementation works only to compose functions that accept a single argument, i.e. having an arity of 1:</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">iex</span><span class="o">&gt;</span> <span class="n">reverse_sort</span> <span class="o">=</span> <span class="no">Compose</span><span class="o">.</span><span class="n">compose</span><span class="p">(</span><span class="o">&amp;</span><span class="no">Enum</span><span class="o">.</span><span class="n">reverse</span><span class="o">/</span><span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="no">Enum</span><span class="o">.</span><span class="n">sort</span><span class="o">/</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">#Function&lt;...&gt;</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="n">reverse_sort</span><span class="o">.</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+<span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>It does not work for functions requiring many arguments (N-arity):</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">iex</span><span class="o">&gt;</span> <span class="n">reverse_prepend</span> <span class="o">=</span> <span class="no">Compose</span><span class="o">.</span><span class="n">compose</span><span class="p">(</span><span class="o">&amp;</span><span class="p">[</span><span class="nv">&amp;2</span><span class="o">|</span><span class="nv">&amp;1</span><span class="p">],</span> <span class="o">&amp;</span><span class="no">Enum</span><span class="o">.</span><span class="n">reverse</span><span class="o">/</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">#Function&lt;...&gt;</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="n">reverse_prepend</span><span class="o">.</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="o">**</span> <span class="p">(</span><span class="no">BadArityError</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The error happens, because <code class="language-plaintext highlighter-rouge">compose/2</code> only ever applies one argument, i.e. <code class="language-plaintext highlighter-rouge">.(arg)</code>. Elixir is strict about the arity of functions. For <code class="language-plaintext highlighter-rouge">compose/2</code> to work with N-arity functions, you need some way to apply a variable number of arguments.</p>
+
+<h3 id="arguments">Arguments</h3>
+
+<p>A solution to this problem is changing how N-artiy functions are applied. Since there is no way to anticipate how many arguments will be needed, you can instead rearrange the function to support multiple single-argument applications until all have been provided. This is a common functional programming technique known as <em>currying</em>.</p>
+
+<p>Currying converts a function of arity <em>N</em> into a function of 1-arity that when applied <em>N</em> times produces the result. Consider this example of manual currying with nested functions:</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">iex</span><span class="o">&gt;</span> <span class="n">add</span> <span class="o">=</span> <span class="k">fn</span> <span class="n">a</span> <span class="o">-&gt;</span> <span class="k">fn</span> <span class="n">b</span> <span class="o">-&gt;</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span> <span class="k">end</span> <span class="k">end</span>
+<span class="c1">#Function&lt;...&gt;</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="n">add_one</span> <span class="o">=</span> <span class="n">add</span><span class="o">.</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">#Function&lt;...&gt;</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="n">add_one</span><span class="o">.</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="mi">3</span>
+</code></pre></div></div>
+
+<p>The function <code class="language-plaintext highlighter-rouge">add</code> is defined to return another function. The result of applying the value <code class="language-plaintext highlighter-rouge">1</code> to <code class="language-plaintext highlighter-rouge">add</code> returns a function that accepts the second argument for the addition. This idea of applying only part of what a function needs to return a result is called <em>partial application</em>. The partial application of <code class="language-plaintext highlighter-rouge">add</code> with <code class="language-plaintext highlighter-rouge">1</code> is a function that “adds one”. Once all the arguments have been applied, the result is returned:</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">iex</span><span class="o">&gt;</span> <span class="n">add</span><span class="o">.</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1">#Function&lt;...&gt; # a function that "adds 2"</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="n">add</span><span class="o">.</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="mi">5</span>
+</code></pre></div></div>
+
+<p>Notably, this mechanism is not built into Elixir, but there are <a href="https://hex.pm/packages?search=curry&amp;sort=downloads">packages</a> that add the behavior as well as a <a href="http://blog.patrikstorm.com/function-currying-in-elixir">great post on currying in Elixir</a>. For the remainder of this post, it’s assumed you have a module <code class="language-plaintext highlighter-rouge">Curry</code> that includes a function <code class="language-plaintext highlighter-rouge">curry/1</code> such that you can:</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">iex</span><span class="o">&gt;</span> <span class="n">add</span> <span class="o">=</span> <span class="no">Curry</span><span class="o">.</span><span class="n">curry</span><span class="p">(</span><span class="k">fn</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">-&gt;</span> <span class="n">a</span><span class="o">+</span><span class="n">b</span> <span class="k">end</span><span class="p">)</span>
+<span class="c1">#Function&lt;...&gt;</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="n">add</span><span class="o">.</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="mi">7</span>
+</code></pre></div></div>
+
+<h3 id="finishing-compose2">Finishing <code class="language-plaintext highlighter-rouge">compose/2</code></h3>
+
+<p>As you have learned, currying is a solution to your variable argument problem. It also happens to fit really well into the recursion that is already set up in <code class="language-plaintext highlighter-rouge">compose/2</code>. Update the implementation to curry both functions passed in:</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code> defmodule Compose do
+<span class="gi">+  import Curry
++
+</span>   def compose(f, g) when is_function(g) do
+<span class="gd">-    fn arg -&gt; compose(f, g.(arg)) end
+</span><span class="gi">+    fn arg -&gt; compose(curry(f), curry(g).(arg)) end
+</span>   end
+
+   def compose(f, arg) do
+     f.(arg)
+   end
+ end
+</code></pre></div></div>
+
+<p>It might be surprising to realize this is the only change needed to complete the implemetnation! The recursive definition of <code class="language-plaintext highlighter-rouge">compose/2</code> applies arguments one at a time to the composed function until a result is found, and then then applies that result to the outer function in the base case. See if it fixed your arity error:</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">iex</span><span class="o">&gt;</span> <span class="n">reverse_prepend</span> <span class="o">=</span> <span class="n">compose</span><span class="p">(</span><span class="o">&amp;</span><span class="p">[</span><span class="nv">&amp;2</span><span class="o">|</span><span class="nv">&amp;1</span><span class="p">],</span> <span class="o">&amp;</span><span class="no">Enum</span><span class="o">.</span><span class="n">reverse</span><span class="o">/</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">#Function&lt;...&gt;</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="n">reverse_prepend</span><span class="o">.</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>Nice! Notice that each successive argument is a partial application to the underlying curried functions. The really cool thing is that the order of the arguments called on <code class="language-plaintext highlighter-rouge">reverse_prepend</code> matches the order of respective arguments to each composed function; the list first, then the prepended item.</p>
+
+<h3 id="custom-operator">Custom Operator</h3>
+
+<p>For convenience, complete your implementation of <code class="language-plaintext highlighter-rouge">Compose</code> with a custom infix composition operator, <code class="language-plaintext highlighter-rouge">&lt;|&gt;</code>:</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">defmodule</span> <span class="no">Compose</span> <span class="k">do</span>
+  <span class="kn">import</span> <span class="no">Curry</span>
+  <span class="k">def</span> <span class="n">f</span> <span class="o">&lt;|&gt;</span> <span class="n">g</span><span class="p">,</span> <span class="k">do</span><span class="p">:</span> <span class="n">compose</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+  <span class="o">...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>That’s it! Now by importing <code class="language-plaintext highlighter-rouge">Compose</code>, functions may be composed together with <code class="language-plaintext highlighter-rouge">&lt;|&gt;</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>iex&gt; import Compose
+Compose
+iex&gt; square = fn n -&gt; n*n end
+#Function&lt;...&gt;
+iex&gt; fourth = square &lt;|&gt; square
+#Function&lt;...&gt;
+iex&gt; fourth.(2)
+16
+</code></pre></div></div>
+
+<h2 id="append"><code class="language-plaintext highlighter-rouge">append</code></h2>
+
+<p>Tie up this experiment by returning to the original task. Recall, you want to define a function <code class="language-plaintext highlighter-rouge">append</code> in terms of <code class="language-plaintext highlighter-rouge">reverse</code> and <code class="language-plaintext highlighter-rouge">prepend</code>. The implementation with function composition is now purely expressed as operations:</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">iex</span><span class="o">&gt;</span> <span class="n">reverse</span> <span class="o">=</span> <span class="o">&amp;</span><span class="no">Enum</span><span class="o">.</span><span class="n">reverse</span><span class="o">/</span><span class="mi">1</span>
+<span class="c1">#Function&lt;...&gt;</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="n">prepend</span> <span class="o">=</span> <span class="o">&amp;</span><span class="p">[</span><span class="nv">&amp;2</span><span class="o">|</span><span class="nv">&amp;1</span><span class="p">]</span>
+<span class="c1">#Function&lt;...&gt;</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="n">append</span> <span class="o">=</span> <span class="n">reverse</span> <span class="o">&lt;|&gt;</span> <span class="n">prepend</span> <span class="o">&lt;|&gt;</span> <span class="n">reverse</span>
+<span class="c1">#Function&lt;...&gt;</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="n">append</span><span class="o">.</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+</code></pre></div></div>
+
+<h2 id="mathy-conclusion">Mathy Conclusion</h2>
+
+<p>One important note is that the Elixir implementation demonstrated is not <em>pure</em> function composition in the mathematical sense. Function composition requires that function signatures match exactly in order to be compatible for composition. No such restrictions exist in this implementation. In fact it displays the interesting property of <em>trickling</em> arguments down in order until each composed function is fully applied. Elixir is a dynamically typed language, and as such it allows a lot of flexibility in how functions are defined and applied to. Have fun!</p>
+
+
+
+<footer>
+  <p>
+    <a href="/2016/12/05/elixir-deprecation-of-barewords.html">&laquo; Previous</a>
+    |
+    <a href="/2017/06/13/oscon-2017.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

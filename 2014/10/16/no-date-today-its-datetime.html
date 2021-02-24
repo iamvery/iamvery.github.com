@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="Time is hard. Here are some suggestions to keep things sane in Rails." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>No Date.today? It's DateTime! / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="No Date.today? It's DateTime!" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2014/10/16/no-date-today-its-datetime.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="Time is hard. Here are some suggestions to keep things sane in Rails." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2014/10/16/no-date-today-its-datetime.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>No Date.today? It's DateTime!</h1>
+</header>
+
+<p>
+  &mdash;
+  Oct 16, 2014
+</p>
+
+<p><a href="http://www.bignerdranch.com/blog/discover-swift-with-this-one-weird-rubyist">A while back</a>, I got all fluffy talking about love and coffee
+and all that other stuff. Programming isn’t all butterflies and rainbows,
+folks.</p>
+
+<p>Eventually it will happen. You’re going to have to deal with <a href="http://en.wikipedia.org/wiki/Time_zone">time zones</a>.</p>
+
+<p><img src="/img/blog/2014/09/starwars-no.gif" alt="NOOOO" /></p>
+
+<p>Learn from my mistakes.</p>
+
+<h2 id="tldr">TL;DR</h2>
+
+<p><em>Always</em> parse user input time.</p>
+
+<h2 id="background">Background</h2>
+
+<p>Not long ago, I was happily working away on a <a href="http://www.bignerdranch.com/we-develop/">client project</a> when
+a feature came along.</p>
+
+<blockquote>
+  <p>time should also go Eastern US instead of UTC</p>
+</blockquote>
+
+<p>They said.</p>
+
+<p>“No problem,” I thought. “We’ll configure the application’s time zone to use
+Eastern time and go on our merry way.”</p>
+
+<p>Generally, this is true, but there’s a big catch when you’re taking user input
+time and throwing it against the database.</p>
+
+<h2 id="an-example">An Example</h2>
+
+<p>Let’s set the stage. Pretend we have an app with a very simple
+<a href="http://en.wikipedia.org/wiki/Data_model">data model</a>. It consists of a single model, <code class="language-plaintext highlighter-rouge">Plan</code>,
+which has a single <code class="language-plaintext highlighter-rouge">datetime</code> attribute <code class="language-plaintext highlighter-rouge">going_out_at</code>.</p>
+
+<h3 id="our-goal">Our Goal</h3>
+
+<p>The goal is simple. We want users to be able to find plans to go out between
+two points in time. How they enter this information is irrelevant, but we can
+assume that the parameters will be parsable time strings.</p>
+
+<h3 id="our-first-try">Our First Try</h3>
+
+<p>We create a range using the user input values and query the database.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; Plan.all
+=&gt; [#&lt;Plan id: 1, going_out_at: "2014-09-25 09:39:30"&gt;]
+&gt; from = '2014-09-25 09:00'
+&gt; to = '2014-09-25 10:00'
+&gt; Plan.where(going_out_at: from..to)
+  SELECT "plans".* FROM "plans" WHERE ("plans"."going_out_at" BETWEEN '2014-09-25 09:00' AND '2014-09-25 10:00')
+=&gt; [#&lt;Plan id: 1, going_out_at: "2014-09-25 09:39:30"&gt;]
+</code></pre></div></div>
+
+<p>By default, Rails apps are configured to use the UTC time zone. This also
+happens to be the time zone (or lack thereof) that the database stores things in.</p>
+
+<p>Due to this coincidence, using the input times as strings works fine when sent
+directly to the database. That is, they match the database’s format and return
+the expected results without having to cast the values. Unfortunately, the
+database doesn’t expect to be given zoned times in this query.</p>
+
+<h3 id="our-grand-disappointment">Our Grand Disappointment</h3>
+
+<p>This is where we attempt to localize our app to our time zone. We whip out
+<code class="language-plaintext highlighter-rouge">application.rb</code> and set the app’s time zone.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>config.time_zone = 'Eastern Time (US &amp; Canada)'
+</code></pre></div></div>
+
+<p>With this configuration set, times in the app will be automatically localized
+to the application’s timezone.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; Plan.first.going_out_at
+=&gt; Thu, 25 Sep 2014 05:39:30 EDT -04:00
+</code></pre></div></div>
+
+<p>Now, let’s have a look at the same scenario as above in Eastern U.S. time.</p>
+
+<p>You can see the date stored in the database is UTC:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; Plan.all
+=&gt; [#&lt;Plan id: 1, going_out_at: "2014-09-25 09:39:30"&gt;]
+</code></pre></div></div>
+
+<p>The user inputs the following times which present as 09:00-10:00 in UTC.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; from = '2014-09-25 05:00 -04:00'
+&gt; to = '2014-09-25 06:00 -04:00'
+&gt; Plan.where(going_out_at: from..to)
+SELECT "plans".* FROM "plans" WHERE ("plans"."going_out_at" BETWEEN '2014-09-25 05:00 -04:00' AND '2014-09-25 06:00 -04:00')
+=&gt; []
+</code></pre></div></div>
+
+<p>As you can see, the query returns an empty set because the database doesn’t
+know to interpret these values as zoned times. Let’s jump into the database to
+prove our theory.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlite&gt; SELECT "plans".* FROM "plans"
+   ...&gt; WHERE "plans"."going_out_at"
+   ...&gt; BETWEEN '2014-09-25 05:00 -04:00' AND '2014-09-25 06:00 -04:00';
+# nothing here...
+</code></pre></div></div>
+
+<p>In order to query using zoned times, we must explicitly cast the times as the
+<code class="language-plaintext highlighter-rouge">datetime</code> type.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlite&gt; SELECT "plans".* FROM "plans"
+   ...&gt; WHERE "plans"."going_out_at"
+   ...&gt; BETWEEN datetime('2014-09-25 05:00 -04:00') AND datetime('2014-09-25 06:00 -04:00'));
+1|2014-09-25 09:39:30.961636
+</code></pre></div></div>
+
+<p>So how do we fix this issue in our app? Do we need to cast these columns in our
+query? Yuck…</p>
+
+<h3 id="the-solution">The Solution</h3>
+
+<p>Thankfully, the solution is relatively simple. Always deal in date and time
+objects. This allows Rails to do the heavy lifting of making sure queries
+get zoned in a way that is compatible with the database. Check it out.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; from_time = Time.zone.parse(from)
+=&gt; Thu, 25 Sep 2014 05:00:00 EDT -04:00
+&gt; to_time = Time.zone.parse(to)
+=&gt; Thu, 25 Sep 2014 06:00:00 EDT -04:00
+&gt; Plan.where(going_out_at: from_time..to_time)
+SELECT "plans".* FROM "plans" WHERE ("plans"."going_out_at" BETWEEN '2014-09-25 09:00:00.000000' AND '2014-09-25 10:00:00.000000')
+=&gt; [#&lt;Plan id: 1, going_out_at: "2014-09-25 09:39:30"&gt;]
+</code></pre></div></div>
+
+<p>You can see that when the range’s values are zoned time, Rails takes care of
+converting them to UTC for the database queries. Just make sure you
+<a href="http://www.elabs.se/blog/36-working-with-time-zones-in-ruby-on-rails">parse using <code class="language-plaintext highlighter-rouge">Time.zone</code></a>!</p>
+
+<h2 id="time-is-hard">Time is Hard</h2>
+
+<p>Let’s face it, <a href="https://www.youtube.com/watch?v=-5wpm-gesOY">time is hard</a>. Being vigilant helps you watch out
+for these crazy time zone-related quirks!</p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/-5wpm-gesOY" frameborder="0" allowfullscreen=""></iframe>
+
+
+
+<footer>
+  <p>
+    <a href="/2014/08/26/swift-at-nshuntsville.html">&laquo; Previous</a>
+    |
+    <a href="/2014/10/20/edit-my-stuff-make-me-better.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

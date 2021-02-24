@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Small, Distinct Commits Say You Care / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Small, Distinct Commits Say You Care" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/craftsmanship/2013/09/25/small-distinct-commits-say-you-care.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://www.bignerdranch.com/blog/small-distinct-commits-say-you-care" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Small, Distinct Commits Say You Care</h1>
+</header>
+
+<p>
+  &mdash;
+  Sep 25, 2013
+</p>
+
+<p>Originally posted on the <a href="http://www.bignerdranch.com/blog/small-distinct-commits-say-you-care">Big Nerd Ranch Blog</a>.</p>
+
+<hr />
+
+<p>As programmers, we revel in the details. We’ll pour our time and money into growing our craft for the sheer joy of it. That’s why we’re incredible. We discover the pricelessness of <a href="http://en.wikipedia.org/wiki/Revision_control">version control</a> systems and <a href="https://github.com">services</a> early in our careers. Tools like Git give us the feeling of invincibility!</p>
+
+<p>These tools are much more than a safety net. They are <em>communication devices</em>. They communicate the story of a project, the programmers involved, the purpose for decisions made and even the programmer’s <a href="http://whatthecommit.com">disposition</a>. In this post I want to review some ways we can improve our use of version control and why this really does matter. I prefer Git, so my examples will be given as such.</p>
+
+<h3 id="the-future-you-is-tired-and-lazy">The Future You is Tired (and lazy)</h3>
+
+<p>Have you ever looked at a piece of code and said to yourself “What were they thinking when they wrote this?!” I certainly have. Unfortunately “they” is usually <em>me</em>. Thanks to git we can <em>get</em> to the bottom of it.</p>
+
+<p>For this post, I created an <a href="https://github.com/iamvery/commits-blog">example repository</a>. The example follows the development of the critically important class <a href="https://github.com/iamvery/commits-blog/blob/a59e52e64faa15bb6ac5877cffe0b491920737d0/mug.rb"><code class="language-plaintext highlighter-rouge">Mug</code></a>. Over time we’ve added a number of <a href="https://github.com/iamvery/commits-blog/blob/nice-history/mug.rb">features to <code class="language-plaintext highlighter-rouge">Mug</code></a>, including the ability to drink from it by <code class="language-plaintext highlighter-rouge">sips</code> and <code class="language-plaintext highlighter-rouge">gulps</code>. If you attempt to take a drink from an empty mug, an error is raised. Why would we want to go as far as raising an error for this condition? Let’s find out!</p>
+
+<h4 id="the-right-way">The Right Way</h4>
+
+<p>In an <a href="https://github.com/iamvery/commits-blog/tree/nice-history">ideal world</a>, commits are small and focused. <a href="https://github.com/iamvery/commits-blog/tree/ugly-diff">Under pressure</a>, we might take some shortcuts. Let’s first look at the good case:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>master ? » git checkout nice-history
+Switched to branch 'nice-history'
+nice-history ? » git blame mug.rb | grep raise
+8d0f066a (Jay Hayes 2013-09-17 10:27:56 -0500 33) raise "You're all out of #{content}" if empty?
+</code></pre></div></div>
+
+<p>The blame points us to the commit <a href="https://github.com/iamvery/commits-blog/commit/8d0f066a8798758a23b302f3f425f7d7e943891a">8d0f066a</a>.</p>
+
+<p><img src="/img/blog/2013/09/a-clean-commit.jpg" alt="A example, concise commit" /></p>
+
+<p>Aha, we want to be unable to drink from an empty mug because we don’t think air is worth drinking. Additionally, the commit message reveals that it is associated with an <a href="https://github.com/features/projects/issues">issue</a>, <a href="https://www.pivotaltracker.com/help/gettingstarted">story</a> or some other additional information specific to the project which is numbered <code class="language-plaintext highlighter-rouge">1337</code>. Following that back to your tracking system may reveal even more information about the feature.</p>
+
+<p>Yay, that’s quite helpful!</p>
+
+<h4 id="the-wrong-way">The Wrong Way</h4>
+
+<p>What if the commits weren’t so nicely tailored? The blame might have landed you with something like <a href="https://github.com/iamvery/commits-blog/commit/0826c3f3f993163ef64d169c3f2f5a7e60c4d82f">0826c3f3</a>.</p>
+
+<p><img src="/img/blog/2013/09/a-messy-commit.jpg" alt="An example, overloaded commit" /></p>
+
+<p>It’s notably more difficult to figure this one out. First, the diff is large, so it’s unclear what all has changed. Luckily, the commit message attempts to cover the changes, but unfortunately it does fall short as the error condition goes completely unmentioned. If your commits look like this while you’re actively working on a feature, all is not lost! Below we’ll jump in our time machine and make history do our bidding.</p>
+
+<h3 id="no-fear-of-commitment">No Fear of Commitment</h3>
+
+<p>Does commitment scare you? Don’t sweat it. Git provides the ability to warp history into the story you want to tell. We have <a href="https://www.kernel.org/pub/software/scm/git/docs/git-rebase.html">git-rebase</a>, which <a href="http://git-scm.com/book/en/Git-Tools-Rewriting-History">isn’t just about changing the base of a branch</a>, as its name suggests. I use it in combination with <a href="https://www.kernel.org/pub/software/scm/git/docs/git-add.html">git-add –patch</a> on a daily basis to manipulate my commits into a meaningful story before pushing them to a remote (and sometimes even after, if I’m working in a feature branch). I inevitably find myself wanting to remove, squash, split or reword experimental commits that are unclear or unneeded for the feature.</p>
+
+<p><strong>Pro-tip</strong>: If you use Github, the <a href="https://github.com/blog/612-introducing-github-compare-view">compare view</a> is a really handy way to review the your commits. <a href="https://github.com/jonas/tig">tig</a> is also a handy command line git interface that can enable you to quickly walk the commit history.</p>
+
+<p>I rebased the above mentioned <a href="https://github.com/iamvery/commits-blog/commit/0826c3f3f993163ef64d169c3f2f5a7e60c4d82f">mammoth commit</a> into something that is <a href="https://github.com/iamvery/commits-blog/compare/be67688...tidy-up">more manageable</a>. Here’s a screencast of the process:</p>
+
+<p>https://vimeo.com/74891693</p>
+
+<p><strong>Warning</strong>: You probably don’t want to rewrite the history of a “shared” branch. Doing this can cause issues for other users of the branch. Typically, you will only want to rewrite history on local or <a href="http://martinfowler.com/bliki/FeatureBranch.html">feature</a> branches that you own.</p>
+
+<h4 id="summary">Summary</h4>
+
+<p>There are a number of benefits from commiting code in small, distinct changesets:</p>
+
+<ul>
+  <li>
+    <p>Easy to read</p>
+  </li>
+  <li>
+    <p>Easy to understand</p>
+  </li>
+  <li>
+    <p>Easy to reference - and subsequently <a href="https://www.kernel.org/pub/software/scm/git/docs/git-revert.html">git-revert</a> if neccessary</p>
+  </li>
+</ul>
+
+<p>Taking the time to carefully tailor your commits is a great way to make the life of others and the future you happier. Have you discovered additional benefits to keeping commits clear and concise?</p>
+
+
+<footer>
+  <p>
+    <a href="/2013/09/25/bnr-blogs.html">&laquo; Previous</a>
+    |
+    <a href="/2013/10/19/rails-translation-methods-subtly-different.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

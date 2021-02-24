@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="State in a functional programming environment is much different than object oriented. Implementing something like Elixir's Agent module on your own isn't as hard as you might think." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Spawning Agent Smiths / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Spawning Agent Smiths" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2016/01/21/spawning-agent-smiths.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="State in a functional programming environment is much different than object oriented. Implementing something like Elixir's Agent module on your own isn't as hard as you might think." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2016/01/21/spawning-agent-smiths.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Spawning Agent Smiths</h1>
+</header>
+
+<p>
+  &mdash;
+  Jan 21, 2016
+</p>
+
+<p>If you’ve come to functional programming from an object oriented background, you may have found it hard to grok state in a functional system.
+You’re accustomed to creating and manipulating objects, but in functional languages everything is <strong><em>immutable</em></strong>.
+Often the answer to this problem is to use processes to store state.
+Elixir has an <a href="https://github.com/dojo-toulouse/elixir-koans/blob/master/utils/Koans.ex#L33-L40"><code class="language-plaintext highlighter-rouge">Agent</code></a> which is a simple construct for storing state in processes.
+Let’s see if we can roll our own <code class="language-plaintext highlighter-rouge">AgentSmith</code>.</p>
+
+<h2 id="remember-agents">Remember Agents</h2>
+
+<p>When you are first introduced to agents, they appear somewhat magical.
+You’ll think “If everything is immutable, how are agents mutated?”
+The key is: processes are mutable.
+This extends beyond Elixir.
+Processes consume memory, and this memory can grow as they allocate space for variables and such.
+By exploiting this quality of processes, they can be used to track changing state in an otherwise immutable sea of values.</p>
+
+<p>Let’s remember how agents work in Elixir.</p>
+
+<figure class="highlight"><pre><code class="language-elixir" data-lang="elixir"><span class="n">iex</span><span class="o">&gt;</span> <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">agent</span><span class="p">}</span> <span class="o">=</span> <span class="no">Agent</span><span class="o">.</span><span class="n">start_link</span><span class="p">(</span><span class="k">fn</span> <span class="o">-&gt;</span> <span class="p">[]</span> <span class="k">end</span><span class="p">)</span>
+<span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="c1">#PID&lt;0.42.0&gt;}</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="no">Agent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="k">fn</span> <span class="n">list</span> <span class="o">-&gt;</span> <span class="n">list</span> <span class="k">end</span><span class="p">)</span>
+<span class="p">[]</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="no">Agent</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="k">fn</span> <span class="n">list</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="s2">"lol"</span><span class="o">|</span><span class="n">list</span><span class="p">]</span> <span class="k">end</span><span class="p">)</span>
+<span class="ss">:ok</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="no">Agent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="k">fn</span> <span class="n">list</span> <span class="o">-&gt;</span> <span class="n">list</span> <span class="k">end</span><span class="p">)</span>
+<span class="p">[</span><span class="s2">"lol"</span><span class="p">]</span></code></pre></figure>
+
+<p>A link is started to an agent, and the agent itself is just a process (see, it’s a <code class="language-plaintext highlighter-rouge">PID</code>).
+Then using <code class="language-plaintext highlighter-rouge">update</code> and <code class="language-plaintext highlighter-rouge">get</code> you may provide a function used to interact with the value stored in the agent.
+Keep in mind there is no constraint on the type of data that may be stored in an agent.
+You control how it’s changed and retrieved.</p>
+
+<h2 id="agent-smith">Agent Smith</h2>
+
+<p>With this basic understanding of agents in Elixir, you’re ready to implement it yourself.
+It shall be known as <code class="language-plaintext highlighter-rouge">AgentSmith</code>, and it’s not as scary as it sounds.</p>
+
+<p><img src="/img/blog/2016/01/agent-smith.jpg" alt="" /></p>
+
+<p>The first thing you need is an <code class="language-plaintext highlighter-rouge">AgentSmith.start_link/1</code> function.
+You know that an agent is just a process, so <code class="language-plaintext highlighter-rouge">spawn</code> should come to mind.
+In particular <code class="language-plaintext highlighter-rouge">spawn_link</code> as it’s nice for errors to propagate to the parent process.</p>
+
+<figure class="highlight"><pre><code class="language-elixir" data-lang="elixir"><span class="k">defmodule</span> <span class="no">AgentSmith</span> <span class="k">do</span>
+  <span class="k">def</span> <span class="n">start_link</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="p">()</span>
+    <span class="n">spawn_link</span><span class="p">(</span><span class="no">AgentSmith</span><span class="p">,</span> <span class="ss">:loop</span><span class="p">,</span> <span class="p">[</span><span class="n">value</span><span class="p">])</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="k">loop</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">do</span>
+    <span class="c1"># ???</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>Focus on the <code class="language-plaintext highlighter-rouge">spawn_link</code> call for a moment.
+This creates a new process executing <code class="language-plaintext highlighter-rouge">AgentSmith.loop/1</code> and passing in the argument list <code class="language-plaintext highlighter-rouge">[value]</code>.
+While a process is created at this point, it doesn’t do anything.
+It exits as soon as <code class="language-plaintext highlighter-rouge">loop</code> returns.</p>
+
+<h3 id="messages">Messages</h3>
+
+<p>In order to interact with this process, it must receive messages.</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="p">defmodule AgentSmith do
+</span>  def start_link(func) do
+    # ...
+  end
+
+  def loop(value) do
+<span class="gi">+   receive do
+</span>      # ???
+<span class="gi">+   end
+</span>  end
+<span class="p">end</span></code></pre></figure>
+
+<p>Now the agent smith process will wait for a message to be sent to it.
+It’s time to implement the <code class="language-plaintext highlighter-rouge">get</code> message.</p>
+
+<h3 id="get-message">Get Message</h3>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="p">defmodule AgentSmith do
+</span>  def start_link(func) do
+    # ...
+  end
+
+  def loop(value) do
+    receive do
+<span class="gi">+     {:get, func} -&gt;
+</span>        # ???
+    end
+  end
+
++ def get(agent, func) do
+<span class="gi">+   send(agent, {:get, func})
++ end
+</span><span class="p">end</span></code></pre></figure>
+
+<p>A process may now send a message to your agent to “get” something with the given function.
+As you can see the <code class="language-plaintext highlighter-rouge">value</code> is available as an argument to <code class="language-plaintext highlighter-rouge">Agent.loop/1</code>.
+However that value is in another process, so the only way to get that value back to the caller is to send it back in another message.
+(Hmm, sending messages. That sounds familiar to some OO programmers… conceptually, yes, but this is friggin’ parallelism!)
+In order to send a message <em>back</em>, you have to know who called…</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="p">defmodule AgentSmith do
+</span>  def start_link(func) do
+    # ...
+  end
+
+  def loop(value) do
+    receive do
+<span class="gd">-     {:get, func} -&gt;
+</span><span class="gi">+     {:get, caller, func} -&gt;
+</span>        # ???
+    end
+  end
+
+  def get(agent, func) do
+<span class="gd">-   send(agent, {:get, func})
+</span><span class="gi">+   send(agent, {:get, self, func})
+</span>  end
+<span class="p">end</span></code></pre></figure>
+
+<p>Perfect! Now to send back the value…</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="p">defmodule AgentSmith do
+</span>  def start_link(func) do
+    # ...
+  end
+
+  def loop(value) do
+    receive do
+      {:get, caller, func} -&gt;
+<span class="gi">+       send(caller, {func.(value)})
+</span>    end
+  end
+
+  def get(agent, func) do
+    send(agent, {:get, self, func})
+<span class="gi">+   receive do
++     {value} -&gt; value
++   end
+</span>  end
+<span class="p">end</span></code></pre></figure>
+
+<p>Now the “get” message responds by sending a message back with the value to the caller.
+The caller receives the value and it’s implicitly returned.</p>
+
+<h3 id="keep-it-going">Keep It Going</h3>
+
+<p>One thing’s missing here.
+After a “get” message is received, the agent process exits.
+This is because there is no implicit looping in a <code class="language-plaintext highlighter-rouge">receive</code> block.
+Keeping the agent going is as simple as recursing on the loop with the agent’s value.</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="p">defmodule AgentSmith do
+</span>  def start_link(func) do
+    # ...
+  end
+
+  def loop(value) do
+    receive do
+      {:get, caller, func} -&gt;
+        send(caller, {func.(value)})
+<span class="gi">+       loop(value)
+</span>    end
+  end
+
+  def get(agent, func) do
+    # ...
+  end
+<span class="p">end</span></code></pre></figure>
+
+<h3 id="update-message">Update Message</h3>
+
+<p>Getting the value from an agent is fine and all, but state isn’t being manipulated.
+Let’s implement the “update” message.</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="p">defmodule AgentSmith do
+</span>  def start_link(func) do
+    # ...
+  end
+
+  def loop(value) do
+    receive do
+      # ...
+<span class="gi">+     {:update, func} -&gt;
++       loop(func.(value))
+</span>    end
+  end
+
+  def get(agent, func) do
+    # ...
+  end
+
++ def update(agent, func) do
+<span class="gi">+   send(agent, {:update, func})
++ end
+</span><span class="p">end</span></code></pre></figure>
+
+<p>The <code class="language-plaintext highlighter-rouge">AgentSmith.update/2</code> implementation is surprisingly simple.
+The magic is in the recursion.
+Since the <code class="language-plaintext highlighter-rouge">func</code> argument takes care of performing the update, it’s sent to the agent and used to update the value passed to the next recursion.
+Now the next “get” request will be processed by a call to <code class="language-plaintext highlighter-rouge">AgentSmith.loop/1</code> with the updated value.</p>
+
+<p><img src="http://img.pandawhale.com/post-28553-Steve-Jobs-mind-blown-gif-HD-T-pVbd.gif" alt="" /></p>
+
+<p>That’s it?
+YES! The state is represented as a series of translations applied to the original value passed to the agent.
+Let’s try it out.</p>
+
+<figure class="highlight"><pre><code class="language-elixir" data-lang="elixir"><span class="n">iex</span><span class="o">&gt;</span> <span class="n">agent</span> <span class="o">=</span> <span class="no">AgentSmith</span><span class="o">.</span><span class="n">start_link</span><span class="p">(</span><span class="k">fn</span> <span class="o">-&gt;</span> <span class="p">[]</span> <span class="k">end</span><span class="p">)</span>
+<span class="c1">#PID&lt;0.42.0&gt;</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="no">AgentSmith</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="k">fn</span> <span class="n">list</span> <span class="o">-&gt;</span> <span class="n">list</span> <span class="k">end</span><span class="p">)</span>
+<span class="p">[]</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="no">AgentSmith</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="k">fn</span> <span class="n">list</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="s2">"lol"</span><span class="o">|</span><span class="n">list</span><span class="p">]</span> <span class="k">end</span><span class="p">)</span>
+<span class="p">{</span><span class="ss">:update</span><span class="p">,</span> <span class="o">...</span><span class="p">}</span>
+<span class="n">iex</span><span class="o">&gt;</span> <span class="no">AgentSmith</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="k">fn</span> <span class="n">list</span> <span class="o">-&gt;</span> <span class="n">list</span> <span class="k">end</span><span class="p">)</span>
+<span class="p">[</span><span class="s2">"lol"</span><span class="p">]</span></code></pre></figure>
+
+<p>The interface isn’t exactly like Elixir’s <code class="language-plaintext highlighter-rouge">Agent</code>, but it gets the point across.
+For good measure, here’s the full implementation.</p>
+
+<figure class="highlight"><pre><code class="language-elixir" data-lang="elixir"><span class="k">defmodule</span> <span class="no">AgentSmith</span> <span class="k">do</span>
+  <span class="k">def</span> <span class="n">start_link</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="p">()</span>
+    <span class="n">spawn_link</span><span class="p">(</span><span class="no">AgentSmith</span><span class="p">,</span> <span class="ss">:loop</span><span class="p">,</span> <span class="p">[</span><span class="n">value</span><span class="p">])</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="k">loop</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">do</span>
+    <span class="k">receive</span> <span class="k">do</span>
+      <span class="p">{</span><span class="ss">:get</span><span class="p">,</span> <span class="n">caller</span><span class="p">,</span> <span class="n">func</span><span class="p">}</span> <span class="o">-&gt;</span>
+        <span class="n">send</span><span class="p">(</span><span class="n">caller</span><span class="p">,</span> <span class="p">{</span><span class="n">func</span><span class="o">.</span><span class="p">(</span><span class="n">value</span><span class="p">)})</span>
+        <span class="k">loop</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+      <span class="p">{</span><span class="ss">:update</span><span class="p">,</span> <span class="n">func</span><span class="p">}</span> <span class="o">-&gt;</span>
+        <span class="k">loop</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="n">get</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">send</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="p">{</span><span class="ss">:get</span><span class="p">,</span> <span class="n">self</span><span class="p">,</span> <span class="n">func</span><span class="p">})</span>
+    <span class="k">receive</span> <span class="k">do</span>
+      <span class="p">{</span><span class="n">value</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="n">value</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="n">update</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">send</span><span class="p">(</span><span class="n">agent</span><span class="p">,</span> <span class="p">{</span><span class="ss">:update</span><span class="p">,</span> <span class="n">func</span><span class="p">})</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>This is certainly overly simplified in comparison to Elixir’s <code class="language-plaintext highlighter-rouge">Agent</code> (which uses <code class="language-plaintext highlighter-rouge">GenServer</code>), but fundamentally it’s a great illustration of how to pull off state in a functional system using processes.
+What do you think??</p>
+
+
+
+<footer>
+  <p>
+    <a href="/2015/12/08/isolated-tests.html">&laquo; Previous</a>
+    |
+    <a href="/2016/02/23/a-method-by-any-other-name.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

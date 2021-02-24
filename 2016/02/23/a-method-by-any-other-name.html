@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>A Method by Any Other Name / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="A Method by Any Other Name" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2016/02/23/a-method-by-any-other-name.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2016/02/23/a-method-by-any-other-name.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>A Method by Any Other Name</h1>
+</header>
+
+<p>
+  &mdash;
+  Feb 23, 2016
+</p>
+
+<p>A quick post about when I choose to alias methods in Ruby, and when I don’t.</p>
+
+<hr />
+
+<p>If you have programmed Ruby at all, you have probably noticed that there are a lot of ways to do one thing.
+For example, to raise an error, you can use the <code class="language-plaintext highlighter-rouge">raise</code> method <em>or</em> you can use the <code class="language-plaintext highlighter-rouge">fail</code> method.
+Both have exactly the same behavior.
+In fact, they are exactly the same thing.
+If you check out <a href="http://ruby-doc.org/core-2.3.0/Kernel.html#method-i-fail">the docs for <code class="language-plaintext highlighter-rouge">fail</code></a>, you’ll see… <code class="language-plaintext highlighter-rouge">raise</code>.
+So why have it?
+Semantics.</p>
+
+<p>Ruby provides us with the ability to choose the method that best communicates intent.
+The late <a href="https://en.wikipedia.org/wiki/Jim_Weirich">Jim Weirich</a> had a somewhat well known semantic for <code class="language-plaintext highlighter-rouge">fail</code> vs. <code class="language-plaintext highlighter-rouge">raise</code>.
+He would use <code class="language-plaintext highlighter-rouge">fail</code> for irrecoverable errors (or… failures), and he would use <code class="language-plaintext highlighter-rouge">raise</code> for errors that may be caught elsewhere.
+Avdi Grimm was kind enough to <a href="https://en.wikipedia.org/wiki/Jim_Weirich">capture Jim’s opinion in a post</a>.
+There are a number of other examples throughout the Ruby codebase, e.g. <a href="http://ruby-doc.org/core-2.3.0/Enumerable.html#method-i-inject">Enumerable#inject</a> and <a href="http://ruby-doc.org/core-2.3.0/Enumerable.html#method-i-reduce">Enumerable#reduce</a>.
+It’s all in the name of writing self-evident code.</p>
+
+<h2 id="when-to-alias-a-method">When to alias a method…</h2>
+
+<p>In short, alias a method when the new method you’re exposing is literally another word for the <em>same thing</em>.
+Let’s check out an example.</p>
+
+<h3 id="a-part">A Part</h3>
+
+<p>Here’s a snippet of code that was recently discussed in code review.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Foo</span>
+  <span class="k">def</span> <span class="nf">part</span>
+    <span class="n">locate</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">locate</span>
+    <span class="c1"># some part locating logic</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>The comment came on the implementation of <code class="language-plaintext highlighter-rouge">part</code>.</p>
+
+<blockquote>
+  <p>Why not just <code class="language-plaintext highlighter-rouge">alias_method :part, :locate</code>?</p>
+</blockquote>
+
+<p>It makes sense, the entire implementation of <code class="language-plaintext highlighter-rouge">part</code> is literally calling another method.
+So save a couple lines and make it an alias, right?</p>
+
+<p>This introduces a cognitive “WAT”.
+Making the <code class="language-plaintext highlighter-rouge">part</code> method an alias of <code class="language-plaintext highlighter-rouge">locate</code> states that it literally carries the same semantic meaning as <code class="language-plaintext highlighter-rouge">locate</code>.
+These two methods actually have two distinct purposes.</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">part</code> - expose a public interface on <code class="language-plaintext highlighter-rouge">Foo</code> for getting its <code class="language-plaintext highlighter-rouge">part</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">locate</code> - do something to find the <code class="language-plaintext highlighter-rouge">part</code> for <code class="language-plaintext highlighter-rouge">Foo</code>.</li>
+</ol>
+
+<p>This becomes especially apparent when a new requirement comes in.</p>
+
+<blockquote>
+  <p>Optimize Foo#part by memoizing the located value.</p>
+</blockquote>
+
+<p>If you had aliased <code class="language-plaintext highlighter-rouge">locate</code>, you would now be ripping that out to implement an actual <code class="language-plaintext highlighter-rouge">part</code> method.</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code> def part
+<span class="gd">-  locate
+</span><span class="gi">+  @part ||= locate
+</span> end
+</code></pre></div></div>
+
+<p>Beyond this practical advantage, there is also cognitive gain.
+You know at a glance of the class that “Foo has a part” rather than “Apparently Foo’s locate is also known as a part” (???).</p>
+
+<h2 id="so-when-then">So when then?</h2>
+
+<p>Assume that you have shipped <code class="language-plaintext highlighter-rouge">Foo</code>.
+It’s out in the wild and a number of other’s depend on the fact that <code class="language-plaintext highlighter-rouge">Foo</code> has a <code class="language-plaintext highlighter-rouge">part</code>.
+However, you decide that <code class="language-plaintext highlighter-rouge">part</code> isn’t the best name for this data member.
+You want to refer to it as <code class="language-plaintext highlighter-rouge">widget</code> henceforth.</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code> def part
+   @part ||= locate
+ end
+<span class="gi">+alias_method :widget, :part
+</span></code></pre></div></div>
+
+<p>The reader of your code immediately recognizes that <code class="language-plaintext highlighter-rouge">widget</code> is just another name for <code class="language-plaintext highlighter-rouge">part</code>.
+But please do consider a <a href="https://en.wikipedia.org/wiki/Deprecation">deprecation</a> message.</p>
+
+
+
+<footer>
+  <p>
+    <a href="/2016/01/21/spawning-agent-smiths.html">&laquo; Previous</a>
+    |
+    <a href="/2016/03/21/method-chaining-is-composition.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

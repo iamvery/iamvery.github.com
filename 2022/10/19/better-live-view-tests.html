@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="LiveView is great, but sometimes tests are hard to read and write." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Better LiveView Tests / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Better LiveView Tests" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2022/10/19/better-live-view-tests.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="LiveView is great, but sometimes tests are hard to read and write." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2022/10/19/better-live-view-tests.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Better LiveView Tests</h1>
+</header>
+
+<p>
+  &mdash;
+  Oct 19, 2022
+</p>
+
+<p>In short, I want to take LiveView test from something like this:</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">index_live</span><span class="p">,</span> <span class="n">_html</span><span class="p">}</span> <span class="o">=</span> <span class="n">live</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="no">Routes</span><span class="o">.</span><span class="n">link_index_path</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="ss">:index</span><span class="p">))</span>
+
+ <span class="n">assert</span> <span class="n">index_live</span> <span class="o">|&gt;</span> <span class="n">element</span><span class="p">(</span><span class="s2">"#link-</span><span class="si">#{</span><span class="n">link</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> a"</span><span class="p">,</span> <span class="s2">"Edit"</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">render_click</span><span class="p">()</span> <span class="o">=~</span> <span class="s2">"Edit Link"</span>
+
+ <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">html</span><span class="p">}</span> <span class="o">=</span>
+    <span class="n">index_live</span>
+    <span class="o">|&gt;</span> <span class="n">form</span><span class="p">(</span><span class="s2">"#link-form"</span><span class="p">,</span> <span class="ss">link:</span> <span class="nv">@update_attrs</span><span class="p">)</span>
+    <span class="o">|&gt;</span> <span class="n">render_submit</span><span class="p">()</span>
+    <span class="o">|&gt;</span> <span class="n">follow_redirect</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="no">Routes</span><span class="o">.</span><span class="n">link_index_path</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="ss">:index</span><span class="p">))</span>
+
+  <span class="n">assert</span> <span class="n">html</span> <span class="o">=~</span> <span class="s2">"Link updated successfully"</span>
+  <span class="n">assert</span> <span class="n">html</span> <span class="o">=~</span> <span class="s2">"some updated description"</span>
+</code></pre></div></div>
+
+<p>To something like this:</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">start</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="no">Routes</span><span class="o">.</span><span class="n">link_index_path</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="ss">:index</span><span class="p">))</span>
+<span class="o">|&gt;</span> <span class="n">click</span><span class="p">(</span><span class="s2">"#link-</span><span class="si">#{</span><span class="n">link</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> a"</span><span class="p">,</span> <span class="s2">"Edit"</span><span class="p">)</span>
+<span class="o">|&gt;</span> <span class="n">assert_html</span><span class="p">(</span><span class="s2">"Edit Link"</span><span class="p">)</span>
+<span class="o">|&gt;</span> <span class="n">submit_form</span><span class="p">(</span><span class="s2">"#link-form"</span><span class="p">,</span> <span class="ss">link:</span> <span class="nv">@update_attrs</span><span class="p">)</span>
+<span class="o">|&gt;</span> <span class="n">assert_html</span><span class="p">(</span><span class="s2">"Link updated successfully"</span><span class="p">)</span>
+<span class="o">|&gt;</span> <span class="n">assert_html</span><span class="p">(</span><span class="s2">"some updated description"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>I put together some <a href="https://github.com/iamvery/iamvery-elixir/blob/master/lib/iamvery/phoenix/live_view/test_helpers.ex">helper functions</a> which you can install with the Hex package <a href="https://hex.pm/packages/iamvery">https://hex.pm/packages/iamvery</a> to achieve this.</p>
+
+<p>Which do you think is easier to read? It’s not just about line count, it’s also about context switching. Read on.</p>
+
+<h2 id="background">Background</h2>
+
+<p>I’m just getting started with <a href="https://github.com/phoenixframework/phoenix_live_view">Phoenix LiveView</a>, but thus far I’ve really enjoyed using it. One of the reasons I have enjoyed using LiveView is how it simplifies system testing by avoiding the need for a browser running in many cases. However, I have found the tests somewhat difficult to get my head around.</p>
+
+<p>Here’s a full example test from the live generator.</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">test</span> <span class="s2">"updates link in listing"</span><span class="p">,</span> <span class="p">%{</span><span class="ss">conn:</span> <span class="n">conn</span><span class="p">,</span> <span class="ss">link:</span> <span class="n">link</span><span class="p">}</span> <span class="k">do</span>
+  <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">index_live</span><span class="p">,</span> <span class="n">_html</span><span class="p">}</span> <span class="o">=</span> <span class="n">live</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="no">Routes</span><span class="o">.</span><span class="n">link_index_path</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="ss">:index</span><span class="p">))</span>
+
+  <span class="n">assert</span> <span class="n">index_live</span> <span class="o">|&gt;</span> <span class="n">element</span><span class="p">(</span><span class="s2">"#link-</span><span class="si">#{</span><span class="n">link</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> a"</span><span class="p">,</span> <span class="s2">"Edit"</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">render_click</span><span class="p">()</span> <span class="o">=~</span>
+           <span class="s2">"Edit Link"</span>
+
+  <span class="n">assert_patch</span><span class="p">(</span><span class="n">index_live</span><span class="p">,</span> <span class="no">Routes</span><span class="o">.</span><span class="n">link_index_path</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="n">link</span><span class="p">))</span>
+
+  <span class="n">assert</span> <span class="n">index_live</span>
+         <span class="o">|&gt;</span> <span class="n">form</span><span class="p">(</span><span class="s2">"#link-form"</span><span class="p">,</span> <span class="ss">link:</span> <span class="nv">@invalid_attrs</span><span class="p">)</span>
+         <span class="o">|&gt;</span> <span class="n">render_change</span><span class="p">()</span> <span class="o">=~</span> <span class="s2">"can&amp;#39;t be blank"</span>
+
+  <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">html</span><span class="p">}</span> <span class="o">=</span>
+    <span class="n">index_live</span>
+    <span class="o">|&gt;</span> <span class="n">form</span><span class="p">(</span><span class="s2">"#link-form"</span><span class="p">,</span> <span class="ss">link:</span> <span class="nv">@update_attrs</span><span class="p">)</span>
+    <span class="o">|&gt;</span> <span class="n">render_submit</span><span class="p">()</span>
+    <span class="o">|&gt;</span> <span class="n">follow_redirect</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="no">Routes</span><span class="o">.</span><span class="n">link_index_path</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="ss">:index</span><span class="p">))</span>
+
+  <span class="n">assert</span> <span class="n">html</span> <span class="o">=~</span> <span class="s2">"Link updated successfully"</span>
+  <span class="n">assert</span> <span class="n">html</span> <span class="o">=~</span> <span class="s2">"some updated description"</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>While I do love that this test covers the system from the perspective of an interacting user, it also leaks a bit of underlying detail from the framework. Notably, there are three concepts to keep track of: the views, the rendered HTML documents, and the test <code class="language-plaintext highlighter-rouge">conn</code>.</p>
+
+<p>This gets extra confusing depending on the functions being used. For example, the <a href="https://hexdocs.pm/phoenix_live_view/Phoenix.LiveViewTest.html#live/2"><code class="language-plaintext highlighter-rouge">live/2</code></a> function returns the view and some rendered HTML which may be useful in different contexts depending on what you intend to do with them. The view is used on the next line to locate and click an element:</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="n">assert</span> <span class="n">index_live</span> <span class="o">|&gt;</span> <span class="n">element</span><span class="p">(</span><span class="s2">"#link-</span><span class="si">#{</span><span class="n">link</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> a"</span><span class="p">,</span> <span class="s2">"Edit"</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">render_click</span><span class="p">()</span> <span class="o">=~</span>
+           <span class="s2">"Edit Link"</span>
+</code></pre></div></div>
+
+<p>But the result of the click is used in an assertion in comparison with some text. That is because the <a href="https://hexdocs.pm/phoenix_live_view/Phoenix.LiveViewTest.html#render_click/2"><code class="language-plaintext highlighter-rouge">render_click/1</code></a> function returns an HTML document.</p>
+
+<p>Later on, the <code class="language-plaintext highlighter-rouge">conn</code> comes into play when there is a redirect.</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">|&gt;</span> <span class="n">follow_redirect</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="no">Routes</span><span class="o">.</span><span class="n">link_index_path</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="ss">:index</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>This toggling between views, html documents, and conns forces line breaks, but more importantly forces the reader to mentally juggle the value in context of each line.</p>
+
+<p>I can imagine this gets a lot easier with experience, but I think we can do better from the start.</p>
+
+<h2 id="test-helpers">Test Helpers</h2>
+
+<p>To address the issue of context switching, we can introduce a set of test helpers that handle the context for you. Then, so long as you keep with the pattern, you don’t have to perform the mental gymnastics yourself. This essentially comes down to a set of helper functions that keep the conn, view, and document bundled together and forwarded along for you between steps.</p>
+
+<p>You can find the full set of helpers <a href="https://github.com/iamvery/iamvery-elixir/blob/master/lib/iamvery/phoenix/live_view/test_helpers.ex">here</a>, but here are a few to illustrate the example.</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="n">start</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span> <span class="k">do</span>
+  <span class="p">{</span><span class="n">conn</span><span class="p">,</span> <span class="n">live</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">path</span><span class="p">)}</span>
+<span class="k">end</span>
+
+<span class="k">def</span> <span class="n">assert_html</span><span class="p">({</span><span class="n">conn</span><span class="p">,</span> <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">html</span><span class="p">}},</span> <span class="n">expected_html</span><span class="p">)</span> <span class="k">do</span>
+  <span class="n">assert</span> <span class="n">html</span> <span class="o">=~</span> <span class="n">expected_html</span>
+  <span class="p">{</span><span class="n">conn</span><span class="p">,</span> <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">html</span><span class="p">}}</span>
+<span class="k">end</span>
+
+<span class="k">def</span> <span class="n">click</span><span class="p">({</span><span class="n">conn</span><span class="p">,</span> <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">_html</span><span class="p">}},</span> <span class="n">selector</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">opts</span> <span class="p">\\</span> <span class="p">[])</span> <span class="k">do</span>
+  <span class="n">html</span> <span class="o">=</span>
+    <span class="n">view</span>
+    <span class="o">|&gt;</span> <span class="n">element</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="o">|&gt;</span> <span class="n">render_click</span><span class="p">()</span>
+
+  <span class="k">if</span> <span class="no">Keyword</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="ss">:follow</span><span class="p">,</span> <span class="no">false</span><span class="p">)</span> <span class="k">do</span>
+    <span class="p">{</span><span class="n">conn</span><span class="p">,</span> <span class="n">follow_redirect</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="n">conn</span><span class="p">)}</span>
+  <span class="k">else</span>
+    <span class="p">{</span><span class="n">conn</span><span class="p">,</span> <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">html</span><span class="p">}}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>As you can see, each helper function receives and returns the <code class="language-plaintext highlighter-rouge">conn</code> along with the typical “ok, view” return value from built-in helpers. By implementing a few more <a href="https://github.com/iamvery/iamvery-elixir/blob/master/lib/iamvery/phoenix/live_view/test_helpers.ex">helpers</a> in <code class="language-plaintext highlighter-rouge">assert_path/2</code>, <code class="language-plaintext highlighter-rouge">change_form/3</code>, <code class="language-plaintext highlighter-rouge">submit_form/3</code> we can dramatically refactor the test and eliminate nearly all mention of these bits of context.</p>
+
+<div class="language-elixir highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">test</span> <span class="s2">"updates link in listing"</span><span class="p">,</span> <span class="p">%{</span><span class="ss">conn:</span> <span class="n">conn</span><span class="p">,</span> <span class="ss">link:</span> <span class="n">link</span><span class="p">}</span> <span class="k">do</span>
+  <span class="n">start</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="no">Routes</span><span class="o">.</span><span class="n">link_index_path</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="ss">:index</span><span class="p">))</span>
+  <span class="o">|&gt;</span> <span class="n">click</span><span class="p">(</span><span class="s2">"#link-</span><span class="si">#{</span><span class="n">link</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> a"</span><span class="p">,</span> <span class="s2">"Edit"</span><span class="p">)</span>
+  <span class="o">|&gt;</span> <span class="n">assert_html</span><span class="p">(</span><span class="s2">"Edit Link"</span><span class="p">)</span>
+  <span class="o">|&gt;</span> <span class="n">assert_path</span><span class="p">(</span><span class="no">Routes</span><span class="o">.</span><span class="n">link_index_path</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="ss">:edit</span><span class="p">,</span> <span class="n">link</span><span class="p">))</span>
+  <span class="o">|&gt;</span> <span class="n">change_form</span><span class="p">(</span><span class="s2">"#link-form"</span><span class="p">,</span> <span class="ss">link:</span> <span class="nv">@invalid_attrs</span><span class="p">)</span>
+  <span class="o">|&gt;</span> <span class="n">assert_html</span><span class="p">(</span><span class="n">escape</span><span class="p">(</span><span class="s2">"can't be blank"</span><span class="p">))</span>
+  <span class="o">|&gt;</span> <span class="n">submit_form</span><span class="p">(</span><span class="s2">"#link-form"</span><span class="p">,</span> <span class="ss">link:</span> <span class="nv">@update_attrs</span><span class="p">)</span>
+  <span class="o">|&gt;</span> <span class="n">assert_html</span><span class="p">(</span><span class="s2">"Link updated successfully"</span><span class="p">)</span>
+  <span class="o">|&gt;</span> <span class="n">assert_html</span><span class="p">(</span><span class="s2">"some updated description"</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>With that, you have a clean test written as a pipeline that insulates the reader from the state and relevant context that’s forwarded along.</p>
+
+<p>I’m sure the helpers I have put together are incomplete, and you will have all manner of edge cases to help work out. However, you can tap in at any time to do something novel and you’ll always get <code class="language-plaintext highlighter-rouge">{conn, {:ok, live, html}}</code>. For the sake of testing the waters, I’ve published them in my namesake’s Hex package: <a href="https://hex.pm/packages/iamvery">https://hex.pm/packages/iamvery</a>.</p>
+
+<p>Let me know what you think!</p>
+
+
+
+<footer>
+  <p>
+    <a href="/2022/01/12/half-truth.html">&laquo; Previous</a>
+    |
+    <a href="/2024/09/04/best-hayes-ahead.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

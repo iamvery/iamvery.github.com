@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="Create new Rails applications with your personalized settings everytime." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>A "rails new" For You / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="A "rails new" For You" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2015/02/17/rails-new-for-you.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="Create new Rails applications with your personalized settings everytime." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2015/02/17/rails-new-for-you.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>A "rails new" For You</h1>
+</header>
+
+<p>
+  &mdash;
+  Feb 17, 2015
+</p>
+
+<p>Recently, I went on a personal endeavor to determine the best way to create
+a new Rails app pre-configured to my liking. I was sick and tired of wasting
+time replacing and configuring test runners, adding development gems I prefer,
+and reinventing the README. Why did it take so long for me to do this?</p>
+
+<h2 id="railsrc">.railsrc</h2>
+
+<p>For some reason it took me a long time to discover this handy script. Following
+the convention of other <a href="http://en.wikipedia.org/wiki/Configuration_file">“run configuration” files</a>,
+you can add options here that you wish to be included every time you <code class="language-plaintext highlighter-rouge">rails
+new</code>.</p>
+
+<p>My config…</p>
+
+<ul>
+  <li>skips <code class="language-plaintext highlighter-rouge">bundle install</code> (handled later)</li>
+  <li>skips <code class="language-plaintext highlighter-rouge">.keep</code> files</li>
+  <li>skips <a href="https://github.com/rails/spring">spring</a></li>
+  <li>skips Test::Unit (I prefer RSpec)</li>
+  <li>skips <a href="https://github.com/rails/turbolinks">turbolinks</a></li>
+  <li>users PostgreSQL instead of SQlite</li>
+</ul>
+
+<p>Here it is:</p>
+
+<script src="http://gist-it.appspot.com/https://github.com/iamvery/dotfiles/blob/8f250b069228fda67d99f8195a49f41c3bf79d1b/.railsrc"></script>
+
+<h2 id="rails-app-template">Rails App Template</h2>
+
+<p>The command line options can only get me so far. To complete my desired
+pre-configuration, it’s time to automate the things with <a href="http://guides.rubyonrails.org/rails_application_templates.html">Rails application templates</a>.</p>
+
+<p>App templates allow you to define a procedure used to config an app. It has
+built in hooks for <code class="language-plaintext highlighter-rouge">bundler</code> and <code class="language-plaintext highlighter-rouge">git</code>. My config…</p>
+
+<ul>
+  <li>installs preferred gems</li>
+  <li>configures test runner</li>
+  <li>cleans up Gemfile</li>
+  <li>installs bin/bootstrap script</li>
+  <li>adds a reasonable README</li>
+  <li>commits each change separately</li>
+</ul>
+
+<p>Here is the full template:</p>
+
+<script src="http://gist-it.appspot.com/https://github.com/iamvery/dotfiles/blob/8f250b069228fda67d99f8195a49f41c3bf79d1b/.rails_template.rb"></script>
+
+<p>I keep all my configuration files in <a href="https://gist.github.com/iamvery/6c87c9e191d32603aa78">a Gist</a> so they can be
+downloaded as needed.</p>
+
+<p>To make sure the template is always used for new apps, I added an alias to
+my environment.</p>
+
+<script src="http://gist-it.appspot.com/https://github.com/iamvery/dotfiles/blob/8f250b069228fda67d99f8195a49f41c3bf79d1b/.bash_profile?slice=47"></script>
+
+<p>Creating a new app is as simple as <code class="language-plaintext highlighter-rouge">railsup next_big_thing</code>.</p>
+
+<h2 id="voila">Voila!</h2>
+
+<p>This turned out to be a great learning experience. The task wasn’t as daunting
+as I had imagined it to be. I am always working to improve these things, so
+keep an eye on <a href="https://github.com/iamvery/dotfiles">my dotfiles</a> if you’re interested.</p>
+
+
+
+<footer>
+  <p>
+    <a href="/2015/02/16/shortcut-long-pain.html">&laquo; Previous</a>
+    |
+    <a href="/2015/03/27/hacking-arduino-firmata-with-neopixels.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

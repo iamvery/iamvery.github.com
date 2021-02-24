@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="Adopt the Open Graph protocol in you site's head for great good!" name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Open Graph Protocol / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Open Graph Protocol" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2015/07/27/open-graph.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="Adopt the Open Graph protocol in you site's head for great good!" />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2015/07/27/open-graph.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Open Graph Protocol</h1>
+</header>
+
+<p>
+  &mdash;
+  Jul 27, 2015
+</p>
+
+<p>My annoyance at how links were being displayed in Slack finally reached a tipping point.
+They <em>had</em> to be more useful than they were being.
+TIL <a href="http://ogp.me/">Open Graph</a>.</p>
+
+<p>As their website says:</p>
+
+<blockquote>
+  <p>The Open Graph protocol enables any web page to become a rich object in a social graph.
+For instance, this is used on Facebook to allow any web page to have the same functionality as any other object on Facebook.</p>
+</blockquote>
+
+<p>Basically make things go from this:</p>
+
+<hr />
+<p><img width="500" src="/img/blog/2015/07/before.png" alt="before open graph" /></p>
+
+<p>To this:</p>
+
+<hr />
+<p><img width="800" src="/img/blog/2015/07/after.png" alt="after open graph" /></p>
+
+<h2 id="how-even">How even?</h2>
+
+<p>It’s nbd, just a few tags to add to your page’ <code class="language-plaintext highlighter-rouge">head</code>.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">og:site_name</code> - The name of the site being referenced.</li>
+  <li><code class="language-plaintext highlighter-rouge">og:title</code> - The title of the page being referenced.</li>
+  <li><code class="language-plaintext highlighter-rouge">og:type</code> - Type type of content being reference. Mine are all “website”.</li>
+  <li><code class="language-plaintext highlighter-rouge">og:image</code> - An image to describe the link.</li>
+  <li><code class="language-plaintext highlighter-rouge">og:url</code> - The canonical URL of the page.</li>
+</ul>
+
+<p>Here’s the source from my blog:</p>
+
+<script src="http://gist-it.appspot.com/https://github.com/iamvery/iamvery.github.com/blob/5187793b1bfd624dde029f37f380e3b36eaf70d1/_layouts/default.html?slice=13:18"></script>
+
+<hr />
+<p><img width="800" src="/img/blog/2015/07/annotated.png" alt="annotated screenshot of a slack-rendered link" /></p>
+
+<hr />
+
+<h2 id="thats-it">That’s it</h2>
+
+<p>Check out the <a href="http://ogp.me/">full Open Graph protocol</a> for all the details in making those links look good!
+As it turns out, <a href="https://dev.twitter.com/cards/markup">Twitter also has a protocol for these things</a>.
+May be worth checking out!</p>
+
+
+
+<footer>
+  <p>
+    <a href="/2015/07/25/elixir-pending-tests.html">&laquo; Previous</a>
+    |
+    <a href="/2015/08/29/browser-driven-elixir-tests.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

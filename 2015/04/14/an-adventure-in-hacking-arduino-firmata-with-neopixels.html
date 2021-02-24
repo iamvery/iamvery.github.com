@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="If you are using NeoPixels with Artoo, you might try https://github.com/iamvery/artoo-neopixel." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>An Adventure in Hacking Arduino Firmata with NeoPixels / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="An Adventure in Hacking Arduino Firmata with NeoPixels" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2015/04/14/an-adventure-in-hacking-arduino-firmata-with-neopixels.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="If you are using NeoPixels with Artoo, you might try https://github.com/iamvery/artoo-neopixel." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="https://www.bignerdranch.com/blog/an-adventure-in-hacking-arduino-firmata-with-neopixels/" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>An Adventure in Hacking Arduino Firmata with NeoPixels</h1>
+</header>
+
+<p>
+  &mdash;
+  Apr 14, 2015
+</p>
+
+<p>Learn ALL the things! That’s basically the motto at Big Nerd Ranch. And in my last post, I wrote about how my team, The Artists Formally Known As (╯°□°)╯︵ ɥsɐןɔ, <a href="https://www.bignerdranch.com/blog/hacking-arduino-firmata-with-neopixels/">learned a lot</a> of new things when we tackled hardware hacking with <a href="http://www.arduino.cc">Arduino</a>, <a href="http://www.adafruit.com/category/168">NeoPixels</a> and <a href="http://artoo.io">Artoo</a>.</p>
+
+<p>Arduino is a great platform for beginning to learning about hardware. If you’re into Ruby, you
+might checkout Artoo, a robotics framework supporting a myriad of
+platforms, including Arduino. During our Clash project, my team and I wanted to use Artoo
+with NeoPixels, but there was no integration.</p>
+
+<p>So we fixed it!</p>
+
+<p><img src="/img/blog/2015/04/learn-all-the-things.png" alt="learn all the things" /></p>
+
+<h2 id="artoo-neopixel"><code class="language-plaintext highlighter-rouge">artoo-neopixel</code></h2>
+
+<p>We packaged our integration between NeoPixels and Artoo into <a href="https://github.com/iamvery/artoo-neopixel">a rubygem</a>
+for your hacking convenience.</p>
+
+<h3 id="firmata">Firmata</h3>
+
+<p>First, you need to prepare the Arduino by uploading <a href="https://github.com/iamvery/artoo-neopixel/blob/master/firmata/StandardFirmata-NeoPixel.ino">our custom Firmata</a>. This extends the Standard Firmata to add protocols for setting up and
+communicating with NeoPixels. To get started:</p>
+
+<ul>
+  <li>Open the Arduino IDE.</li>
+  <li>Copy the <a href="https://github.com/iamvery/artoo-neopixel/blob/master/firmata/StandardFirmata-NeoPixel.ino">custom Firmata</a> from Github.</li>
+  <li>Upload it to your device.</li>
+</ul>
+
+<p><img src="/img/blog/2015/04/arduino-firmata.png" alt="arduino ide" /></p>
+
+<p>If you need more help with setting up the Arduino, check out [their guides][arduino-guides].</p>
+
+<h3 id="rubygem">RubyGem</h3>
+
+<p>Next, install our gem. This extends Artoo with support for NeoPixel LED strips
+and matrices.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>gem <span class="nb">install </span>artoo-neopixel</code></pre></figure>
+
+<h3 id="blinky-lights">Blinky Lights</h3>
+
+<p>Now you just need to write something magical. Here’s an example script for a
+<a href="http://www.adafruit.com/product/1430">NeoPixel 40 RGB LED Matrix</a> that will light up your room:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># example.rb</span>
+<span class="nb">require</span> <span class="s2">"artoo"</span>
+<span class="nb">require</span> <span class="s2">"artoo-neopixel"</span>
+
+<span class="c1"># Update the below port with your device's port</span>
+<span class="no">ARDUINO_PORT</span> <span class="o">=</span> <span class="s2">"/dev/cu.usbmodem1411"</span>
+
+<span class="n">connection</span> <span class="ss">:arduino</span><span class="p">,</span> <span class="ss">adaptor: :firmata</span><span class="p">,</span> <span class="ss">port: </span><span class="no">ARDUINO_PORT</span>
+
+<span class="no">MATRIX_WIDTH</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="no">MATRIX_HEIGHT</span> <span class="o">=</span> <span class="mi">8</span>
+
+<span class="n">device</span><span class="p">(</span>
+  <span class="ss">:matrix</span><span class="p">,</span>
+  <span class="ss">driver: :neomatrix</span><span class="p">,</span>
+  <span class="ss">pin: </span><span class="mi">6</span><span class="p">,</span>
+  <span class="ss">width: </span><span class="no">MATRIX_WIDTH</span><span class="p">,</span>
+  <span class="ss">height: </span><span class="no">MATRIX_HEIGHT</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">work</span> <span class="k">do</span>
+  <span class="c1"># You should see a bunch of blinky, beautiful lights! WOWOW</span>
+  <span class="kp">loop</span> <span class="k">do</span>
+    <span class="c1"># Generate some random coordinates</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="no">MATRIX_WIDTH</span> <span class="o">*</span> <span class="nb">rand</span><span class="p">).</span><span class="nf">round</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="no">MATRIX_HEIGHT</span> <span class="o">*</span> <span class="nb">rand</span><span class="p">).</span><span class="nf">round</span>
+
+    <span class="c1"># Generate some random RGB values between 0 and 100</span>
+    <span class="n">red</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="nb">rand</span><span class="p">).</span><span class="nf">round</span>
+    <span class="n">green</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="nb">rand</span><span class="p">).</span><span class="nf">round</span>
+    <span class="n">blue</span> <span class="o">=</span> <span class="p">(</span><span class="mi">100</span> <span class="o">*</span> <span class="nb">rand</span><span class="p">).</span><span class="nf">round</span>
+
+    <span class="n">matrix</span><span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span><span class="p">)</span>
+
+    <span class="c1"># the matrix sometimes need a little time to keep up</span>
+    <span class="nb">sleep</span> <span class="mf">0.01</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>Run it and enjoy!</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>ruby example.rb</code></pre></figure>
+
+<p>If you’ve played with Artoo at all, this will be completely familiar to you.
+Either way, there isn’t too much going on here, but the resulting strobe of
+blinky colors is quite satisfying!</p>
+
+<blockquote class="twitter-video" lang="en" data-status="hidden">
+  <p><a href="http://t.co/q1YY52asBw">pic.twitter.com/q1YY52asBw</a></p>&mdash; Jay Hayes (@iamvery)
+  <a href="https://twitter.com/iamvery/status/575628248115245056">March 11, 2015</a>
+</blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<h2 id="hack-on">Hack on!</h2>
+
+<p>We’re thankful to be able to open source this work. If you catch any gaping
+memory leaks or anything at all, feel free to <a href="https://github.com/iamvery/artoo-neopixel/issues/new">open an issue</a>.</p>
+
+<p>What will you make? Show us in the comments!</p>
+
+
+
+<footer>
+  <p>
+    <a href="/2015/03/27/hacking-arduino-firmata-with-neopixels.html">&laquo; Previous</a>
+    |
+    <a href="/2015/07/08/rubyist-meets-swift.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

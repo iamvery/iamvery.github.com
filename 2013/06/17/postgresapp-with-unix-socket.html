@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Postgres.app with unix socket / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Postgres.app with unix socket" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2013/06/17/postgresapp-with-unix-socket.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2013/06/17/postgresapp-with-unix-socket.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Postgres.app with unix socket</h1>
+</header>
+
+<p>
+  &mdash;
+  Jun 17, 2013
+</p>
+
+<p>One of the best ways to get <a href="http://www.postgresql.org">PostgreSQL</a> running
+quickly on your computer is <a href="http://postgresapp.com">Postgres.app</a>. Unfortunately
+Postgres.app doesn’t enable connections via unix socket by default. I like to use
+sockets because they’re faster more secure.</p>
+
+<p>The server is configured, by default, to allow connections by your username from
+<code class="language-plaintext highlighter-rouge">localhost</code> on postgres’ default port <code class="language-plaintext highlighter-rouge">5432</code>. If you don’t to specify the host
+<code class="language-plaintext highlighter-rouge">psql</code> will attempt to connect via unix socket and fail with an error like:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ psql
+psql: could not connect to server: No such file or directory
+        Is the server running locally and accepting
+        connections on Unix domain socket "/var/pgsql_socket/.s.PGSQL.5432"?
+</code></pre></div></div>
+
+<blockquote>
+  <p><strong>Note</strong>: The default socket location for the <code class="language-plaintext highlighter-rouge">psql</code> command is “/tmp”. The
+<code class="language-plaintext highlighter-rouge">psql</code> command I used during the writing of this article was configured to
+use “/var/pgsql_socket”.</p>
+</blockquote>
+
+<h2 id="configure-postgresapp-to-use-unix-sockets">Configure Postgres.app to use unix sockets</h2>
+
+<p>The following steps will configure Postgres.app to allow connections via unix
+socket for a more flexible experience. <em>Note</em>: These instructions are tested
+against Mac OS X 10.8.</p>
+
+<h3 id="postgresapp-v92">Postgres.app v9.2</h3>
+
+<ol>
+  <li>Download and run <a href="http://postgresapp.com">Postgres.app</a> so that the default
+configuration is initialized in <code class="language-plaintext highlighter-rouge">~/Library/Application Support/Postgres</code>.</li>
+  <li>Quit Postgres.app (from the Mac OS X menu bar).</li>
+  <li>Open the file <code class="language-plaintext highlighter-rouge">~/Library/Application Support/Postgres/var/postgresql.conf</code> in
+your favorite text editor.</li>
+  <li>Uncomment the line <code class="language-plaintext highlighter-rouge">#unix_socket_directory = ''</code> and change it to
+<code class="language-plaintext highlighter-rouge">unix_socket_directory = '/var/pgsql_socket'</code>.</li>
+  <li>Create the directory <code class="language-plaintext highlighter-rouge">/var/pgsql_socket</code> if it doesn’t exist. (may require <code class="language-plaintext highlighter-rouge">sudo</code>)</li>
+  <li>Run <code class="language-plaintext highlighter-rouge">chmod 770 /var/pgsql_socket</code>. (may require <code class="language-plaintext highlighter-rouge">sudo</code>)</li>
+  <li>Run <code class="language-plaintext highlighter-rouge">chown root:staff /var/pgsql_socket</code>. (may require <code class="language-plaintext highlighter-rouge">sudo</code>)</li>
+</ol>
+
+<p>Now you can connect to the server by unix socket!</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ psql
+psql (9.1.5, server 9.2.2)
+WARNING: psql version 9.1, server version 9.2.
+         Some psql features might not work.
+Type "help" for help.
+
+your_username=#
+</code></pre></div></div>
+
+<h3 id="v93">v9.3</h3>
+
+<p>Postgres.app 9.3 introduces <a href="https://developer.apple.com/library/mac/documentation/security/conceptual/AppSandboxDesignGuide/AppSandboxInDepth/AppSandboxInDepth.html">app sandboxing</a>
+which changes the location for the configuration data to <code class="language-plaintext highlighter-rouge">~/Library/Containers/com.heroku.postgres/Data/Library/Application Support/Postgres/var</code>.
+This is a little confusing, especially considering the lack of documentation on the Postgres.app
+site and in the docs. See <a href="https://github.com/PostgresApp/PostgresApp/issues/131">this Github issue</a>
+for more information.</p>
+
+<p>It’s also worth noting that from PostgreSQL 9.2 to 9.3 the unix socket configuration
+<a href="http://www.postgresql.org/docs/9.3/static/runtime-config-connection.html">changed from <code class="language-plaintext highlighter-rouge">unix_socket_directory</code> to <code class="language-plaintext highlighter-rouge">unix_socket_directories</code></a>,
+so make sure your <code class="language-plaintext highlighter-rouge">postgresql.conf</code> file uses the correct variable name!</p>
+
+<h3 id="v931">v9.3.1</h3>
+
+<p>Aaaaaaand they’ve taken sandboxing out in 9.3.1. To add to the fun, they’ve also
+renamed the app to <code class="language-plaintext highlighter-rouge">Postgres93.app</code> and adjusted the Application Support directory
+accordingly. Now you can find the config file at:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/Library/Application Support/Postgres93/var/postgresql.conf
+</code></pre></div></div>
+
+<p>Remember that you’ll probably want to <a href="https://github.com/iamvery/dotfiles/commit/94ca807c79f09a7034a689daed0421ab98230ef9#diff-ec20fb240e117fea7b0049c21edf1ef3">update your <code class="language-plaintext highlighter-rouge">PATH</code></a>.</p>
+
+<h2 id="configuring-psql-socket-path">Configuring <code class="language-plaintext highlighter-rouge">psql</code> socket path</h2>
+
+<p>If your <code class="language-plaintext highlighter-rouge">psql</code> command is configured to use the “/tmp” directory, you may override this default
+with the <code class="language-plaintext highlighter-rouge">PGHOST</code> environment variable. I include this line in my shell rc file:</p>
+
+<p>export PGHOST=/var/pgsql_socket</p>
+
+
+<footer>
+  <p>
+    <a href="/conferences/ruby%20on%20rails/2013/04/09/ancient-city-ruby.html">&laquo; Previous</a>
+    |
+    <a href="/ruby%20on%20rails/2013/07/26/coding-rails-with-data-integrity.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

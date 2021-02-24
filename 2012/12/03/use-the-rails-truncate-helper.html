@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Use Rails' truncate helper! / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Use Rails' truncate helper!" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2012/12/03/use-the-rails-truncate-helper.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2012/12/03/use-the-rails-truncate-helper.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Use Rails' truncate helper!</h1>
+</header>
+
+<p>
+  &mdash;
+  Dec 03, 2012
+</p>
+
+<blockquote>
+  <p><strong>TL;DR</strong>: Ever wanted to cut a long string down to something like “This is the song that n…”? Use Rails’ <code class="language-plaintext highlighter-rouge">truncate</code> helper!</p>
+</blockquote>
+
+<p><em>Warning</em>: This is my first blog! Exciting, yes! But you’ll have to bear with my rambling as I get used to
+the process. :)</p>
+
+<p>The other day I ran into the mundane issue of having a record’s <code class="language-plaintext highlighter-rouge">title</code> attribute exceed the width that a
+<a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap</a> tooltip could display. I quickly threw together 
+some helper methods that would trim excessive <code class="language-plaintext highlighter-rouge">title</code>s down to size:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Article</span>
+  <span class="no">MAX_SHORT_TITLE_LENGTH</span> <span class="o">=</span> <span class="mi">10</span>
+  <span class="no">SHORT_TITLE_SUFFIX</span> <span class="o">=</span> <span class="s1">'...'</span>
+
+  <span class="k">def</span> <span class="nf">title</span>
+    <span class="s1">'The longest title imaginable.'</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">short_title</span>
+    <span class="k">if</span> <span class="n">long_title?</span>
+      <span class="s2">"</span><span class="si">#{</span><span class="n">title</span><span class="p">[</span><span class="mi">0</span><span class="o">...</span><span class="n">short_title_length</span><span class="p">]</span><span class="si">}#{</span><span class="no">SHORT_TITLE_SUFFIX</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">else</span>
+      <span class="n">title</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">long_title?</span>
+    <span class="n">title</span><span class="p">.</span><span class="nf">length</span> <span class="o">&gt;</span> <span class="no">MAX_SHORT_TITLE_LENGTH</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">short_title_length</span>
+    <span class="no">MAX_SHORT_TITLE_LENGTH</span> <span class="o">-</span> <span class="no">SHORT_TITLE_SUFFIX</span><span class="p">.</span><span class="nf">length</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>Along with it’s specs, I was quite pleased with my solution. So much so I thought to myself “Ah hah! I
+should write a small gem to easily add this functionality to other projects!” Then it hit me. Such a 
+common problem is likely already solved…</p>
+
+<p>And there it was <a href="http://api.rubyonrails.org/classes/ActionView/Helpers/TextHelper.html#method-i-truncate"><code class="language-plaintext highlighter-rouge">ActiveView::Helpers::TextHelper#truncate</code></a>.
+The exact functionality I was (re)implementing. Don’t miss out on this little helper! Its simple:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># In your view or helper</span>
+<span class="n">truncate</span><span class="p">(</span><span class="n">article</span><span class="p">.</span><span class="nf">title</span><span class="p">,</span> <span class="ss">:length</span> <span class="o">=&gt;</span> <span class="mi">10</span><span class="p">)</span> <span class="c1"># =&gt; 'The lon...'</span></code></pre></figure>
+
+
+
+<footer>
+  <p>
+    <a href="/2012/12/02/breaking-the-git-gui-habit.html">&laquo; Previous</a>
+    |
+    <a href="/2012/12/11/convenient-activerecord-order.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

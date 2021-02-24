@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Bootstrapping OS X 1.9 (Mavericks) for Development / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Bootstrapping OS X 1.9 (Mavericks) for Development" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/2013/11/05/bootstrapping-mavericks.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://iamvery.com/2013/11/05/bootstrapping-mavericks.html" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Bootstrapping OS X 1.9 (Mavericks) for Development</h1>
+</header>
+
+<p>
+  &mdash;
+  Nov 05, 2013
+</p>
+
+<blockquote>
+  <p><strong>Warning</strong>: This post was
+birthed out of a place of deep frustration after hours of trying to get my
+development environment back up and running for my work post-upgrade.</p>
+</blockquote>
+
+<p>Upgrading my system to Mavericks went off without a hitch… Or so it seemed. I did share
+in the <a href="http://www.tuaw.com/2013/10/23/how-mavericks-ruined-apple-mail-for-gmail-users/">Gmail issues</a>,
+but in the end the effect on my work was relatively benign. Thankfully Apple took these things seriously and <a href="http://support.apple.com/kb/DL1703">issued a patch</a>. The biggest problem
+I ran into was unfortunately bootstrapping my environment for development on my
+current primary project.</p>
+
+<p>The main problem-causing dependency has been: <a href="https://github.com/thoughtbot/capybara-webkit">capybara-webkit</a>.
+More specifically, its dependency on <a href="http://qt-project.org">QT</a>. There have been
+a <a href="https://www.google.com/search?q=mavericks+qt&amp;oq=mavericks+qt&amp;aqs=chrome..69i57j69i61.3522j0j1&amp;sourceid=chrome&amp;espv=210&amp;es_sm=119&amp;ie=UTF-8">number of problems</a>
+reported around the web about QT on Mavericks. In my case, I tend to use <a href="http://brew.sh">Homebrew</a>
+to manage such dependencies. Unfortunately, the Homebre formula is <a href="https://github.com/mxcl/homebrew/issues/21608">broken</a>.</p>
+
+<p>To be honest, I’m not completely sure what all the issues have been, but here’s what
+I did to get my environment back up to snuff. In all likelihood some of this is
+unecessary, but I thought it worth capturing:</p>
+
+<ul>
+  <li>Completely uninstalled Homebrew and all its installed libs</li>
+  <li>Completely removed all rubies and gems</li>
+  <li>Installed QT manually from the <a href="http://download.qt-project.org/official_releases/qt/4.8/4.8.5/qt-mac-opensource-4.8.5.dmg">.pkg installer</a> *<strong>key magic</strong>*</li>
+  <li>Reinstalled Homebrew</li>
+  <li>Reinstalled rubies (I like <a href="https://github.com/postmodern/ruby-install">ruby-install</a>
+and <a href="https://github.com/postmodern/chruby">chruby</a> these days)</li>
+  <li><code class="language-plaintext highlighter-rouge">bundle install</code>ed my project</li>
+  <li><em>Finally</em> green specs!</li>
+</ul>
+
+<p>Any QT installed by Homebrew, even when the <a href="https://github.com/mxcl/homebrew/pull/23793">installation was successful</a>
+was causing <code class="language-plaintext highlighter-rouge">Errno::EPIPE</code> errors after a few specs ran. That seems to be due to
+the <a href="https://github.com/thoughtbot/capybara-webkit/issues/68#issuecomment-2133695">“webkit_server binary crash(ing)”</a>.</p>
+
+<p>Hopefully all you fine folks out there have been met with <em>much</em> better success
+than myself upgrading to Apple’s shiny new OS! Let me know if you have any questions.
+Maybe I can help you avoid some stress ;)</p>
+
+<hr />
+
+<p>** <strong>UPDATE</strong> ** — November 9, 2013</p>
+
+<p>I finally got around to updating the iMac to Mavericks. Armed with the experience
+of updating my laptop, the pain was <em>greatly</em> decreased.</p>
+
+<p>The update went smoothly. As for my development envrionment, <code class="language-plaintext highlighter-rouge">capybara-webkit</code>
+was broken (as expected), crashing with <code class="language-plaintext highlighter-rouge">Errno::EPIPE</code> exceptions after 100ish
+specs run.</p>
+
+<p>I was able to fix this using these decidedly less drastic steps:</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">brew update</code> (always be updatin’ brew, why not?)</li>
+  <li><code class="language-plaintext highlighter-rouge">brew uninstall qt</code>. Homebrew’s QT hasn’t worked with 10.9. I don’t trust it.</li>
+  <li>Installed QT manually from the <a href="http://download.qt-project.org/official_releases/qt/4.8/4.8.5/qt-mac-opensource-4.8.5.dmg">.pkg installer</a></li>
+  <li><code class="language-plaintext highlighter-rouge">gem uninstall capybara-webkit</code>. I believe the installation of this gem binds,
+links, or some such magic to QT. This was for good measure. Maybe not needed?</li>
+  <li><code class="language-plaintext highlighter-rouge">bundle</code>. Installed my dependencies again, installing <code class="language-plaintext highlighter-rouge">capybara-webkit</code></li>
+</ol>
+
+<p>After this my spec suite runs all green! Sweet spec-passing justice ;)</p>
+
+
+<footer>
+  <p>
+    <a href="/2013/10/19/rails-translation-methods-subtly-different.html">&laquo; Previous</a>
+    |
+    <a href="/2013/11/16/tmux-pairing-anywhere-on-your-box.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>

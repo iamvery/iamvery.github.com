@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <meta content="jay hayes, jay, hayes, florence al, florence, al, iamvery, webdesign, web design, html, xhtml, css, strict html, strict xhtml, php, ror, ruby, ruby on rails, programming, programmer, development, web developer, web development, github" />
+    <meta content="The work, thoughts, and ideas of Jay Hayes, a web developer." name="description" />
+    <meta content="Jay Hayes" name="author" />
+    <meta name="viewport" content="initial-scale=1">
+
+    <title>Coding Rails with Data Integrity, Part 3 / iamvery.com</title>
+    <link href='/favicon.ico' rel='shortcut icon' />
+
+    <meta property="og:site_name" content="iamvery.com" />
+    <meta property="og:title" content="Coding Rails with Data Integrity, Part 3" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://iamvery.com/ruby%20on%20rails/2013/08/22/coding-rails-with-data-integrity-part-3.html" />
+    <meta property="og:image" content="http://iamvery.com/images/jay.jpg" />
+    <meta property="og:description" content="The work, thoughts, and ideas of Jay Hayes, a web developer." />
+
+    <link href='/stylesheets/toast.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/iamvery.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/font-awesome.min.css' rel='stylesheet' type='text/css' />
+    <link href='/stylesheets/pygments.css' rel='stylesheet' type='text/css' />
+    <link href='//fonts.googleapis.com/css?family=Crete+Round|Merriweather' rel='stylesheet' type='text/css'>
+    <link href="http://www.bignerdranch.com/blog/coding-rails-with-data-integrity-part-3" rel="canonical">
+  </head>
+  <body>
+    <div class="container">
+      <div class="grid">
+        <header class="unit span-grid">
+          <h1 class="logo"><a href="/" title="Iamvery home.">Iamvery</a></h1>
+          <h3>The musings of a nerd</h3>
+        </header>
+
+        <hr class="unit span-grid" />
+
+        <div class="unit three-of-four">
+          <header>
+  <h1>Coding Rails with Data Integrity, Part 3</h1>
+</header>
+
+<p>
+  &mdash;
+  Aug 22, 2013
+</p>
+
+<p>Originally posted on the <a href="http://www.bignerdranch.com/blog/coding-rails-with-data-integrity-part-3">Big Nerd Ranch Blog</a>.</p>
+
+<hr />
+
+<p>In our <a href="http://bit.ly/1d5PKiS">previous posts</a> about data integrity in Rails, we covered  null constraints, default values and uniqueness constraints. These database constraints help ensure that data exists where it’s supposed to and in a form that makes sense for your <a href="http://en.wikipedia.org/wiki/Domain_model">domain model</a>.</p>
+
+<p>This time, I would like to take a look at <a href="http://en.wikipedia.org/wiki/Referential_integrity">referential integrity</a>. We’ll find out how the database can be harnessed to ensure related records may trust one another under certain circumstances.</p>
+
+<h2 id="gotta-support-the-team">Gotta Support the Team</h2>
+
+<p><strong>Disclaimer</strong>: Rails’ default database is SQLite, which doesn’t support foreign key constraints out of the box. In order to attempt the concepts in this post, try another SQL database such as <a href="http://www.postgresql.com">PostgreSQL</a> or <a href="http://www.mysql.com">MySQL</a>.</p>
+
+<p>In <a href="/blog/coding-rails-with-data-integrity-part-2">Coding Rails with Data Integrity, Part 2</a> I outlined a simple data model where <strong>Users</strong> may be members of <strong>Teams</strong>. This is done by way of the <strong>Membership</strong> join model. Constraints ensure that duplicate and incomplete memberships cannot exist in the database. The migration for memberships looks like this:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">CreateMemberships</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">create_table</span> <span class="ss">:memberships</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">belongs_to</span> <span class="ss">:team</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">belongs_to</span> <span class="ss">:user</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">index</span> <span class="p">[</span><span class="ss">:team_id</span><span class="p">,</span> <span class="ss">:user_id</span><span class="p">],</span> <span class="ss">unique: </span><span class="kp">true</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>Unfortunately, this migration fails to guarantee referential integrity. That is records may become orphaned:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create!</span>  <span class="c1"># =&gt; #&lt;User id: 1&gt;</span>
+<span class="n">user</span><span class="p">.</span><span class="nf">teams</span><span class="p">.</span><span class="nf">create!</span>   <span class="c1"># =&gt; #&lt;Team id: 1&gt;</span>
+<span class="no">Membership</span><span class="p">.</span><span class="nf">all</span>       <span class="c1"># =&gt; [#&lt;Membership id: 1, team_id: 1, user_id: 1&gt;]</span>
+<span class="n">user</span><span class="p">.</span><span class="nf">destroy</span>
+<span class="no">Membership</span><span class="p">.</span><span class="nf">all</span>       <span class="c1"># =&gt; [#&lt;Membership id: 1, team_id: 1, user_id: 1&gt;]</span></code></pre></figure>
+
+<p>Now there is an invalid membership in the database. We have data that relates a team to a user that no longer exists. Following that reference leads to nothing. This fills the database with useless records and may lead to 404 landmines when someone browses memberships.</p>
+
+<h3 id="the-rails-solution">The Rails Solution</h3>
+
+<p>The keen reader is probably thinking “You can do this stuff with Rails’ associations using the <code class="language-plaintext highlighter-rouge">:dependent</code> option.” Yes you can, and it may very well make sense for your app. You may do something like this:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:memberships</span><span class="p">,</span> <span class="ss">dependent: :destroy</span>
+  <span class="n">has_many</span> <span class="ss">:teams</span><span class="p">,</span> <span class="ss">through: :memberships</span>
+<span class="k">end</span>
+
+<span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create!</span>  <span class="c1"># =&gt; #&lt;User id: 1&gt;</span>
+<span class="n">user</span><span class="p">.</span><span class="nf">teams</span><span class="p">.</span><span class="nf">create!</span>   <span class="c1"># =&gt; #&lt;Team id: 1&gt;</span>
+<span class="no">Membership</span><span class="p">.</span><span class="nf">all</span>       <span class="c1"># =&gt; [#&lt;Membership id: 1, team_id: 1, user_id: 1&gt;]</span>
+<span class="n">user</span><span class="p">.</span><span class="nf">destroy</span>
+<span class="no">Membership</span><span class="p">.</span><span class="nf">all</span>       <span class="c1"># =&gt; []</span>
+<span class="c1"># Thanks, Rails! You did it!</span></code></pre></figure>
+
+<p>Something that should be considered is that Rails has a couple of different ways to remove records from the database. A record may either be <a href="http://api.rubyonrails.org/classes/ActiveRecord/Persistence.html#method-i-delete"><code class="language-plaintext highlighter-rouge">delete</code>d</a> or <a href="http://api.rubyonrails.org/classes/ActiveRecord/Persistence.html#method-i-destroy"><code class="language-plaintext highlighter-rouge">destroy</code>ed</a>. Deletion skips <a href="http://api.rubyonrails.org/classes/ActiveRecord/Callbacks.html">callbacks</a>, and since the <code class="language-plaintext highlighter-rouge">:dependent</code> option on Rails associations is implemented using callbacks, you could still orphan records by “deleting” them rather than “destroying” them.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create!</span>  <span class="c1"># =&gt; #&lt;User id: 1&gt;</span>
+<span class="n">user</span><span class="p">.</span><span class="nf">teams</span><span class="p">.</span><span class="nf">create!</span>   <span class="c1"># =&gt; #&lt;Team id: 1&gt;</span>
+<span class="no">Membership</span><span class="p">.</span><span class="nf">all</span>       <span class="c1"># =&gt; [#&lt;Membership id: 1, team_id: 1, user_id: 1&gt;]</span>
+<span class="n">user</span><span class="p">.</span><span class="nf">delete</span>
+<span class="no">Membership</span><span class="p">.</span><span class="nf">all</span>       <span class="c1"># =&gt; [#&lt;Membership id: 1, team_id: 1, user_id: 1&gt;]</span>
+<span class="c1"># Shazbot!</span></code></pre></figure>
+
+<p>Foreign key constraints enforce referential integrity at the database level. This means referential integrity exists in spite of the application code. The <em>win</em> becomes obvious once you stop thinking of the database as this private slave of the Rails app and instead as an application-independent data-store. One could theoretically introduce another app that interacts with the same database without worry for the integrity of the data.</p>
+
+<h3 id="enter-foreigner">Enter Foreigner</h3>
+
+<p>Ruby on Rails omits foreign key constraints as a built-in feature, because databases have uneven support for them. The <a href="https://github.com/matthuhiggins/foreigner">foreigner</a> rubygem is a great library for adding foreign key constraints in your migrations. Below we’ll see foreigner in action.</p>
+
+<p>So what <em>do</em> we want to happen to the <strong>Membership</strong> when a referenced <strong>User</strong> is deleted? In this case, it probably makes sense to just delete the membership, since it doesn’t mean anything without a user. We’ll add a to the member’s user reference:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">AddUserForeignKeyToMemberships</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">add_foreign_key</span> <span class="ss">:memberships</span><span class="p">,</span> <span class="ss">:users</span><span class="p">,</span> <span class="ss">dependent: :delete</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>The <code class="language-plaintext highlighter-rouge">:dependent</code> option tells the database to delete this record whenever the referenced record is deleted.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">create!</span>  <span class="c1"># =&gt; #&lt;User id: 1&gt;</span>
+<span class="n">user</span><span class="p">.</span><span class="nf">teams</span><span class="p">.</span><span class="nf">create!</span>   <span class="c1"># =&gt; #&lt;Team id: 1&gt;</span>
+<span class="no">Membership</span><span class="p">.</span><span class="nf">all</span>       <span class="c1"># =&gt; [#&lt;Membership id: 1, team_id: 1, user_id: 1&gt;]</span>
+<span class="n">user</span><span class="p">.</span><span class="nf">delete</span>          <span class="c1"># not "destroy" with all those fancy callbacks!</span>
+<span class="no">Membership</span><span class="p">.</span><span class="nf">all</span>       <span class="c1"># =&gt; []</span>
+<span class="c1"># Nice! The membership record was automatically deleted</span></code></pre></figure>
+
+<p>How about the other side of the relationship? That is, what should happen when a referenced <strong>Team</strong> is deleted? That decision is probably left up to the domain of your app, but for example’s sake, let’s say we don’t want to allow a <strong>Team</strong> to be deleted if it has any users. Constrain it!</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">AddTeamForeignKeyToMemberships</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">add_foreign_key</span> <span class="ss">:memberships</span><span class="p">,</span> <span class="ss">:teams</span><span class="p">,</span> <span class="ss">dependent: :restrict</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>Now the database will prevent us from deleting a team that has members.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">team</span> <span class="o">=</span> <span class="no">Team</span><span class="p">.</span><span class="nf">create!</span>  <span class="c1"># =&gt; #&lt;Team id: 1&gt;</span>
+<span class="n">team</span><span class="p">.</span><span class="nf">users</span><span class="p">.</span><span class="nf">create!</span>   <span class="c1"># =&gt; #&lt;User id: 1&gt;</span>
+<span class="no">Membership</span><span class="p">.</span><span class="nf">all</span>       <span class="c1"># =&gt; [#&lt;Membership id: 1, team_id: 1, user_id: 1&gt;]</span>
+<span class="n">team</span><span class="p">.</span><span class="nf">destroy</span>         <span class="c1"># =&gt; ActiveRecord::InvalidForeignKey raised!</span>
+<span class="c1"># Aww, thanks database :)</span></code></pre></figure>
+
+<p>If your app has foreign key constraints, declare them, and let the database do the dirty work!</p>
+
+<p>I want to mention that there are other great libraries out there that allow adding constraints to your database. <a href="https://github.com/nullobject/rein">Rein</a> is another good example that I haven’t used personally. In the end, always use the right tool for the job.</p>
+
+<hr />
+
+<h2 id="other-posts">Other Posts</h2>
+
+<ul>
+  <li>
+    <p><a href="/blog/coding-rails-with-data-integrity">Coding Rails with Data Integrity, Part 1</a> (null constraints and default values)</p>
+  </li>
+  <li>
+    <p><a href="/blog/coding-rails-with-data-integrity-part-2">Coding Rails with Data Integrity, Part 2</a> (uniqueness constraints)</p>
+  </li>
+</ul>
+
+<p>What other ways have you come up with to ensure data integrity in your apps? We’d love to hear what you think!</p>
+
+
+<footer>
+  <p>
+    <a href="/2013/08/07/a-successful-rspec-contribution.html">&laquo; Previous</a>
+    |
+    <a href="/2013/09/25/bnr-blogs.html">Next &raquo;</a>
+  </p>
+</footer>
+
+        </div>
+
+        <div class="unit one-of-four">
+          <nav>
+            <ul class="nav">
+              <li><a class="button red" href="/2024/09/04/best-hayes-ahead.html">latest blog</a></li>
+              <li><a class="button red" href="/archive.html">blog list</a></li>
+              <li><a class="button red" href="/about.html">about</a></li>
+              <li><a class="button red" href="https://besthayesahead.com">Best Hayes Ahead</a></li>
+            </ul>
+          </nav>
+          <footer><p><small>© Jay Hayes</small></p></footer>
+        </div>
+
+        <hr class="unit span-grid" />
+
+        <footer class="unit span-grid">
+          <a href="mailto:hello@iamvery.com" title="I've got email!">hello@iamvery.com</a>
+&nbsp;&bull;&nbsp;
+<a href="http://github.com/iamvery" title="I've got a Github account!">http://github.com/iamvery</a>
+&nbsp;&bull;&nbsp;
+<a href="http://feeds.feedburner.com/iamvery" title="RSS">RSS</a>
+
+        </div>
+      </div>
+    </div>
+
+    <script src='/javascripts/analytics.js' type='text/javascript'></script>
+  </body>
+</html>
